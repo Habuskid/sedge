@@ -1,0 +1,147 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { checkRateLimit } from '@/lib/rate-limit';
+import { validateParseResponse } from '@/lib/validation';
+
+const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
+const ANTHROPIC_MODEL = 'claude-sonnet-5';
+const ANTHROPIC_VERSION = '2023-06-01';
+
+const SYSTEM_PROMPT = `You are Sedge AI, a financial operations copilot for stablecoins. Parse the user's natural language command into a structured JSON intent.
+
+Supported intent types:
+1. "swap" - Same-chain token swap (only on Arc Testnet, chain ID 5042002)
+   Required: type, fromToken, toToken, amount (string), chainId (number, default 5042002)
+2. "bridge" - Cross-chain transfer via CCTP
+   Required: type, token, amount (string), fromChainId (number), toChainId (number)
+3. "send" - Send tokens to an address
+   Required: type, token, amount (string), recipientAddress (0x address), chainId (number, default 5042002)
+4. "balance_check" - Check balances
+   Required: type. Optional: token (string), chainId (number)
+5. "recurring_payment" - Recurring payment schedule
+   Required: type, token, amount (string), recipientAddress (0x address), frequency ("daily"|"weekly"|"monthly"), chainId (number, default 5042002)
+
+Supported tokens: USDC, EURC, cirBTC
+Supported chains: Arc Testnet (5042002), Ethereum Sepolia (11155111)
+Default chain: Arc Testnet (5042002). Default token: USDC.
+Swap only works on Arc Testnet.
+
+If the user mentions "Sepolia" or "Ethereum", use chain ID 11155111.
+If the command is out of scope or ambiguous, set intent to null.
+
+Respond with ONLY valid JSON, no markdown fences:
+{"intent": <object or null>, "message": "<description>", "confidence": <0.0-1.0>}`;
+
+function getClientIp(request: NextRequest): string {
+  const forwarded = request.headers.get('x-forwarded-for');
+  if (forwarded) return forwarded.split(',')[0].trim();
+  return request.headers.get('x-real-ip') || '127.0.0.1';
+}
+
+export async function POST(request: NextRequest) {
+  const ip = getClientIp(request);
+  const { allowed, remaining } = checkRateLimit(ip);
+
+  if (!allowed) {
+    return NextResponse.json(
+      { error: 'Rate limit exceeded. Please wait a moment before trying again.' },
+      { status: 429, headers: { 'X-RateLimit-Remaining': '0' } }
+    );
+  }
+
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    console.error('ANTHROPIC_API_KEY not configured');
+    return NextResponse.json({ error: 'AI service is not configured.' }, { status: 503 });
+  }
+
+  let body: { message?: string };
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
+  }
+
+  if (!body.message || typeof body.message !== 'string' || body.message.trim().length === 0) {
+    return NextResponse.json({ error: 'Message is required.' }, { status: 400 });
+  }
+
+  if (body.message.length > 500) {
+    return NextResponse.json({ error: 'Message too long (max 500 characters).' }, { status: 400 });
+  }
+
+  const headers = { 'X-RateLimit-Remaining': String(remaining) };
+
+  try {
+    const res = await fetch(ANTHROPIC_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': ANTHROPIC_VERSION,
+      },
+      body: JSON.stringify({
+        model: ANTHROPIC_MODEL,
+        max_tokens: 512,
+        system: SYSTEM_PROMPT,
+        thinking: { type: 'disabled' },
+        messages: [
+          { role: 'user', content: body.message.trim() },
+        ],
+      }),
+    });
+
+    if (!res.ok) {
+      console.error('Anthropic API error:', res.status);
+      return NextResponse.json(
+        { error: 'AI service temporarily unavailable.' },
+        { status: 502, headers }
+      );
+    }
+
+    const data = await res.json();
+    const content = data.content?.find(
+      (block: { type: string }) => block.type === 'text'
+    )?.text;
+
+    if (!content || typeof content !== 'string') {
+      return NextResponse.json(
+        { error: 'AI service returned an empty response.' },
+        { status: 502, headers }
+      );
+    }
+
+    let jsonStr = content.trim();
+    if (jsonStr.startsWith('```')) {
+      jsonStr = jsonStr.replace(/^```(?:json)?\s*/, '').replace(/\s*```$/, '');
+    }
+
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(jsonStr);
+    } catch {
+      console.error('LLM returned non-JSON:', jsonStr.slice(0, 200));
+      return NextResponse.json(
+        { intent: null, message: 'I could not understand that command. Please try rephrasing.', confidence: 0 },
+        { status: 200, headers }
+      );
+    }
+
+    const validation = validateParseResponse(parsed);
+
+    if (!validation.valid || !validation.response) {
+      console.error('Validation failed:', validation.errors);
+      return NextResponse.json(
+        { intent: null, message: `Could not validate: ${validation.errors.join('; ')}`, confidence: 0 },
+        { status: 200, headers }
+      );
+    }
+
+    return NextResponse.json(validation.response, { status: 200, headers });
+  } catch (err) {
+    console.error('Parse intent error:', err);
+    return NextResponse.json(
+      { error: 'An unexpected error occurred.' },
+      { status: 500, headers }
+    );
+  }
+}

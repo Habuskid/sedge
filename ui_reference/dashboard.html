@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sedge - Portfolio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=Geist:wght@400;500;600&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-highest": "#dce2f3",
+                        "inverse-on-surface": "#ebf1ff",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#e2e8f8",
+                        "secondary": "#5c5f61",
+                        "primary-fixed-dim": "#7bd0ff",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#151c27",
+                        "on-surface-variant": "#3e484f",
+                        "background": "#f9f9ff",
+                        "surface-container-low": "#f0f3ff",
+                        "tertiary-fixed-dim": "#c0c6db",
+                        "on-tertiary-fixed-variant": "#404758",
+                        "secondary-fixed-dim": "#c4c7c9",
+                        "surface-bright": "#f9f9ff",
+                        "secondary-container": "#e0e3e5",
+                        "on-background": "#151c27",
+                        "inverse-surface": "#2a313d",
+                        "surface-container": "#e7eefe",
+                        "outline": "#6e7980",
+                        "inverse-primary": "#7bd0ff",
+                        "on-secondary-container": "#626567",
+                        "tertiary": "#575e70",
+                        "on-primary-fixed": "#001e2c",
+                        "surface-tint": "#00668a",
+                        "on-primary-container": "#004965",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#3d4455",
+                        "on-error-container": "#93000a",
+                        "surface": "#f9f9ff",
+                        "surface-dim": "#d3daea",
+                        "on-secondary-fixed": "#191c1e",
+                        "primary-container": "#38bdf8",
+                        "tertiary-container": "#aab1c5",
+                        "primary-fixed": "#c4e7ff",
+                        "tertiary-fixed": "#dce2f7",
+                        "surface-variant": "#dce2f3",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#bdc8d1",
+                        "secondary-fixed": "#e0e3e5",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#444749",
+                        "primary": "#00668a",
+                        "on-tertiary-fixed": "#141b2b",
+                        "on-primary-fixed-variant": "#004c69"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap": "64px",
+                        "margin-desktop": "48px",
+                        "stack-lg": "32px",
+                        "container-max": "1280px",
+                        "margin-mobile": "16px",
+                        "unit": "4px",
+                        "stack-md": "16px",
+                        "stack-sm": "8px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-md": [
+                            "Hanken Grotesk"
+                        ],
+                        "label-caps": [
+                            "Geist"
+                        ],
+                        "body-sm": [
+                            "Inter"
+                        ],
+                        "display-lg-mobile": [
+                            "Hanken Grotesk"
+                        ],
+                        "display-lg": [
+                            "Hanken Grotesk"
+                        ],
+                        "body-md": [
+                            "Inter"
+                        ],
+                        "mono-data": [
+                            "Geist"
+                        ],
+                        "body-lg": [
+                            "Inter"
+                        ]
+                    },
+                    "fontSize": {
+                        "headline-md": [
+                            "24px",
+                            {
+                                "lineHeight": "1.3",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "label-caps": [
+                            "12px",
+                            {
+                                "lineHeight": "1",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "body-sm": [
+                            "14px",
+                            {
+                                "lineHeight": "1.5",
+                                "fontWeight": "400"
+                            }
+                        ],
+                        "display-lg-mobile": [
+                            "36px",
+                            {
+                                "lineHeight": "1.2",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                            }
+                        ],
+                        "display-lg": [
+                            "48px",
+                            {
+                                "lineHeight": "1.1",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                            }
+                        ],
+                        "body-md": [
+                            "16px",
+                            {
+                                "lineHeight": "1.5",
+                                "fontWeight": "400"
+                            }
+                        ],
+                        "mono-data": [
+                            "14px",
+                            {
+                                "lineHeight": "1.4",
+                                "fontWeight": "500"
+                            }
+                        ],
+                        "body-lg": [
+                            "18px",
+                            {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                            }
+                        ]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #f9f9ff;
+            color: #151c27;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .ai-gradient {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(56, 189, 248, 0.0) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.1);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid #E5E7EB;
+        }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-background antialiased flex overflow-hidden h-screen w-screen">
+<!-- SideNavBar -->
+<aside class="bg-surface dark:bg-inverse-surface border-r border-outline-variant dark:border-outline fixed left-0 top-0 h-screen w-64 flex flex-col py-stack-lg px-gutter hidden md:flex z-50">
+<div class="flex items-center gap-3 mb-section-gap">
+<img alt="Sedge Brand Logo" class="w-8 h-8 rounded-DEFAULT object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2D2sLa0tJyu9hZGtV5oZhvZmUgcYqkH3I-djhceSdyybf3fZK6Rq2m4aPCo7M_UovmdRI6sclI95y6B1rxqjIah1HadQnpLJX4Bfq0r4c4aFonNAmlEEQcnn6H9Z8IxSV2VoIp2gBls2WPp_uErKqDwClHdobxQ2hzep0pFhBFc3qFrbGUiJjd61QU5SAg4TN_F74bkBZFLzDXvDQGwL07pBvBrSA57eARfcMI-bvbuAzzAHgOq56"/>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">Sedge</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant">AI Copilot</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors text-on-surface-variant dark:text-on-secondary-fixed-variant font-body-md text-body-md" href="command-center.html">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+<span>Command Center</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary dark:text-primary-fixed-dim font-bold bg-surface-container-low dark:bg-on-surface-variant transition-colors font-body-md text-body-md" href="dashboard.html" style="transform: scale(0.98);">
+<span class="material-symbols-outlined fill" data-icon="pie_chart">pie_chart</span>
+<span>Portfolio</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors text-on-surface-variant dark:text-on-secondary-fixed-variant font-body-md text-body-md" href="activity.html">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span>Activity</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors text-on-surface-variant dark:text-on-secondary-fixed-variant font-body-md text-body-md" href="recurring-payments.html">
+<span class="material-symbols-outlined" data-icon="cached">cached</span>
+<span>Recurring Payments</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors text-on-surface-variant dark:text-on-secondary-fixed-variant font-body-md text-body-md" href="market-intelligence.html">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+<span>Market Intelligence</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors text-on-surface-variant dark:text-on-secondary-fixed-variant font-body-md text-body-md" href="settings.html">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-outline-variant dark:border-outline pt-6 space-y-2">
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors text-on-surface-variant dark:text-on-secondary-fixed-variant font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span>Connected Wallet</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors text-on-surface-variant dark:text-on-secondary-fixed-variant font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="account_circle">account_circle</span>
+<span>Profile</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-surface-container-low dark:hover:bg-on-surface-variant transition-colors text-on-surface-variant dark:text-on-secondary-fixed-variant font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="corporate_fare">corporate_fare</span>
+<span>Workspace</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col md:ml-64 h-screen overflow-hidden">
+<!-- TopAppBar -->
+<header class="bg-surface/80 dark:bg-inverse-surface/80 backdrop-blur-xl sticky top-0 right-0 w-full z-40 border-b border-outline-variant dark:border-outline shadow-sm flex justify-between items-center h-16 px-margin-desktop md:pl-margin-desktop pl-4">
+<div class="flex items-center gap-4 flex-1">
+<div class="md:hidden">
+<img alt="Sedge Brand Logo" class="w-8 h-8 rounded-DEFAULT object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2D2sLa0tJyu9hZGtV5oZhvZmUgcYqkH3I-djhceSdyybf3fZK6Rq2m4aPCo7M_UovmdRI6sclI95y6B1rxqjIah1HadQnpLJX4Bfq0r4c4aFonNAmlEEQcnn6H9Z8IxSV2VoIp2gBls2WPp_uErKqDwClHdobxQ2hzep0pFhBFc3qFrbGUiJjd61QU5SAg4TN_F74bkBZFLzDXvDQGwL07pBvBrSA57eARfcMI-bvbuAzzAHgOq56"/>
+</div>
+<!-- Search Bar on Left -->
+<div class="relative w-full max-w-md hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]" data-icon="search">search</span>
+<input class="w-full bg-surface-bright border border-outline-variant rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/10 transition-all font-body-sm text-body-sm placeholder:text-outline text-on-surface" placeholder="Search commands, assets..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-container-low hidden sm:block">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<button class="bg-primary-container text-on-primary px-4 py-2 rounded-lg font-label-caps text-label-caps uppercase tracking-wider hover:bg-primary-container/90 transition-colors shadow-sm">
+                    Execute Command
+                </button>
+<img alt="User Profile" class="w-8 h-8 rounded-full border border-outline-variant object-cover ml-2" data-alt="A professional headshot of a person looking forward with a slight smile, well-lit against a neutral light grey background, high resolution, corporate modern aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzeo1ydj-O-y7U4sTQYV3StmhCC9eqd3a_-EkfjQ-64xq7-ISHPHuggjeY7ggG2wG3FzWpKfrDBueME8hgMgMurvPE31_uap9SyatrRrUgsP1jgmzEmDytl4QVw7tEma9jaWXZhTkXRy8G1CZMb0xxY2uonAk-5TweMYPq1iY63EUa1t4SaCSAKjUucOeaiQHDkvbZrVbo6O5DcygstZ36Ehvkw-XrzDvyL1rtbr1t8Y_R1PKqf7KN"/>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 overflow-y-auto p-4 md:p-margin-desktop relative">
+<div class="max-w-[1280px] mx-auto w-full space-y-6">
+<!-- AI Copilot Summary -->
+<div class="ai-gradient rounded-2xl p-6 flex items-start gap-4 shadow-sm relative overflow-hidden">
+<div class="absolute -right-10 -top-10 w-40 h-40 bg-primary-container/5 rounded-full blur-3xl"></div>
+<div class="mt-1 bg-white rounded-full p-2 shadow-sm shrink-0 border border-outline-variant/30">
+<span class="material-symbols-outlined text-primary-container text-[24px]" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div>
+<h2 class="font-label-caps text-label-caps text-primary-container mb-1 uppercase tracking-widest">Sedge Intelligence</h2>
+<p class="font-body-lg text-body-lg text-on-surface leading-relaxed">Your portfolio increased <span class="font-mono-data text-mono-data font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">3.4%</span> this week, driven primarily by strong performance in USDC staking yields and a slight recovery in BTC. We suggest holding current allocations.</p>
+</div>
+</div>
+<!-- Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[minmax(180px,auto)]">
+<!-- Total Value Card -->
+<div class="glass-card rounded-[16px] p-6 md:col-span-8 flex flex-col justify-between shadow-sm relative overflow-hidden">
+<div class="absolute top-0 right-0 w-64 h-full pointer-events-none opacity-20" style="background-image: radial-gradient(circle at top right, #38BDF8 0%, transparent 70%);"></div>
+<div>
+<div class="flex justify-between items-center mb-2">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Total Portfolio Value</h3>
+<span class="material-symbols-outlined text-outline text-[20px]" data-icon="account_balance">account_balance</span>
+</div>
+<div class="flex items-baseline gap-4 mt-2">
+<h1 class="font-display-lg text-display-lg text-on-surface tracking-tight">$1,248,590.45</h1>
+<span class="font-mono-data text-mono-data text-emerald-600 flex items-center bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100">
+<span class="material-symbols-outlined text-[16px] mr-1" data-icon="trending_up">trending_up</span>
+                                    +$41,053.20 (3.4%)
+                                </span>
+</div>
+<p class="font-body-sm text-body-sm text-outline mt-2">Last updated 5 mins ago</p>
+</div>
+<!-- Minimal Line Chart Area (CSS Mockup) -->
+<div class="h-32 mt-8 relative w-full flex items-end">
+<div class="absolute inset-0 border-b border-l border-outline-variant/30"></div>
+<!-- SVG for minimal sparkline -->
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 40">
+<path d="M0,40 L0,30 L10,28 L20,32 L30,25 L40,26 L50,15 L60,18 L70,10 L80,12 L90,5 L100,2 L100,40 Z" fill="url(#grad1)" opacity="0.1"></path>
+<path d="M0,30 L10,28 L20,32 L30,25 L40,26 L50,15 L60,18 L70,10 L80,12 L90,5 L100,2" fill="none" stroke="#38BDF8" stroke-width="0.5" vector-effect="non-scaling-stroke"></path>
+<defs>
+<lineargradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#38BDF8;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#38BDF8;stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+</div>
+<!-- Asset Allocation Donut (CSS Mockup) -->
+<div class="bg-white border border-outline-variant rounded-[16px] p-6 md:col-span-4 flex flex-col items-center justify-center shadow-sm">
+<div class="w-full flex justify-between items-center mb-6">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Asset Allocation</h3>
+<span class="material-symbols-outlined text-outline text-[20px]" data-icon="donut_large">donut_large</span>
+</div>
+<!-- CSS Donut Chart -->
+<div class="relative w-48 h-48 rounded-full flex items-center justify-center mb-6" style="background: conic-gradient(#38BDF8 0% 55%, #151c27 55% 85%, #E5E7EB 85% 100%);">
+<div class="absolute w-32 h-32 bg-white rounded-full flex items-center justify-center flex-col">
+<span class="font-label-caps text-label-caps text-outline">Assets</span>
+<span class="font-headline-md text-headline-md text-on-surface">3</span>
+</div>
+</div>
+<div class="w-full space-y-3">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-sm bg-primary-container"></div>
+<span class="font-body-sm text-body-sm text-on-surface">USDC</span>
+</div>
+<span class="font-mono-data text-mono-data text-on-surface">55.0%</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-sm bg-on-surface"></div>
+<span class="font-body-sm text-body-sm text-on-surface">BTC</span>
+</div>
+<span class="font-mono-data text-mono-data text-on-surface">30.0%</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-sm bg-[#E5E7EB]"></div>
+<span class="font-body-sm text-body-sm text-on-surface">EURC</span>
+</div>
+<span class="font-mono-data text-mono-data text-outline">15.0%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Transactions Table -->
+<div class="bg-white border border-outline-variant rounded-[16px] shadow-sm overflow-hidden mt-6">
+<div class="p-6 border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Recent Transactions</h3>
+<button class="font-body-sm text-body-sm text-primary hover:text-primary-container transition-colors">View All</button>
+</div>
+<div class="overflow-x-auto w-full">
+<table class="w-full text-left border-collapse min-w-[600px]">
+<thead>
+<tr class="bg-surface-bright border-b border-outline-variant">
+<th class="py-3 px-6 font-label-caps text-label-caps text-outline uppercase tracking-wider font-medium">Asset</th>
+<th class="py-3 px-6 font-label-caps text-label-caps text-outline uppercase tracking-wider font-medium">Type</th>
+<th class="py-3 px-6 font-label-caps text-label-caps text-outline uppercase tracking-wider font-medium">Date</th>
+<th class="py-3 px-6 font-label-caps text-label-caps text-outline uppercase tracking-wider font-medium text-right">Amount</th>
+<th class="py-3 px-6 font-label-caps text-label-caps text-outline uppercase tracking-wider font-medium text-right">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/50">
+<tr class="hover:bg-surface-bright/50 transition-colors">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[16px]" data-icon="currency_exchange">currency_exchange</span>
+</div>
+<span class="font-body-sm text-body-sm font-medium text-on-surface">USDC</span>
+</div>
+</td>
+<td class="py-4 px-6 font-body-sm text-body-sm text-on-surface-variant">Deposit</td>
+<td class="py-4 px-6 font-body-sm text-body-sm text-outline">Oct 24, 2023</td>
+<td class="py-4 px-6 font-mono-data text-mono-data text-emerald-600 text-right">+$50,000.00</td>
+<td class="py-4 px-6 text-right">
+<span class="inline-flex items-center px-2 py-1 rounded bg-emerald-50 text-emerald-700 font-label-caps text-[10px] uppercase">Completed</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright/50 transition-colors">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-[16px]" data-icon="currency_bitcoin">currency_bitcoin</span>
+</div>
+<span class="font-body-sm text-body-sm font-medium text-on-surface">BTC</span>
+</div>
+</td>
+<td class="py-4 px-6 font-body-sm text-body-sm text-on-surface-variant">Trade</td>
+<td class="py-4 px-6 font-body-sm text-body-sm text-outline">Oct 22, 2023</td>
+<td class="py-4 px-6 font-mono-data text-mono-data text-on-surface text-right">+2.15 BTC</td>
+<td class="py-4 px-6 text-right">
+<span class="inline-flex items-center px-2 py-1 rounded bg-emerald-50 text-emerald-700 font-label-caps text-[10px] uppercase">Completed</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright/50 transition-colors">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-[16px]" data-icon="euro">euro</span>
+</div>
+<span class="font-body-sm text-body-sm font-medium text-on-surface">EURC</span>
+</div>
+</td>
+<td class="py-4 px-6 font-body-sm text-body-sm text-on-surface-variant">Withdrawal</td>
+<td class="py-4 px-6 font-body-sm text-body-sm text-outline">Oct 19, 2023</td>
+<td class="py-4 px-6 font-mono-data text-mono-data text-on-surface text-right">-€12,500.00</td>
+<td class="py-4 px-6 text-right">
+<span class="inline-flex items-center px-2 py-1 rounded bg-emerald-50 text-emerald-700 font-label-caps text-[10px] uppercase">Completed</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</div>
+<script src="app.js"></script></body></html>
+

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sedge | The AI Financial Copilot</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Hanken+Grotesk:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-highest": "#dce2f3",
+                        "inverse-on-surface": "#ebf1ff",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#e2e8f8",
+                        "secondary": "#5c5f61",
+                        "primary-fixed-dim": "#7bd0ff",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#151c27",
+                        "on-surface-variant": "#3e484f",
+                        "background": "#f9f9ff",
+                        "surface-container-low": "#f0f3ff",
+                        "tertiary-fixed-dim": "#c0c6db",
+                        "on-tertiary-fixed-variant": "#404758",
+                        "secondary-fixed-dim": "#c4c7c9",
+                        "surface-bright": "#f9f9ff",
+                        "secondary-container": "#e0e3e5",
+                        "on-background": "#151c27",
+                        "inverse-surface": "#2a313d",
+                        "surface-container": "#e7eefe",
+                        "outline": "#6e7980",
+                        "inverse-primary": "#7bd0ff",
+                        "on-secondary-container": "#626567",
+                        "tertiary": "#575e70",
+                        "on-primary-fixed": "#001e2c",
+                        "surface-tint": "#00668a",
+                        "on-primary-container": "#004965",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#3d4455",
+                        "on-error-container": "#93000a",
+                        "surface": "#f9f9ff",
+                        "surface-dim": "#d3daea",
+                        "on-secondary-fixed": "#191c1e",
+                        "primary-container": "#38bdf8",
+                        "tertiary-container": "#aab1c5",
+                        "primary-fixed": "#c4e7ff",
+                        "tertiary-fixed": "#dce2f7",
+                        "surface-variant": "#dce2f3",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#bdc8d1",
+                        "secondary-fixed": "#e0e3e5",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#444749",
+                        "primary": "#00668a",
+                        "on-tertiary-fixed": "#141b2b",
+                        "on-primary-fixed-variant": "#004c69"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap": "64px",
+                        "margin-desktop": "48px",
+                        "stack-lg": "32px",
+                        "container-max": "1280px",
+                        "margin-mobile": "16px",
+                        "unit": "4px",
+                        "stack-md": "16px",
+                        "stack-sm": "8px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Hanken Grotesk"],
+                        "label-caps": ["Geist"],
+                        "body-sm": ["Inter"],
+                        "display-lg-mobile": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "mono-data": ["Geist"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "display-lg-mobile": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "mono-data": ["14px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+        .ai-gradient-border {
+            position: relative;
+            background: #ffffff;
+            background-clip: padding-box;
+            border: 1px solid transparent;
+            border-radius: 16px;
+        }
+        .ai-gradient-border::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            z-index: -1;
+            margin: -1px;
+            border-radius: inherit;
+            background: linear-gradient(to right, #38bdf8, #c4e7ff);
+        }
+        .ambient-shadow {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02);
+        }
+        
+        /* Subtle background animation */
+        .bg-mesh {
+            background-color: #f9f9ff;
+            background-image: 
+                radial-gradient(at 40% 20%, hsla(200,100%,94%,1) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, hsla(189,100%,96%,1) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, hsla(210,100%,96%,1) 0px, transparent 50%),
+                radial-gradient(at 80% 50%, hsla(200,100%,94%,1) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, hsla(190,100%,96%,1) 0px, transparent 50%),
+                radial-gradient(at 80% 100%, hsla(210,100%,96%,1) 0px, transparent 50%),
+                radial-gradient(at 0% 0%, hsla(200,100%,94%,1) 0px, transparent 50%);
+            background-size: 200% 200%;
+            animation: gradientMove 15s ease infinite;
+        }
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Navigation (Transactional/Landing Page - No SideNav/BottomNav, just simple top bar) -->
+<nav class="sticky top-0 z-50 w-full glass-panel">
+<div class="max-w-container-max mx-auto px-gutter h-16 flex items-center justify-between">
+<div class="flex items-center gap-stack-sm">
+<img alt="Sedge Logo" class="h-8 w-8 object-contain rounded" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2D2sLa0tJyu9hZGtV5oZhvZmUgcYqkH3I-djhceSdyybf3fZK6Rq2m4aPCo7M_UovmdRI6sclI95y6B1rxqjIah1HadQnpLJX4Bfq0r4c4aFonNAmlEEQcnn6H9Z8IxSV2VoIp2gBls2WPp_uErKqDwClHdobxQ2hzep0pFhBFc3qFrbGUiJjd61QU5SAg4TN_F74bkBZFLzDXvDQGwL07pBvBrSA57eARfcMI-bvbuAzzAHgOq56"/>
+<span class="font-headline-md text-headline-md font-bold text-on-surface">Sedge</span>
+</div>
+<div class="hidden md:flex items-center gap-stack-lg font-body-sm text-body-sm text-on-surface-variant">
+<a class="hover:text-primary transition-colors" href="#features">Features</a>
+<a class="hover:text-primary transition-colors" href="#how-it-works">How it Works</a>
+<a class="hover:text-primary transition-colors" href="#">Documentation</a>
+</div>
+<div class="flex items-center gap-stack-sm">
+<a href="dashboard.html"  class="hidden md:block px-4 py-2 font-body-sm text-body-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors" style="display:flex; align-items:center;">Sign In</a>
+<a href="dashboard.html"  class="px-4 py-2 bg-primary-container text-on-primary font-body-sm text-body-sm font-medium rounded shadow-sm hover:bg-surface-tint transition-colors" style="display:flex; align-items:center;">Start Using Sedge</a>
+</div>
+</div>
+</nav>
+<main>
+<!-- Hero Section -->
+<section class="relative pt-section-gap pb-section-gap overflow-hidden bg-mesh min-h-[90vh] flex items-center">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop w-full">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center">
+<!-- Hero Content -->
+<div class="lg:col-span-6 flex flex-col gap-stack-lg z-10 relative">
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container border border-outline-variant/30 w-fit backdrop-blur-sm">
+<span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">AI-FIRST FINANCIAL COPILOT</span>
+</div>
+<h1 class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-on-surface text-balance">
+                            The AI Financial Copilot for Stablecoins
+                        </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl text-balance">
+                            Manage swaps, cross-chain transfers, payments, recurring transactions, and portfolio insights using natural language instead of complicated blockchain tools.
+                        </p>
+<div class="flex flex-col sm:flex-row gap-stack-md pt-stack-sm">
+<button class="px-6 py-3 bg-primary-container text-on-primary font-body-md text-body-md font-medium rounded-lg shadow-sm hover:bg-surface-tint transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+                                Start Using Sedge
+                                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+<button class="px-6 py-3 bg-surface text-on-surface font-body-md text-body-md font-medium rounded-lg border border-outline-variant hover:bg-surface-container-low transition-all flex items-center justify-center gap-2 ambient-shadow">
+<span class="material-symbols-outlined text-[18px]">play_circle</span>
+                                Watch Demo
+                            </button>
+</div>
+<div class="flex items-center gap-stack-md mt-stack-md pt-stack-md border-t border-outline-variant/30">
+<div class="flex -space-x-3">
+<img class="w-8 h-8 rounded-full border-2 border-surface object-cover" data-alt="A close-up portrait of a professional modern software developer working in a bright minimalist office, light mode aesthetic, soft diffused lighting, wearing neutral tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9LbbigNKL6SLBHIPzwFsv2AcZl2_b_5dvaLHe8kA61nRdrocRXOeDheyNDvEZJajtXCWWQ9zXbwurnEjwgFpETxqSe1Bk2tzUyvRcGXdaqN3nMnfu8NnJ3Prb2gXosGcEPKseac-lF0_iBBZbSIDUFhMCRISqytdc2WHax0Jkt50i-10DpUuI_dNWM6sTcZLrS5enqbDznfnRIX0nmzbjhNwb-wf2je8NJP-8Al4ceCq3tA0hJ4uL"/>
+<img class="w-8 h-8 rounded-full border-2 border-surface object-cover" data-alt="A close-up portrait of a financial analyst in a high-tech modern workspace, bright natural light, clean white background, conveying trust and professionalism." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTFs4Cx25i-U2A9tbikOOCyzSN0ZBa83mnIoRiXL-aykWfTkZkQSNmj4Qpom3ktRQy2Hqa7lTjtsBqYfVzAhEF03YOinUWSgvU59ieUT3ndEgLe2n69Oq-SYzbvPsJmbZaGiGb8k6p4jrVBrw8qV92gNkOVXZGRLa8MDzd5gHJSrvQR3aqIi-kQI_d4N32lZpLCIwDXlWXXtDLIO3c6TWcLrvtVx8rEGepvGxqBiVYMnXldUNudkNT"/>
+<img class="w-8 h-8 rounded-full border-2 border-surface object-cover" data-alt="A close-up portrait of a young tech entrepreneur looking confident, clean minimalist environment, bright soft white lighting, modern corporate style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKWLHdJZ22jNrx0DvOJdTnwLDk6QyJ-TtlY-kuMWB3QoCm7CcVg7J5LQyIt3Kl59k16Ru70eiKjrxn5vBRKPpSWpPLBSnx048Ysr99Xx49bJqbSTvC1ol-w5gcoQKCRMCNrOJXtVdX5x8GpXBMjR7LkjV3-CJhfh_VNKNH6upS0fWw7tHEXasiLq2DYBvvjP3MfUvIxvutKQLVtkowrjdJNoevdwFdCIXt4Fj_rdeCEGNaNLcZ9emD"/>
+<div class="w-8 h-8 rounded-full border-2 border-surface bg-surface-container-high flex items-center justify-center font-label-caps text-[10px] text-on-surface-variant">
+                                    +2k
+                                </div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Trusted by forward-thinking operators</p>
+</div>
+</div>
+<!-- Hero Visuals -->
+<div class="lg:col-span-6 relative mt-section-gap lg:mt-0 perspective-[1000px]">
+<!-- Decorative background elements -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-[500px] max-h-[500px] bg-primary-fixed rounded-full blur-[100px] opacity-30 z-0"></div>
+<div class="relative z-10 flex flex-col md:flex-row items-end md:items-center gap-4 transform-gpu lg:rotate-y-[-5deg] lg:rotate-x-2">
+<!-- Left: AI Chat Interface -->
+<div class="w-full md:w-1/2 ai-gradient-border p-6 flex flex-col gap-stack-md ambient-shadow bg-surface/90 backdrop-blur-xl transform translate-y-4 md:translate-y-0 z-20">
+<div class="flex items-center gap-3 border-b border-outline-variant/30 pb-3">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">smart_toy</span>
+</div>
+<div>
+<div class="font-label-caps text-label-caps text-on-surface">Sedge Copilot</div>
+<div class="font-body-sm text-[12px] text-primary">Online</div>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<!-- User Message -->
+<div class="flex gap-3 justify-end">
+<div class="bg-surface-container-low border border-outline-variant/50 p-3 rounded-2xl rounded-tr-sm max-w-[85%]">
+<p class="font-body-sm text-body-sm text-on-surface">Swap 500 USDC on Arbitrum to ETH and send it to my cold wallet.</p>
+</div>
+</div>
+<!-- AI Processing -->
+<div class="flex gap-3">
+<div class="w-6 h-6 mt-1 rounded-full bg-surface-container shrink-0 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+</div>
+<div class="bg-surface-bright border border-outline-variant/30 p-3 rounded-2xl rounded-tl-sm w-full">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase">Analyzing route...</span>
+</div>
+<p class="font-label-caps text-body-sm text-on-surface font-normal leading-relaxed text-sm">
+                                                I've simulated the transaction. Converting 500 USDC to approx 0.142 ETH on Arbitrum, routing via 1inch for optimal pricing.
+                                            </p>
+</div>
+</div>
+</div>
+<div class="mt-2 relative">
+<div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">add_circle</span>
+</div>
+<input class="w-full pl-10 pr-10 py-3 bg-surface border border-outline-variant rounded-xl text-body-sm focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all outline-none" disabled="" placeholder="Ask Sedge..." type="text"/>
+<div class="absolute inset-y-0 right-3 flex items-center">
+<span class="material-symbols-outlined text-[18px] text-primary">send</span>
+</div>
+</div>
+</div>
+<!-- Right: Transaction Card -->
+<div class="w-full md:w-[60%] bg-surface rounded-2xl border border-outline-variant p-6 ambient-shadow transform -translate-x-4 md:-translate-x-12 -translate-y-8 md:translate-y-12 z-10">
+<div class="flex items-center justify-between mb-6">
+<span class="font-label-caps text-label-caps text-on-surface-variant">TRANSACTION SIMULATION</span>
+<span class="px-2 py-1 bg-surface-container-highest text-on-surface text-[10px] rounded font-mono-data tracking-wider">EXECUTE</span>
+</div>
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center border border-blue-100">
+<span class="font-mono-data font-bold text-blue-600 text-sm">$</span>
+</div>
+<div>
+<div class="font-body-md text-on-surface font-medium">USDC</div>
+<div class="font-body-sm text-on-surface-variant text-sm">Arbitrum</div>
+</div>
+</div>
+<div class="text-right">
+<div class="font-mono-data text-on-surface font-medium">500.00</div>
+<div class="font-body-sm text-on-surface-variant text-sm">-$500.00</div>
+</div>
+</div>
+<div class="relative py-2 flex justify-center">
+<div class="absolute left-5 top-0 bottom-0 w-px bg-outline-variant/50"></div>
+<div class="w-6 h-6 rounded-full bg-surface border border-outline-variant flex items-center justify-center z-10 relative left-[-2px]">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">arrow_downward</span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-2 mb-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center border border-slate-200">
+<span class="font-mono-data font-bold text-slate-700 text-sm">Ξ</span>
+</div>
+<div>
+<div class="font-body-md text-on-surface font-medium">ETH</div>
+<div class="font-body-sm text-on-surface-variant text-sm">Cold Wallet</div>
+</div>
+</div>
+<div class="text-right">
+<div class="font-mono-data text-primary font-medium">+0.1428</div>
+<div class="font-body-sm text-on-surface-variant text-sm">~$498.85</div>
+</div>
+</div>
+<div class="space-y-3 bg-surface-container-low p-4 rounded-xl border border-outline-variant/30 mb-6">
+<div class="flex justify-between font-body-sm text-sm">
+<span class="text-on-surface-variant">Network Fee</span>
+<span class="font-mono-data text-on-surface">$0.12</span>
+</div>
+<div class="flex justify-between font-body-sm text-sm">
+<span class="text-on-surface-variant">Est. Time</span>
+<span class="font-mono-data text-on-surface">~15s</span>
+</div>
+<div class="flex justify-between font-body-sm text-sm">
+<span class="text-on-surface-variant text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">verified_user</span>
+                                            Security Check
+                                        </span>
+<span class="text-emerald-600 font-medium">Safe</span>
+</div>
+</div>
+<button class="w-full py-3 bg-primary-container text-on-primary font-body-md text-body-md font-medium rounded-lg shadow-sm hover:bg-surface-tint transition-all active:scale-[0.98]">
+                                    Approve &amp; Execute
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Steps Section -->
+<section class="py-section-gap bg-surface" id="how-it-works">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="text-center mb-section-gap">
+<span class="font-label-caps text-label-caps text-primary tracking-widest block mb-2">WORKFLOW</span>
+<h2 class="font-headline-md text-[32px] md:text-[40px] text-on-surface font-bold">Execution at the speed of thought</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter relative">
+<!-- Connecting line for desktop -->
+<div class="hidden md:block absolute top-12 left-[16%] right-[16%] h-px bg-outline-variant z-0"></div>
+<!-- Step 1 -->
+<div class="relative z-10 flex flex-col items-center text-center group">
+<div class="w-24 h-24 rounded-full bg-surface border-2 border-outline-variant flex items-center justify-center mb-6 group-hover:border-primary transition-colors bg-surface-container-lowest">
+<span class="material-symbols-outlined text-[32px] text-on-surface-variant group-hover:text-primary transition-colors">chat</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-3">1. Describe your goal</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-[280px]">
+                            Type or speak what you want to do in plain English. No need to navigate complex dApp interfaces.
+                        </p>
+</div>
+<!-- Step 2 -->
+<div class="relative z-10 flex flex-col items-center text-center group">
+<div class="w-24 h-24 rounded-full bg-surface border-2 border-outline-variant flex items-center justify-center mb-6 group-hover:border-primary transition-colors bg-surface-container-lowest">
+<span class="material-symbols-outlined text-[32px] text-on-surface-variant group-hover:text-primary transition-colors" style="font-variation-settings: 'FILL' 1;">science</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-3">2. Review Simulation</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-[280px]">
+                            Sedge analyzes routes, checks security, and simulates the exact outcome before any gas is spent.
+                        </p>
+</div>
+<!-- Step 3 -->
+<div class="relative z-10 flex flex-col items-center text-center group">
+<div class="w-24 h-24 rounded-full bg-surface border-2 border-outline-variant flex items-center justify-center mb-6 group-hover:border-primary transition-colors bg-surface-container-lowest">
+<span class="material-symbols-outlined text-[32px] text-on-surface-variant group-hover:text-primary transition-colors">task_alt</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-3">3. Approve &amp; Execute</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-[280px]">
+                            Confirm the transaction with a single click. Sedge handles the technical execution across chains.
+                        </p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant/30 py-12">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-3">
+<img alt="Sedge Logo" class="h-6 w-6 object-contain rounded opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2D2sLa0tJyu9hZGtV5oZhvZmUgcYqkH3I-djhceSdyybf3fZK6Rq2m4aPCo7M_UovmdRI6sclI95y6B1rxqjIah1HadQnpLJX4Bfq0r4c4aFonNAmlEEQcnn6H9Z8IxSV2VoIp2gBls2WPp_uErKqDwClHdobxQ2hzep0pFhBFc3qFrbGUiJjd61QU5SAg4TN_F74bkBZFLzDXvDQGwL07pBvBrSA57eARfcMI-bvbuAzzAHgOq56"/>
+<span class="font-headline-md text-[18px] font-bold text-on-surface">Sedge</span>
+</div>
+<div class="flex gap-8 font-body-sm text-body-sm text-on-surface-variant">
+<a class="hover:text-on-surface transition-colors" href="#">Privacy</a>
+<a class="hover:text-on-surface transition-colors" href="#">Terms</a>
+<a class="hover:text-on-surface transition-colors" href="#">Twitter</a>
+</div>
+</div>
+</div>
+</footer>
+<script src="app.js"></script></body></html>
+
+
