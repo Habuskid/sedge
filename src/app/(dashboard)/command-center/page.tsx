@@ -31,8 +31,13 @@ export default function CommandCenterPage() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showChips, setShowChips] = useState(true);
+  const [mounted, setMounted] = useState(false);
   const threadRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const scrollToBottom = useCallback(() => {
     if (threadRef.current) {
@@ -255,7 +260,7 @@ export default function CommandCenterPage() {
               Command Center
             </h2>
             <p className="font-body-lg text-on-surface-variant">
-              {isConnected
+              {mounted && isConnected
                 ? 'Sedge AI is ready. How can I assist with your operations today?'
                 : 'Connect your wallet to execute transactions. You can still explore commands.'}
             </p>
