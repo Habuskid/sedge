@@ -272,7 +272,7 @@ npm start
 |-------|----------|------------|
 | USDC | Arc Testnet, Sepolia | Swap, Bridge, Send |
 | EURC | Arc Testnet | Swap, Send |
-| cirBTC | Arc Testnet | Swap, Send |
+| cirBTC | Arc Testnet | Null, Send |
 
 ---
 
