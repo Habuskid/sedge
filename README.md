@@ -20,7 +20,7 @@ An AI-powered financial copilot that enables natural language control of stablec
 - Approval-based workflow with transaction receipts
 
 ### Token Swaps
-- Swap between supported stablecoins (USDC, EURC, cirBTC) on Arc Testnet
+- Swap between supported stablecoins (USDC, EURC) on Arc Testnet
 - Gas estimation and fee previews
 - Transaction confirmation with explorer links
 
@@ -104,7 +104,6 @@ An AI-powered financial copilot that enables natural language control of stablec
 │  │                    │          │                        │        │
 │  │   - USDC (native)  │          │   - USDC (ERC-20)      │        │
 │  │   - EURC           │          │                        │        │
-│  │   - cirBTC         │          │                        │        │
 │  └────────────────────┘          └────────────────────────┘        │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
@@ -272,7 +271,6 @@ npm start
 |-------|----------|------------|
 | USDC | Arc Testnet, Sepolia | Swap, Bridge, Send |
 | EURC | Arc Testnet | Swap, Send |
-| cirBTC | Arc Testnet | Null, Send |
 
 ---
 
