@@ -1,8 +1,39 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { useSettings, getCurrencySymbol } from '@/providers/SettingsProvider';
+
+type Schedule = {
+  id: string;
+  status: string;
+  tokenId: string;
+  destinationAddress: string;
+  amount: string;
+  cronExpression: string;
+  nextExecutionTime: string;
+  executionCount: number;
+};
 
 export default function RecurringPaymentsPage() {
+  const [schedules, setSchedules] = useState<Schedule[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { currency } = useSettings();
+  const currencySymbol = getCurrencySymbol(currency);
+
+  useEffect(() => {
+    fetch('/api/schedules')
+      .then((res) => res.json())
+      .then((data) => {
+        setSchedules(data.schedules || data || []);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error('Failed to fetch schedules', err);
+        setIsLoading(false);
+      });
+  }, []);
+
   return (
     <div className="max-w-5xl mx-auto w-full space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -83,31 +114,62 @@ export default function RecurringPaymentsPage() {
                 Active Schedules
               </h3>
             </div>
-            <div className="p-12 text-center">
-              <span className="material-symbols-outlined text-outline text-4xl mb-3 block">
-                event_repeat
-              </span>
-              <p className="font-body-md text-on-surface-variant mb-2">No active schedules</p>
-              <p className="font-body-sm text-outline">
-                Use the Command Center to create your first recurring payment.
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant shadow-sm overflow-hidden">
-            <div className="p-4 border-b border-outline-variant">
-              <h3 className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">
-                Upcoming Payments
-              </h3>
-            </div>
-            <div className="p-8 text-center">
-              <span className="material-symbols-outlined text-outline text-3xl mb-2 block">
-                calendar_today
-              </span>
-              <p className="font-body-sm text-on-surface-variant">
-                No upcoming payments scheduled.
-              </p>
-            </div>
+            
+            {isLoading ? (
+              <div className="p-12 text-center">
+                <span className="material-symbols-outlined text-outline text-4xl mb-3 block animate-spin">
+                  sync
+                </span>
+                <p className="font-body-md text-on-surface-variant">Loading schedules...</p>
+              </div>
+            ) : schedules.length === 0 ? (
+              <div className="p-12 text-center">
+                <span className="material-symbols-outlined text-outline text-4xl mb-3 block">
+                  event_repeat
+                </span>
+                <p className="font-body-md text-on-surface-variant mb-2">No active schedules</p>
+                <p className="font-body-sm text-outline">
+                  Use the Command Center to create your first recurring payment.
+                </p>
+              </div>
+            ) : (
+              <div className="divide-y divide-outline-variant">
+                {schedules.map((schedule) => (
+                  <div key={schedule.id} className="p-4 flex items-center justify-between hover:bg-surface-bright/50 transition-colors">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-primary-container/10 flex items-center justify-center shrink-0">
+                        <span className="material-symbols-outlined text-primary text-[20px]">
+                          {schedule.tokenId === 'USDC' ? 'attach_money' : 'euro'}
+                        </span>
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-body-md font-semibold text-on-surface">
+                            {currencySymbol}{schedule.amount} {schedule.tokenId}
+                          </span>
+                          <span className="font-label-caps px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px]">
+                            {schedule.status}
+                          </span>
+                        </div>
+                        <p className="font-mono-data text-outline text-[12px] mt-1">
+                          To: {schedule.destinationAddress.substring(0, 6)}...{schedule.destinationAddress.slice(-4)}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-body-sm text-on-surface-variant font-medium">
+                        {schedule.cronExpression === '0 0 * * *' ? 'Daily' : 
+                         schedule.cronExpression === '0 0 * * 1' ? 'Weekly' : 
+                         schedule.cronExpression === '0 0 1 * *' ? 'Monthly' : schedule.cronExpression}
+                      </p>
+                      <p className="font-body-sm text-outline text-[12px] mt-1">
+                        Next: {new Date(schedule.nextExecutionTime).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

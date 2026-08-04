@@ -2,7 +2,7 @@ import type { ParsedIntent } from '@/types/intents';
 
 export interface TransactionRecord {
   id: string;
-  type: 'swap' | 'bridge' | 'send';
+  type: 'swap' | 'bridge' | 'send' | 'recurring_payment';
   txHash?: string;
   explorerUrl?: string;
   chainId: number;
@@ -76,6 +76,15 @@ export function buildTransactionRecord(
         amount: intent.amount,
         token: intent.token,
         description: `Send ${intent.amount} ${intent.token} to ${intent.recipientAddress.slice(0, 6)}...`,
+      };
+    case 'recurring_payment':
+      return {
+        ...base,
+        type: 'recurring_payment',
+        chainId: 5042002, // Arc Testnet for recurring schedule definition
+        amount: intent.amount,
+        token: intent.token,
+        description: `Schedule ${intent.amount} ${intent.token} ${intent.frequency.toLowerCase()} to ${intent.recipientAddress.slice(0, 6)}...`,
       };
     default:
       return {

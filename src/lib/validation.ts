@@ -60,7 +60,7 @@ export function validateIntent(raw: unknown): { valid: boolean; intent: ParsedIn
     }
 
     case 'bridge': {
-      if (!isValidToken(obj.token)) errors.push(`Invalid token: must be one of ${SUPPORTED_TOKENS.join(', ')}`);
+      if (obj.token !== 'USDC') errors.push(`Invalid token for bridge: CCTP only supports bridging USDC.`);
       if (!isValidAmount(obj.amount)) errors.push('Invalid amount: must be a positive number');
       if (!isValidChainId(obj.fromChainId)) errors.push(`Invalid fromChainId: must be one of ${SUPPORTED_CHAIN_IDS.join(', ')}`);
       if (!isValidChainId(obj.toChainId)) errors.push(`Invalid toChainId: must be one of ${SUPPORTED_CHAIN_IDS.join(', ')}`);

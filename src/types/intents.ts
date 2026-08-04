@@ -68,6 +68,7 @@ export interface ChatMessage {
   content: string;
   intent?: ParsedIntent | null;
   timestamp: number;
+  balances?: { token: string; amount: string; color: string }[];
 }
 
 export interface EstimationData {

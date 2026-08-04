@@ -1,6 +1,7 @@
 
 
 import Link from 'next/link';
+import { LaunchAppButton } from '@/components/wallet/LaunchAppButton';
 
 export default function LandingPage() {
   return (
@@ -8,19 +9,20 @@ export default function LandingPage() {
       {/* Navigation */}
       <nav className="sticky top-0 z-50 w-full glass-panel border-b border-outline-variant/30">
         <div className="max-w-[1280px] mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-[28px]" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
-            <span className="font-headline-md font-bold text-on-surface">Sedge</span>
+          <div className="flex items-center gap-3">
+            <img src="/icons/sedge-logo.png" alt="Sedge Logo" className="w-14 h-14 rounded-full object-cover shadow-sm" />
+            <span className="font-headline-md font-bold text-on-surface text-xl">Sedge</span>
           </div>
           <div className="hidden md:flex items-center gap-8 font-body-sm text-on-surface-variant">
             <a href="#features" className="hover:text-primary transition-colors">Features</a>
             <a href="#how-it-works" className="hover:text-primary transition-colors">How it Works</a>
-            <a href="#" className="hover:text-primary transition-colors">Documentation</a>
+            <Link href="/docs" className="hover:text-primary transition-colors">Documentation</Link>
+            <Link href="/whitepaper" className="hover:text-primary transition-colors">Whitepaper</Link>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/dashboard" className="text-on-surface-variant hover:text-on-surface font-label-md font-medium transition-colors hidden md:block">
+            <LaunchAppButton className="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low font-label-md font-medium transition-colors hidden md:block border border-outline-variant px-4 py-2 rounded-full">
               Launch App
-            </Link>
+            </LaunchAppButton>
           </div>
         </div>
       </nav>
@@ -33,9 +35,9 @@ export default function LandingPage() {
               
               {/* Hero Content */}
               <div className="lg:col-span-6 flex flex-col gap-8 z-10 relative">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container border border-outline-variant/30 w-fit backdrop-blur-sm">
-                  <span className="material-symbols-outlined text-[16px] text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
-                  <span className="font-label-caps text-on-surface-variant">AI-FIRST FINANCIAL COPILOT</span>
+                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-surface-container border border-outline-variant/30 w-fit backdrop-blur-sm shadow-sm">
+                  <img src="/icons/sedge-logo.png" alt="Sedge Logo" className="w-12 h-12 rounded-full object-cover" />
+                  <span className="font-label-caps text-on-surface-variant text-sm font-bold tracking-widest">AI-FIRST FINANCIAL COPILOT</span>
                 </div>
                 <h1 className="font-display-lg text-4xl md:text-5xl lg:text-6xl text-on-surface text-balance font-bold leading-tight">
                   The AI Financial Copilot for Stablecoins
@@ -45,9 +47,9 @@ export default function LandingPage() {
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4 pt-2">
-                  <Link href="/dashboard" className="px-6 py-3 bg-primary text-on-primary font-body-md font-medium rounded-full shadow-lg shadow-primary/20 hover:bg-primary-hover hover:-translate-y-0.5 transition-all">
+                  <LaunchAppButton className="px-6 py-3 bg-primary text-on-primary font-body-md font-medium rounded-full shadow-lg shadow-primary/20 hover:bg-primary-hover hover:-translate-y-0.5 transition-all">
                     Launch App
-                  </Link>
+                  </LaunchAppButton>
                   <button className="px-6 py-3 bg-surface text-on-surface font-body-md font-medium rounded-lg border border-outline-variant hover:bg-surface-container-low transition-all flex items-center justify-center gap-2 ambient-shadow">
                     <span className="material-symbols-outlined text-[18px]">play_circle</span>
                     Watch Demo
@@ -125,6 +127,107 @@ export default function LandingPage() {
                   </div>
 
                 </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+        {/* Features Section */}
+        <section id="features" className="py-24 bg-surface">
+          <div className="max-w-[1280px] mx-auto px-4 md:px-12 w-full">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <h2 className="font-display-md text-3xl md:text-4xl text-on-surface font-bold mb-4">Powerful Features, Zero Complexity</h2>
+              <p className="font-body-md text-on-surface-variant text-lg">
+                Sedge combines the security of self-custody with the simplicity of natural language.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Feature 1 */}
+              <div className="glass-card p-8 rounded-2xl ambient-shadow flex flex-col gap-4">
+                <div className="w-12 h-12 rounded-full bg-primary-container text-primary flex items-center justify-center">
+                  <span className="material-symbols-outlined text-[24px]">chat_bubble</span>
+                </div>
+                <h3 className="font-title-lg text-on-surface font-bold text-xl">AI Intent Engine</h3>
+                <p className="font-body-sm text-on-surface-variant">
+                  Swap, send, and schedule recurring payments using natural language. Our AI securely structures your intent into a valid onchain transaction.
+                </p>
+              </div>
+
+              {/* Feature 2 */}
+              <div className="glass-card p-8 rounded-2xl ambient-shadow flex flex-col gap-4">
+                <div className="w-12 h-12 rounded-full bg-[#1e293b] text-white flex items-center justify-center">
+                  <span className="material-symbols-outlined text-[24px]">compare_arrows</span>
+                </div>
+                <h3 className="font-title-lg text-on-surface font-bold text-xl">Cross-Chain Bridging</h3>
+                <p className="font-body-sm text-on-surface-variant">
+                  Seamlessly bridge USDC and EURC between Arc Testnet and Ethereum Sepolia using Circle's Cross-Chain Transfer Protocol (CCTP).
+                </p>
+              </div>
+
+              {/* Feature 3 */}
+              <div className="glass-card p-8 rounded-2xl ambient-shadow flex flex-col gap-4">
+                <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100">
+                  <span className="material-symbols-outlined text-[24px]">monitoring</span>
+                </div>
+                <h3 className="font-title-lg text-on-surface font-bold text-xl">Market Intelligence</h3>
+                <p className="font-body-sm text-on-surface-variant">
+                  Stay informed with live gas tracking across networks, real-time stablecoin peg health monitoring, and the latest crypto macro news.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* How It Works Section */}
+        <section id="how-it-works" className="py-24 bg-mesh relative overflow-hidden">
+          <div className="max-w-[1280px] mx-auto px-4 md:px-12 w-full relative z-10">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <h2 className="font-display-md text-3xl md:text-4xl text-on-surface font-bold mb-4">How it Works</h2>
+              <p className="font-body-md text-on-surface-variant text-lg">
+                Three simple steps to execute complex financial operations.
+              </p>
+            </div>
+
+            <div className="flex flex-col md:flex-row gap-8 justify-center max-w-5xl mx-auto">
+              
+              {/* Step 1 */}
+              <div className="flex-1 flex flex-col items-center text-center gap-4">
+                <div className="w-16 h-16 rounded-full bg-surface border-2 border-primary text-primary flex items-center justify-center text-2xl font-bold font-display-sm shadow-lg">1</div>
+                <h3 className="font-title-md font-bold text-on-surface text-lg">Command the Copilot</h3>
+                <p className="font-body-sm text-on-surface-variant">
+                  Type your intent in plain English, like <em>"Bridge 100 USDC to Sepolia"</em>.
+                </p>
+              </div>
+
+              <div className="hidden md:flex flex-1 items-center justify-center">
+                <div className="h-[2px] w-full bg-outline-variant/50 relative">
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-2 h-2 rounded-full bg-outline-variant/50"></div>
+                </div>
+              </div>
+
+              {/* Step 2 */}
+              <div className="flex-1 flex flex-col items-center text-center gap-4">
+                <div className="w-16 h-16 rounded-full bg-surface border-2 border-primary text-primary flex items-center justify-center text-2xl font-bold font-display-sm shadow-lg">2</div>
+                <h3 className="font-title-md font-bold text-on-surface text-lg">AI Optimization</h3>
+                <p className="font-body-sm text-on-surface-variant">
+                  The AI instantly parses your request into a secure, structured JSON transaction payload.
+                </p>
+              </div>
+
+              <div className="hidden md:flex flex-1 items-center justify-center">
+                <div className="h-[2px] w-full bg-outline-variant/50 relative">
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-2 h-2 rounded-full bg-outline-variant/50"></div>
+                </div>
+              </div>
+
+              {/* Step 3 */}
+              <div className="flex-1 flex flex-col items-center text-center gap-4">
+                <div className="w-16 h-16 rounded-full bg-surface border-2 border-primary text-primary flex items-center justify-center text-2xl font-bold font-display-sm shadow-lg">3</div>
+                <h3 className="font-title-md font-bold text-on-surface text-lg">Secure Execution</h3>
+                <p className="font-body-sm text-on-surface-variant">
+                  Review the simulated transaction and approve it safely using your Web3 wallet.
+                </p>
               </div>
 
             </div>

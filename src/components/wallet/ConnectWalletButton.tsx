@@ -4,16 +4,11 @@ import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { useState, useRef, useEffect } from 'react';
 
 export function ConnectWalletButton() {
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, isConnecting, isReconnecting } = useAccount();
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -24,22 +19,6 @@ export function ConnectWalletButton() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  if (!mounted) {
-    // Render a placeholder matching the server-rendered "Connect Wallet" button
-    // to avoid hydration mismatch. Once mounted, client state takes over.
-    return (
-      <div className="relative">
-        <button
-          className="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg font-body-sm font-medium hover:bg-surface-tint transition-colors shadow-sm"
-          disabled
-        >
-          <span className="material-symbols-outlined text-[18px]">account_balance_wallet</span>
-          Connect Wallet
-        </button>
-      </div>
-    );
-  }
 
   if (isConnected && address) {
     const truncated = `${address.slice(0, 6)}...${address.slice(-4)}`;

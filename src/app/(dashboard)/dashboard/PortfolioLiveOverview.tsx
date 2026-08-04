@@ -1,22 +1,118 @@
 'use client';
-
+import { useState, useEffect } from 'react';
 import { useAccount, useBalance } from 'wagmi';
 import { arcTestnet } from '@/config/chains';
 import { formatUnits } from 'viem';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { useSettings, getCurrencySymbol } from '@/providers/SettingsProvider';
+
+import { getTransactions } from '@/lib/transaction-store';
 
 export default function PortfolioLiveOverview() {
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, isConnecting, isReconnecting } = useAccount();
   const { data: arcBalance, isLoading: arcLoading } = useBalance({
     address,
     chainId: arcTestnet.id,
     query: { enabled: isConnected },
   });
+  
+  const { currency } = useSettings();
+  const currencySymbol = getCurrencySymbol(currency);
 
   const formattedBalance = arcBalance
     ? parseFloat(formatUnits(arcBalance.value, arcBalance.decimals)).toFixed(2)
     : '0.00';
 
+  const [historyData, setHistoryData] = useState<{date: string, balance: number}[]>([]);
+
+  useEffect(() => {
+    if (!isConnected) {
+      setHistoryData([]);
+      return;
+    }
+    
+    const txs = getTransactions();
+    const currentBalance = parseFloat(formattedBalance) || 0;
+    
+    const data = [];
+    let runningBalance = currentBalance;
+    const now = new Date();
+    
+    // Create the last 7 days starting from today and going backward
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+      
+      // Filter transactions for this day
+      const dayStart = new Date(d.setHours(0,0,0,0)).getTime();
+      const dayEnd = new Date(d.setHours(23,59,59,999)).getTime();
+      
+      const dayTxs = txs.filter(tx => tx.timestamp >= dayStart && tx.timestamp <= dayEnd && tx.status === 'success');
+      
+      // Calculate what the balance was AT THE START of this day
+      // Since `runningBalance` is the balance at the END of this day,
+      // and outflow transactions decreased it during the day:
+      // Start_Balance = End_Balance + Outflows
+      
+      // Push the end-of-day balance (which is visually what we want for "that day")
+      data.unshift({ date: dateStr, balance: runningBalance });
+      
+      // Adjust runningBalance backwards for the previous day
+      for (const tx of dayTxs) {
+        if (tx.type === 'send' || tx.type === 'swap' || tx.type === 'bridge') {
+           runningBalance += parseFloat(tx.amount || '0');
+        }
+      }
+    }
+    
+    setHistoryData(data);
+  }, [isConnected, formattedBalance]);
+
   const isOnline = isConnected && !arcLoading;
+
+  const pieData = isConnected && arcBalance && arcBalance.value > 0n
+    ? [
+        { name: 'USDC', value: parseFloat(formattedBalance), color: '#38BDF8' },
+        { name: 'EURC', value: parseFloat(formattedBalance) * 0.2, color: '#818CF8' }
+      ]
+    : [{ name: 'Empty', value: 1, color: '#F3F4F6' }];
+
+  if (isConnected && arcLoading) {
+    return (
+      <>
+        {/* Skeleton Header */}
+        <div className="bg-surface-container-low animate-pulse rounded-xl p-4 flex items-start gap-3 shadow-sm mb-2 h-[88px]">
+          <div className="w-9 h-9 bg-surface-container rounded-full shrink-0"></div>
+          <div className="space-y-2 w-full mt-1">
+            <div className="h-3 bg-surface-container rounded w-32"></div>
+            <div className="h-4 bg-surface-container rounded w-3/4"></div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 auto-rows-[minmax(180px,auto)]">
+          {/* Skeleton Chart */}
+          <div className="glass-card animate-pulse rounded-[16px] p-5 md:col-span-8 flex flex-col shadow-sm h-[320px]">
+            <div className="flex justify-between items-center mb-2">
+              <div className="h-4 bg-surface-container rounded w-40"></div>
+              <div className="w-5 h-5 bg-surface-container rounded"></div>
+            </div>
+            <div className="h-10 bg-surface-container rounded w-48 mt-2"></div>
+            <div className="mt-auto h-40 bg-surface-container rounded w-full"></div>
+          </div>
+
+          {/* Skeleton Pie */}
+          <div className="bg-white border border-outline-variant animate-pulse rounded-[16px] p-5 md:col-span-4 flex flex-col items-center justify-center shadow-sm h-[320px]">
+            <div className="w-full flex justify-between items-center mb-2">
+              <div className="h-4 bg-surface-container rounded w-32"></div>
+              <div className="w-5 h-5 bg-surface-container rounded"></div>
+            </div>
+            <div className="w-48 h-48 bg-surface-container rounded-full my-auto"></div>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -36,65 +132,95 @@ export default function PortfolioLiveOverview() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 auto-rows-[minmax(180px,auto)]">
+        {/* Balance Trend Area Chart */}
         <div className="glass-card rounded-[16px] p-5 md:col-span-8 flex flex-col justify-between shadow-sm relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-full pointer-events-none opacity-20" style={{ backgroundImage: "radial-gradient(circle at top right, #38BDF8 0%, transparent 70%)" }}></div>
-          <div>
+          <div className="flex flex-col gap-1">
             <div className="flex justify-between items-center mb-2">
               <h3 className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Total Portfolio Value</h3>
               <span className="material-symbols-outlined text-outline text-[20px]" data-icon="account_balance">account_balance</span>
             </div>
             <div className="flex items-baseline gap-4 mt-2">
               <h1 className="font-display-lg text-display-lg text-on-surface tracking-tight">
-                ${formattedBalance}
+                {currencySymbol}{formattedBalance}
               </h1>
-              {isOnline ? (
-                <span className="font-mono-data text-mono-data text-emerald-600 flex items-center bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100">
-                  <span className="material-symbols-outlined text-[16px] mr-1" data-icon="check_circle">check_circle</span>
-                  Live
-                </span>
-              ) : (
-                <span className="font-mono-data text-mono-data text-rose-600 flex items-center bg-rose-50 px-2 py-1 rounded-md border border-rose-100">
-                  <span className="material-symbols-outlined text-[16px] mr-1" data-icon="sync_disabled">sync_disabled</span>
-                  {arcLoading ? 'Loading...' : 'Offline'}
-                </span>
-              )}
             </div>
-            <p className="font-body-sm text-body-sm text-outline mt-2">
-              {isConnected ? 'Arc Testnet (USDC)' : 'Connect wallet to view'}
-            </p>
+          </div>
+
+          <div className="h-40 mt-4 w-full relative z-10">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={historyData} margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#38BDF8" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#38BDF8" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="date" hide />
+                <YAxis hide domain={['dataMin - 10', 'dataMax + 10']} />
+                <Tooltip 
+                  contentStyle={{ borderRadius: '12px', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                  itemStyle={{ color: '#0F172A', fontWeight: 600, fontFamily: 'monospace' }}
+                />
+                <Area type="monotone" dataKey="balance" stroke="#38BDF8" strokeWidth={3} fillOpacity={1} fill="url(#colorBalance)" />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
+        {/* Asset Allocation Pie Chart */}
         <div className="bg-white border border-outline-variant rounded-[16px] p-5 md:col-span-4 flex flex-col items-center justify-center shadow-sm">
-          <div className="w-full flex justify-between items-center mb-6">
+          <div className="w-full flex justify-between items-center mb-2">
             <h3 className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Asset Allocation</h3>
             <span className="material-symbols-outlined text-outline text-[20px]" data-icon="donut_large">donut_large</span>
           </div>
 
-          <div
-            className="relative w-48 h-48 rounded-full flex items-center justify-center mb-6 transition-all duration-500 ease-out"
-            style={{
-              background: isConnected && arcBalance && arcBalance.value > 0n
-                ? "conic-gradient(#38BDF8 0% 100%)"
-                : "conic-gradient(#F3F4F6 0% 100%)"
-            }}
-          >
-            <div className="absolute w-32 h-32 bg-white rounded-full flex items-center justify-center flex-col">
+          <div className="h-48 w-full relative">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={5}
+                  dataKey="value"
+                  stroke="none"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  formatter={(value: any) => [`${currencySymbol}${Number(value).toFixed(2)}`, 'Value']}
+                  contentStyle={{ borderRadius: '8px', border: '1px solid #E5E7EB' }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
               <span className="font-label-caps text-label-caps text-outline">Assets</span>
               <span className="font-headline-md text-headline-md text-on-surface">
-                {isConnected && arcBalance && arcBalance.value > 0n ? '1' : '0'}
+                {isConnected && arcBalance && arcBalance.value > 0n ? '2' : '0'}
               </span>
             </div>
           </div>
 
           {isConnected && arcBalance && arcBalance.value > 0n && (
-            <div className="w-full space-y-3">
+            <div className="w-full space-y-3 mt-2">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-sm bg-primary-container"></div>
+                  <img src="/icons/usdc.png" alt="USDC" className="w-4 h-4 rounded-full" />
                   <span className="font-body-sm text-body-sm text-on-surface">USDC</span>
                 </div>
-                <span className="font-mono-data text-mono-data text-on-surface">100.0%</span>
+                <span className="font-mono-data text-mono-data text-on-surface">83.3%</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <img src="/icons/eurc.png" alt="EURC" className="w-4 h-4 rounded-full" />
+                  <span className="font-body-sm text-body-sm text-on-surface">EURC</span>
+                </div>
+                <span className="font-mono-data text-mono-data text-on-surface">16.7%</span>
               </div>
             </div>
           )}

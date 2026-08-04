@@ -16,7 +16,7 @@ export const arcTestnet = defineChain({
   },
   rpcUrls: {
     default: {
-      http: [process.env.NEXT_PUBLIC_ARC_RPC_URL || 'https://rpc.testnet.arc.network'],
+      http: [process.env.NEXT_PUBLIC_ARC_RPC_URL as string],
       webSocket: ['wss://rpc.testnet.arc.network'],
     },
   },
@@ -40,7 +40,7 @@ export type SupportedChainId = (typeof SUPPORTED_CHAIN_IDS)[number];
  * Supported token symbols allowlist.
  * Used by the intent parser validator to reject unrecognized tokens.
  */
-export const SUPPORTED_TOKENS = ['USDC', 'EURC', 'cirBTC'] as const;
+export const SUPPORTED_TOKENS = ['USDC', 'EURC'] as const;
 export type SupportedToken = (typeof SUPPORTED_TOKENS)[number];
 
 /**

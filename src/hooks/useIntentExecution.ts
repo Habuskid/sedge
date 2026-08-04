@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
+import { useAccount } from 'wagmi';
 import { useWalletAdapter } from './useWalletAdapter';
 import { getAppKit } from '@/lib/app-kit';
 import { CHAIN_ID_TO_APP_KIT_NAME, CHAIN_EXPLORER_URLS } from '@/config/chains';
@@ -23,6 +24,7 @@ function buildSwapParams(intent: SwapIntent, adapter: unknown) {
     tokenIn: intent.fromToken,
     tokenOut: intent.toToken,
     amountIn: intent.amount,
+    config: { allowanceStrategy: 'approve' as const },
   };
 }
 
@@ -45,6 +47,7 @@ function buildSendParams(intent: SendIntent, adapter: unknown) {
 
 export function useIntentExecution() {
   const { adapter, isReady, error: adapterError } = useWalletAdapter();
+  const { address } = useAccount();
 
   const estimateIntent = useCallback(
     async (intent: ParsedIntent): Promise<EstimationData> => {
@@ -54,6 +57,9 @@ export function useIntentExecution() {
 
       switch (intent.type) {
         case 'swap': {
+          if (intent.fromToken.toLowerCase() === intent.toToken.toLowerCase()) {
+            throw new Error("Cannot swap a token for itself.");
+          }
           const params = buildSwapParams(intent, adapter);
           const est = await kit.estimateSwap(params);
           return {
@@ -62,11 +68,17 @@ export function useIntentExecution() {
           };
         }
         case 'bridge': {
+          if (intent.fromChainId === intent.toChainId) {
+            throw new Error("Cannot bridge to the same chain.");
+          }
           const params = buildBridgeParams(intent, adapter);
           const est = await kit.estimateBridge(params);
           return { fees: est.fees };
         }
         case 'send': {
+          if (address && intent.recipientAddress.toLowerCase() === address.toLowerCase()) {
+            throw new Error("Cannot send tokens to your own address.");
+          }
           const params = buildSendParams(intent, adapter);
           const est = await kit.estimateSend(params);
           return {
@@ -92,6 +104,9 @@ export function useIntentExecution() {
 
       switch (intent.type) {
         case 'swap': {
+          if (intent.fromToken.toLowerCase() === intent.toToken.toLowerCase()) {
+            throw new Error("Cannot swap a token for itself.");
+          }
           const params = buildSwapParams(intent, adapter);
           const result = await kit.swap(params);
           const chainId = intent.chainId || 5042002;
@@ -109,6 +124,9 @@ export function useIntentExecution() {
           };
         }
         case 'bridge': {
+          if (intent.fromChainId === intent.toChainId) {
+            throw new Error("Cannot bridge to the same chain.");
+          }
           const params = buildBridgeParams(intent, adapter);
           let result = await kit.bridge(params);
 
@@ -142,6 +160,9 @@ export function useIntentExecution() {
           return { txHash, explorerUrl };
         }
         case 'send': {
+          if (address && intent.recipientAddress.toLowerCase() === address.toLowerCase()) {
+            throw new Error("Cannot send tokens to your own address.");
+          }
           const params = buildSendParams(intent, adapter);
           const result = await kit.send(params);
           const chainId = intent.chainId || 5042002;
@@ -156,6 +177,27 @@ export function useIntentExecution() {
             explorerUrl:
               result.explorerUrl ||
               `${CHAIN_EXPLORER_URLS[chainId]}/tx/${result.txHash}`,
+          };
+        }
+        case 'recurring_payment': {
+          const res = await fetch('/api/schedules', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(intent),
+          });
+          
+          if (!res.ok) throw new Error('Failed to create recurring schedule');
+          const data = await res.json();
+          
+          console.log('Transaction executed:', {
+            type: 'recurring_payment',
+            txHash: data.id,
+            timestamp: Date.now(),
+          });
+          
+          return {
+            txHash: data.id,
+            explorerUrl: `/recurring-payments`, // Link to the dashboard instead of an explorer
           };
         }
         default:

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { getTransactions, type TransactionRecord } from '@/lib/transaction-store';
 import { CHAIN_DISPLAY_NAMES } from '@/config/chains';
+import { ModernReceiptModal } from '@/components/activity/ModernReceiptModal';
 
 const TYPE_ICONS: Record<string, string> = {
   swap: 'swap_horiz',
@@ -33,6 +34,7 @@ function truncateHash(hash: string): string {
 export default function ActivityPage() {
   const [transactions, setTransactions] = useState<TransactionRecord[]>([]);
   const [filter, setFilter] = useState<'all' | 'swap' | 'bridge' | 'send'>('all');
+  const [selectedTx, setSelectedTx] = useState<TransactionRecord | null>(null);
 
   useEffect(() => {
     setTransactions(getTransactions());
@@ -114,7 +116,11 @@ export default function ActivityPage() {
                 </tr>
               ) : (
                 filtered.map((tx) => (
-                  <tr key={tx.id} className="hover:bg-surface-bright/50 transition-colors">
+                  <tr 
+                    key={tx.id} 
+                    onClick={() => setSelectedTx(tx)}
+                    className="hover:bg-surface-bright/50 transition-colors cursor-pointer"
+                  >
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-3">
                         <div
@@ -124,7 +130,7 @@ export default function ActivityPage() {
                             {TYPE_ICONS[tx.type] || 'receipt_long'}
                           </span>
                         </div>
-                        <span className="font-body-sm text-body-sm font-medium text-on-surface capitalize">
+                        <span className="font-body-sm text-body-sm font-medium text-on-surface capitalize group-hover:text-primary transition-colors">
                           {tx.type}
                         </span>
                       </div>
@@ -149,10 +155,10 @@ export default function ActivityPage() {
                         {tx.status}
                       </span>
                     </td>
-                    <td className="py-4 px-6 text-right">
-                      {tx.explorerUrl ? (
+                    <td className="py-4 px-6 text-right" onClick={(e) => e.stopPropagation()}>
+                      {tx.explorerUrl || tx.txHash ? (
                         <a
-                          href={tx.explorerUrl}
+                          href={tx.explorerUrl || `https://testnet.arcscan.app/tx/${tx.txHash}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="font-mono-data text-mono-data text-primary hover:underline inline-flex items-center gap-1"
@@ -171,6 +177,11 @@ export default function ActivityPage() {
           </table>
         </div>
       </div>
+      
+      <ModernReceiptModal 
+        transaction={selectedTx} 
+        onClose={() => setSelectedTx(null)} 
+      />
     </div>
   );
 }

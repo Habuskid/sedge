@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import PortfolioLiveOverview from './PortfolioLiveOverview';
 import { getTransactions, type TransactionRecord } from '@/lib/transaction-store';
+import { ModernReceiptModal } from '@/components/activity/ModernReceiptModal';
 
 function formatDate(ts: number): string {
   return new Date(ts).toLocaleDateString('en-US', {
@@ -15,6 +16,7 @@ function formatDate(ts: number): string {
 
 export default function Dashboard() {
   const [activities, setActivities] = useState<TransactionRecord[]>([]);
+  const [selectedTx, setSelectedTx] = useState<TransactionRecord | null>(null);
 
   useEffect(() => {
     setActivities(getTransactions().slice(0, 5));
@@ -27,26 +29,7 @@ export default function Dashboard() {
         <PortfolioLiveOverview />
       </section>
 
-      {/* Quick Actions */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {[
-          { label: 'Swap', icon: 'swap_horiz', href: '/command-center' },
-          { label: 'Bridge', icon: 'link', href: '/command-center' },
-          { label: 'Send', icon: 'send', href: '/command-center' },
-          { label: 'Activity', icon: 'history', href: '/activity' },
-        ].map((action) => (
-          <Link
-            key={action.label}
-            href={action.href}
-            className="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex items-center gap-3 hover:border-primary-container transition-colors shadow-sm"
-          >
-            <span className="material-symbols-outlined text-primary-container text-[20px]">
-              {action.icon}
-            </span>
-            <span className="font-body-sm font-medium text-on-surface">{action.label}</span>
-          </Link>
-        ))}
-      </section>
+
 
       {/* Recent Transactions */}
       <section className="bg-surface-container-lowest border border-outline-variant rounded-2xl shadow-sm overflow-hidden">
@@ -91,9 +74,13 @@ export default function Dashboard() {
                 </tr>
               ) : (
                 activities.map((tx) => (
-                  <tr key={tx.id} className="hover:bg-surface-bright/50 transition-colors">
-                    <td className="py-4 px-6">
-                      <span className="font-body-sm font-medium text-on-surface capitalize">
+                  <tr 
+                    key={tx.id} 
+                    onClick={() => setSelectedTx(tx)}
+                    className="hover:bg-surface-bright/50 transition-colors cursor-pointer group"
+                  >
+                    <td className="py-4 px-6 group-hover:text-primary transition-colors">
+                      <span className="font-body-sm font-medium text-on-surface capitalize group-hover:text-primary transition-colors">
                         {tx.type}
                       </span>
                     </td>
@@ -106,9 +93,9 @@ export default function Dashboard() {
                       <span
                         className={`inline-flex items-center px-2 py-1 rounded font-label-caps text-[10px] uppercase ${
                           tx.status === 'success'
-                            ? 'bg-emerald-50 text-emerald-700'
-                            : 'bg-rose-50 text-rose-700'
-                        }`}
+                            ? 'bg-emerald-50 text-emerald-700 group-hover:bg-emerald-100'
+                            : 'bg-rose-50 text-rose-700 group-hover:bg-rose-100'
+                        } transition-colors`}
                       >
                         {tx.status}
                       </span>
@@ -120,6 +107,12 @@ export default function Dashboard() {
           </table>
         </div>
       </section>
+
+      {/* Render the Modal */}
+      <ModernReceiptModal 
+        transaction={selectedTx} 
+        onClose={() => setSelectedTx(null)} 
+      />
     </div>
   );
 }

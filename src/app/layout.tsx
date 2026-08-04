@@ -13,21 +13,31 @@ export const metadata: Metadata = {
   description: "The AI Financial Copilot for On-Chain Finance.",
 };
 
-export default function RootLayout({
+import { headers } from "next/headers";
+import NotificationProvider from "@/providers/NotificationProvider";
+import { SettingsProvider } from "@/providers/SettingsProvider";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headerList = await headers();
+  const initialState = headerList.get('cookie') || '';
+
   return (
-    <html lang="en" className={`${inter.variable} ${hanken.variable}`}>
+    <html lang="en">
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-
       </head>
-      <body className="bg-background font-body-md text-on-background antialiased min-h-screen">
-        <Web3Provider>
-          {children}
-        </Web3Provider>
+      <body className={`${inter.variable} ${hanken.variable} antialiased bg-background text-on-background min-h-screen transition-colors duration-200`}>
+        <SettingsProvider>
+          <Web3Provider cookie={initialState}>
+            <NotificationProvider>
+              {children}
+            </NotificationProvider>
+          </Web3Provider>
+        </SettingsProvider>
       </body>
     </html>
   );
