@@ -83,18 +83,16 @@ export default function WhitepaperPage() {
               <li>Secure deployment of the Circle Edge Proxy.</li>
             </ul>
 
-            <h3 className="text-lg font-bold text-on-surface mb-2">Phase 2: Arc Mainnet & Smart Contract Accounts</h3>
+            <h3 className="text-lg font-bold text-on-surface mb-2">Phase 2: Account Abstraction & Paymaster</h3>
             <ul className="list-disc pl-5 space-y-2 text-sm text-on-surface-variant mb-4">
-              <li>Migration to Arc Mainnet.</li>
               <li><strong>ERC-4337 Migration:</strong> Transition from standard EOA wallets to Circle Programmable Wallets (Smart Contract Accounts).</li>
-              <li><strong>Circle Paymaster & Gas Station:</strong> Utilizing SCA architecture to fully abstract gas, allowing users to sponsor transactions or pay fees directly in USDC.</li>
-              <li>Support for complex multi-step intents (e.g., "Bridge to Arc, swap to EURC, and send to Bob in one transaction").</li>
+              <li><strong>Circle Paymaster:</strong> Enabling gasless, automated recurring payments.</li>
+              <li>Push notifications for due payments.</li>
             </ul>
 
-            <h3 className="text-lg font-bold text-on-surface mb-2">Phase 3: Institutional & Mobile Adoption</h3>
+            <h3 className="text-lg font-bold text-on-surface mb-2">Phase 3: Mainnet</h3>
             <ul className="list-disc pl-5 space-y-2 text-sm text-on-surface-variant">
-              <li>Voice-to-Transaction support for Sedge Mobile.</li>
-              <li>Open API for third-party dApps to utilize Sedge's Intent Parser as a service.</li>
+              <li>Mainnet deployment.</li>
             </ul>
           </div>
         </section>
