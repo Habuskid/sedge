@@ -8,7 +8,7 @@ export default function LandingPage() {
     <div className="bg-background text-on-background font-body-md antialiased min-h-screen w-full overflow-auto">
       {/* Navigation */}
       <nav className="sticky top-0 z-50 w-full glass-panel border-b border-outline-variant/30">
-        <div className="max-w-[1280px] mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src="/icons/sedge-logo.png" alt="Sedge Logo" className="w-14 h-14 rounded-full object-cover shadow-sm" />
             <span className="font-headline-md font-bold text-on-surface text-xl">Sedge</span>
@@ -30,7 +30,7 @@ export default function LandingPage() {
       <main>
         {/* Hero Section */}
         <section className="relative py-24 overflow-hidden bg-mesh min-h-[90vh] flex items-center">
-          <div className="max-w-[1280px] mx-auto px-4 md:px-12 w-full">
+          <div className="max-w-6xl mx-auto px-4 md:px-12 w-full">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               
               {/* Hero Content */}
@@ -64,7 +64,7 @@ export default function LandingPage() {
                 <div className="relative z-10 flex flex-col md:flex-row items-end md:items-center gap-4 transform-gpu lg:rotate-y-[-5deg] lg:rotate-x-2">
                   
                   {/* Left: AI Chat Interface */}
-                  <div className="w-full md:w-1/2 ai-gradient-border p-6 flex flex-col gap-4 ambient-shadow bg-surface/90 backdrop-blur-xl transform translate-y-4 md:translate-y-0 z-20 rounded-2xl">
+                  <div className="w-full md:w-[48%] ai-gradient-border p-5 flex flex-col gap-4 ambient-shadow bg-surface/90 backdrop-blur-xl transform translate-y-4 md:translate-y-0 z-20 rounded-2xl">
                     <div className="flex items-center gap-3 border-b border-outline-variant/30 pb-3">
                       <div className="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary">
                         <span className="material-symbols-outlined text-[18px]">smart_toy</span>
@@ -101,7 +101,7 @@ export default function LandingPage() {
                   </div>
 
                   {/* Right: Transaction Card */}
-                  <div className="w-full md:w-[60%] bg-surface rounded-2xl border border-outline-variant p-6 ambient-shadow transform -translate-x-4 md:-translate-x-12 -translate-y-8 md:translate-y-12 z-10">
+                  <div className="w-full md:w-[55%] bg-surface rounded-2xl border border-outline-variant p-5 ambient-shadow transform -translate-x-4 md:-translate-x-12 -translate-y-8 md:translate-y-12 z-10">
                     <div className="flex items-center justify-between mb-6">
                       <span className="font-label-caps text-on-surface-variant">TRANSACTION SIMULATION</span>
                       <span className="px-2 py-1 bg-surface-container-highest text-on-surface text-[10px] rounded font-mono-data tracking-wider">EXECUTE</span>
@@ -134,7 +134,7 @@ export default function LandingPage() {
         </section>
         {/* Features Section */}
         <section id="features" className="py-24 bg-surface">
-          <div className="max-w-[1280px] mx-auto px-4 md:px-12 w-full">
+          <div className="max-w-6xl mx-auto px-4 md:px-12 w-full">
             <div className="text-center max-w-2xl mx-auto mb-16">
               <h2 className="font-display-md text-3xl md:text-4xl text-on-surface font-bold mb-4">Powerful Features, Zero Complexity</h2>
               <p className="font-body-md text-on-surface-variant text-lg">
@@ -142,9 +142,9 @@ export default function LandingPage() {
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Feature 1 */}
-              <div className="relative group p-6 rounded-2xl bg-surface/50 border border-outline-variant/30 backdrop-blur-md hover:bg-surface/80 hover:border-primary/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col gap-4 overflow-hidden">
+              <div className="relative group p-5 rounded-2xl bg-surface/50 border border-outline-variant/30 backdrop-blur-md hover:bg-surface/80 hover:border-primary/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col gap-3 overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-primary/10 transition-colors"></div>
                 <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20 relative z-10">
                   <span className="material-symbols-outlined text-[20px]">chat_bubble</span>
@@ -156,7 +156,7 @@ export default function LandingPage() {
               </div>
 
               {/* Feature 2 */}
-              <div className="relative group p-6 rounded-2xl bg-surface/50 border border-outline-variant/30 backdrop-blur-md hover:bg-surface/80 hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col gap-4 overflow-hidden">
+              <div className="relative group p-5 rounded-2xl bg-surface/50 border border-outline-variant/30 backdrop-blur-md hover:bg-surface/80 hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col gap-3 overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-blue-500/10 transition-colors"></div>
                 <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center border border-blue-500/20 relative z-10">
                   <span className="material-symbols-outlined text-[20px]">compare_arrows</span>
@@ -168,7 +168,7 @@ export default function LandingPage() {
               </div>
 
               {/* Feature 3 */}
-              <div className="relative group p-6 rounded-2xl bg-surface/50 border border-outline-variant/30 backdrop-blur-md hover:bg-surface/80 hover:border-emerald-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col gap-4 overflow-hidden">
+              <div className="relative group p-5 rounded-2xl bg-surface/50 border border-outline-variant/30 backdrop-blur-md hover:bg-surface/80 hover:border-emerald-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col gap-3 overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-emerald-500/10 transition-colors"></div>
                 <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center border border-emerald-500/20 relative z-10">
                   <span className="material-symbols-outlined text-[20px]">monitoring</span>
@@ -184,7 +184,7 @@ export default function LandingPage() {
 
         {/* How It Works Section */}
         <section id="how-it-works" className="py-24 bg-mesh relative overflow-hidden">
-          <div className="max-w-[1280px] mx-auto px-4 md:px-12 w-full relative z-10">
+          <div className="max-w-6xl mx-auto px-4 md:px-12 w-full relative z-10">
             <div className="text-center max-w-2xl mx-auto mb-16">
               <h2 className="font-display-md text-3xl md:text-4xl text-on-surface font-bold mb-4">How it Works</h2>
               <p className="font-body-md text-on-surface-variant text-lg">
