@@ -16,11 +16,13 @@ Supported intent types (STRICTLY LIMITED TO THESE):
 2. "bridge" - Cross-chain transfer via CCTP
    Required: type, token, amount (string), fromChainId (number), toChainId (number)
 3. "send" - Send tokens to an address
-   Required: type, token, amount (string), recipientAddress (0x address), chainId (number, default 5042002)
+   Required: type, token, amount (string), recipientAddress (string starting with 0x), chainId (number, default 5042002)
 4. "balance_check" - Check balances
    Required: type. Optional: token (string), chainId (number)
 5. "recurring_payment" - Recurring payment schedule
-   Required: type, token, amount (string), recipientAddress (0x address), frequency ("daily"|"weekly"|"monthly"), chainId (number, default 5042002)
+   Required: type, token, amount (string), recipientAddress (string starting with 0x), frequency ("daily"|"weekly"|"monthly"), chainId (number, default 5042002)
+
+CRITICAL: DO NOT validate the length, format, or checksum of any Ethereum addresses (e.g. 0x...). Extract them and pass them exactly as provided by the user. The backend will perform all address validation.
 
 Supported tokens: USDC, EURC
 Supported chains: Arc Testnet (5042002), Ethereum Sepolia (11155111)
