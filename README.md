@@ -15,7 +15,7 @@ An AI-powered financial copilot that enables natural language control of stablec
 
 ### AI Command Center
 - Natural language transaction interface powered by Claude AI
-- Intent recognition for swaps, bridges, sends, balance checks, and recurring payments
+- Intent recognition for swaps, bridges, sends, and balance checks
 - Real-time fee estimation before execution
 - Approval-based workflow with transaction receipts
 
@@ -49,11 +49,6 @@ An AI-powered financial copilot that enables natural language control of stablec
 - Stablecoin reference rates (USDC, EURC, USDT, DAI)
 - Arc Testnet network statistics (TPS, block time, gas)
 - CCTP domain information
-
-### Recurring Payments (UI Ready)
-- AI automation builder with example prompts
-- Schedule management interface (active, paused, cancelled)
-- Natural language schedule creation via Command Center
 
 ---
 
