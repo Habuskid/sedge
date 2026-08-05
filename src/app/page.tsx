@@ -142,36 +142,39 @@ export default function LandingPage() {
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Feature 1 */}
-              <div className="glass-card p-8 rounded-2xl ambient-shadow flex flex-col gap-4">
-                <div className="w-12 h-12 rounded-full bg-primary-container text-primary flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[24px]">chat_bubble</span>
+              <div className="relative group p-6 rounded-2xl bg-surface/50 border border-outline-variant/30 backdrop-blur-md hover:bg-surface/80 hover:border-primary/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col gap-4 overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-primary/10 transition-colors"></div>
+                <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20 relative z-10">
+                  <span className="material-symbols-outlined text-[20px]">chat_bubble</span>
                 </div>
-                <h3 className="font-title-lg text-on-surface font-bold text-xl">AI Intent Engine</h3>
-                <p className="font-body-sm text-on-surface-variant">
+                <h3 className="font-title-lg text-on-surface font-bold text-lg relative z-10">AI Intent Engine</h3>
+                <p className="font-body-sm text-on-surface-variant leading-relaxed relative z-10">
                   Swap, send, and schedule recurring payments using natural language. Our AI securely structures your intent into a valid onchain transaction.
                 </p>
               </div>
 
               {/* Feature 2 */}
-              <div className="glass-card p-8 rounded-2xl ambient-shadow flex flex-col gap-4">
-                <div className="w-12 h-12 rounded-full bg-[#1e293b] text-white flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[24px]">compare_arrows</span>
+              <div className="relative group p-6 rounded-2xl bg-surface/50 border border-outline-variant/30 backdrop-blur-md hover:bg-surface/80 hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col gap-4 overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-blue-500/10 transition-colors"></div>
+                <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center border border-blue-500/20 relative z-10">
+                  <span className="material-symbols-outlined text-[20px]">compare_arrows</span>
                 </div>
-                <h3 className="font-title-lg text-on-surface font-bold text-xl">Cross-Chain Bridging</h3>
-                <p className="font-body-sm text-on-surface-variant">
+                <h3 className="font-title-lg text-on-surface font-bold text-lg relative z-10">Cross-Chain Bridging</h3>
+                <p className="font-body-sm text-on-surface-variant leading-relaxed relative z-10">
                   Seamlessly bridge USDC and EURC between Arc Testnet and Ethereum Sepolia using Circle's Cross-Chain Transfer Protocol (CCTP).
                 </p>
               </div>
 
               {/* Feature 3 */}
-              <div className="glass-card p-8 rounded-2xl ambient-shadow flex flex-col gap-4">
-                <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100">
-                  <span className="material-symbols-outlined text-[24px]">monitoring</span>
+              <div className="relative group p-6 rounded-2xl bg-surface/50 border border-outline-variant/30 backdrop-blur-md hover:bg-surface/80 hover:border-emerald-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col gap-4 overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-emerald-500/10 transition-colors"></div>
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center border border-emerald-500/20 relative z-10">
+                  <span className="material-symbols-outlined text-[20px]">monitoring</span>
                 </div>
-                <h3 className="font-title-lg text-on-surface font-bold text-xl">Market Intelligence</h3>
-                <p className="font-body-sm text-on-surface-variant">
+                <h3 className="font-title-lg text-on-surface font-bold text-lg relative z-10">Market Intelligence</h3>
+                <p className="font-body-sm text-on-surface-variant leading-relaxed relative z-10">
                   Stay informed with live gas tracking across networks, real-time stablecoin peg health monitoring, and the latest crypto macro news.
                 </p>
               </div>
