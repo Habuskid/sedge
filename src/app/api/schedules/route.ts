@@ -69,7 +69,8 @@ export async function POST(request: Request) {
     return NextResponse.json(newSchedule, { status: 201 });
   } catch (error: any) {
     console.error('Failed to create schedule:', error);
-    return NextResponse.json({ error: 'Failed to create schedule: ' + (error?.message || String(error)) }, { status: 500 });
+    const pgError = error?.cause?.message || error?.detail || error?.message || String(error);
+    return NextResponse.json({ error: 'Failed to create schedule: ' + pgError }, { status: 500 });
   }
 }
 
