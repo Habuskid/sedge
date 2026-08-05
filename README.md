@@ -284,8 +284,6 @@ npm start
 
 - [ ] **V2: Account Abstraction (SCA) & Paymaster Integration** (Enabling gasless, automated recurring payments via Circle Smart Contract Accounts)
 - [ ] Push notifications for due payments
-- [ ] Multi-signature approval flows
-- [ ] Portfolio analytics and reporting
 - [ ] Mainnet deployment
 
 ---
