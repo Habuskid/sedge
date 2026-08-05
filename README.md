@@ -287,7 +287,7 @@ npm start
 
 ## Roadmap
 
-- [ ] Automated recurring payments via Circle Developer-Controlled Wallets
+- [ ] **V2: Account Abstraction (SCA) & Paymaster Integration** (Enabling gasless, automated recurring payments via Circle Smart Contract Accounts)
 - [ ] Push notifications for due payments
 - [ ] Multi-signature approval flows
 - [ ] Portfolio analytics and reporting

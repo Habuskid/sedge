@@ -151,7 +151,7 @@ export default function LandingPage() {
                 </div>
                 <h3 className="font-title-lg text-on-surface font-bold text-lg relative z-10">AI Intent Engine</h3>
                 <p className="font-body-sm text-on-surface-variant leading-relaxed relative z-10">
-                  Swap, send, and schedule recurring payments using natural language. Our AI securely structures your intent into a valid onchain transaction.
+                  Swap and send using natural language. Our AI securely structures your intent into a valid onchain transaction.
                 </p>
               </div>
 

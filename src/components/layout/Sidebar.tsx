@@ -7,11 +7,11 @@ export function Sidebar() {
   const pathname = usePathname();
 
   const links = [
-    { href: '/command-center', icon: 'terminal', label: 'Command Center' },
-    { href: '/dashboard', icon: 'pie_chart', label: 'Portfolio' },
+    { href: '/dashboard', icon: 'dashboard', label: 'Portfolio' },
+    { href: '/command-center', icon: 'smart_toy', label: 'Command Center' },
+    { href: '/recurring-payments', icon: 'cached', label: 'Recurring Payments', isSoon: true },
     { href: '/activity', icon: 'history', label: 'Activity' },
-    { href: '/recurring-payments', icon: 'cached', label: 'Recurring Payments' },
-    { href: '/market-intelligence', icon: 'insights', label: 'Market Intelligence' },
+    { href: '/market-intelligence', icon: 'monitoring', label: 'Market Intelligence' },
     { href: '/settings', icon: 'settings', label: 'Settings' },
   ];
 
@@ -28,9 +28,14 @@ export function Sidebar() {
         {links.map((link) => {
           const isActive = pathname === link.href;
           return (
-            <Link key={link.href} href={link.href} className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors font-body-md text-body-md ${isActive ? 'text-primary dark:text-white font-bold bg-surface-container-low dark:bg-[#1E1E1E]' : 'hover:bg-surface-container-low dark:hover:bg-[#1E1E1E] text-on-surface-variant dark:text-gray-300 hover:dark:text-white'}`}>
-              <span className={`material-symbols-outlined ${isActive ? 'fill' : ''}`} data-icon={link.icon}>{link.icon}</span>
-              <span>{link.label}</span>
+            <Link key={link.href} href={link.href} className={`flex items-center justify-between px-4 py-3 rounded-lg transition-colors font-body-md text-body-md ${isActive ? 'text-primary dark:text-white font-bold bg-surface-container-low dark:bg-[#1E1E1E]' : 'hover:bg-surface-container-low dark:hover:bg-[#1E1E1E] text-on-surface-variant dark:text-gray-300 hover:dark:text-white'}`}>
+              <div className="flex items-center gap-3">
+                <span className={`material-symbols-outlined ${isActive ? 'fill' : ''}`} data-icon={link.icon}>{link.icon}</span>
+                <span>{link.label}</span>
+              </div>
+              {link.isSoon && (
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary-container text-on-primary-container">SOON</span>
+              )}
             </Link>
           );
         })}
