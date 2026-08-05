@@ -67,9 +67,9 @@ export async function POST(request: Request) {
     await db.insert(recurringSchedules).values(newSchedule);
 
     return NextResponse.json(newSchedule, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to create schedule:', error);
-    return NextResponse.json({ error: 'Failed to create schedule' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to create schedule: ' + (error?.message || String(error)) }, { status: 500 });
   }
 }
 
