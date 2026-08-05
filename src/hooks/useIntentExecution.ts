@@ -186,7 +186,11 @@ export function useIntentExecution() {
             body: JSON.stringify(intent),
           });
           
-          if (!res.ok) throw new Error('Failed to create recurring schedule');
+          if (!res.ok) {
+            const errorData = await res.json().catch(() => ({}));
+            throw new Error(errorData.error || 'Failed to create recurring schedule');
+          }
+          
           const data = await res.json();
           
           console.log('Transaction executed:', {
