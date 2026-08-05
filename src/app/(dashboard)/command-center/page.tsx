@@ -97,11 +97,16 @@ export default function CommandCenterPage() {
       setMessages((prev) => [...prev, userMsg]);
       setIsLoading(true);
 
+      const history = messages.map(msg => ({
+        role: msg.role,
+        content: msg.content
+      }));
+
       try {
         const res = await fetch('/api/ai/parse-intent', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: trimmed }),
+          body: JSON.stringify({ message: trimmed, history }),
         });
 
         let data: ParseIntentResponse & { error?: string };
