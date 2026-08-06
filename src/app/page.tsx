@@ -32,10 +32,6 @@ export default function LandingPage() {
                   <LaunchAppButton className="px-6 py-3 bg-primary text-on-primary font-body-md font-medium rounded-full shadow-lg shadow-primary/20 hover:bg-primary-hover hover:-translate-y-0.5 transition-all">
                     Launch App
                   </LaunchAppButton>
-                  <button className="px-6 py-3 bg-surface text-on-surface font-body-md font-medium rounded-lg border border-outline-variant hover:bg-surface-container-low transition-all flex items-center justify-center gap-2 ambient-shadow">
-                    <span className="material-symbols-outlined text-[18px]">play_circle</span>
-                    Watch Demo
-                  </button>
                 </div>
 
               </div>
