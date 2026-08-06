@@ -23,7 +23,7 @@ Supported intent types (STRICTLY LIMITED TO THESE):
    Required: type, token, amount (string), fromChainId (number), toChainId (number)
 3. "send" - Send tokens to an address
    Required: type, token, amount (string), recipientAddress (string starting with 0x), chainId (number, default 5042002)
-4. "balance_check" - Check balances
+4. "balance_check" - Check balances or view portfolio
    Required: type. Optional: token (string), chainId (number)
 
 Supported tokens: USDC, EURC
