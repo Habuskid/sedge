@@ -34,7 +34,7 @@ If the user mentions "Sepolia" or "Ethereum", use chain ID 11155111.
 If the command is out of scope or unsupported, YOU MUST set intent to null.
 
 Respond with ONLY valid JSON, no markdown fences:
-{"intent": <object or null>, "message": "<description or rejection reason>", "confidence": <0.0-1.0>}`;
+{"intent": <object or null>, "message": "<a friendly, conversational, and natural copilot response confirming the action or explaining why it cannot be done (e.g., 'Sure, here is your portfolio breakdown!' or 'I will set up that swap for you.')>", "confidence": <0.0-1.0>}`;
 
 function getClientIp(request: NextRequest): string {
   const forwarded = request.headers.get('x-forwarded-for');

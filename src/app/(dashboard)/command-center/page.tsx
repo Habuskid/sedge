@@ -140,7 +140,7 @@ export default function CommandCenterPage() {
           const aiMsg: ChatMessage = {
             id: aiMsgId,
             role: 'assistant',
-            content: `Here are your available token balances on Arc Testnet:`,
+            content: data.message || `Here are your available token balances on Arc Testnet:`,
             intent: null,
             balances: [
               { token: 'USDC', amount: balanceStr, color: '#38BDF8' },
