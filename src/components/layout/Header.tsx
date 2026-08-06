@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ConnectWalletButton } from '@/components/wallet/ConnectWalletButton';
 import { toast } from 'sonner';
 
@@ -16,8 +18,19 @@ type Notification = {
 export function Header() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const unreadCount = notifications.filter(n => !n.isRead).length;
+  const pathname = usePathname();
+
+  const links = [
+    { href: '/dashboard', icon: 'dashboard', label: 'Portfolio' },
+    { href: '/command-center', icon: 'smart_toy', label: 'Command Center' },
+    { href: '/recurring-payments', icon: 'cached', label: 'Recurring Payments', isSoon: true },
+    { href: '/activity', icon: 'history', label: 'Activity' },
+    { href: '/market-intelligence', icon: 'monitoring', label: 'Market Intelligence' },
+    { href: '/settings', icon: 'settings', label: 'Settings' },
+  ];
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -90,14 +103,21 @@ export function Header() {
   };
 
   return (
-    <header className="bg-surface/80 dark:bg-black/80 backdrop-blur-xl sticky top-0 right-0 w-full z-40 border-b border-outline-variant dark:border-[#333] shadow-sm flex justify-between items-center h-16 px-margin-desktop md:pl-margin-desktop pl-4">
-      <div className="flex items-center gap-4 flex-1">
-        <div className="md:hidden">
-          <img alt="Sedge Brand Logo" className="w-8 h-8 rounded-DEFAULT object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2D2sLa0tJyu9hZGtV5oZhvZmUgcYqkH3I-djhceSdyybf3fZK6Rq2m4aPCo7M_UovmdRI6sclI95y6B1rxqjIah1HadQnpLJX4Bfq0r4c4aFonNAmlEEQcnn6H9Z8IxSV2VoIp2gBls2WPp_uErKqDwClHdobxQ2hzep0pFhBFc3qFrbGUiJjd61QU5SAg4TN_F74bkBZFLzDXvDQGwL07pBvBrSA57eARfcMI-bvbuAzzAHgOq56"/>
+    <>
+      <header className="bg-surface/80 dark:bg-black/80 backdrop-blur-xl sticky top-0 right-0 w-full z-40 border-b border-outline-variant dark:border-[#333] shadow-sm flex justify-between items-center h-16 px-margin-desktop md:pl-margin-desktop pl-4">
+        <div className="flex items-center gap-4 flex-1">
+          <div className="md:hidden flex items-center gap-3">
+            <button 
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="text-on-surface hover:bg-surface-container-low p-2 rounded-lg transition-colors flex items-center justify-center"
+            >
+              <span className="material-symbols-outlined">menu</span>
+            </button>
+            <img alt="Sedge Brand Logo" className="w-8 h-8 rounded-full object-cover shadow-sm" src="/icons/sedge-logo.png"/>
+          </div>
         </div>
-      </div>
-      <div className="flex items-center gap-4 relative">
-        <div className="relative" ref={dropdownRef}>
+        <div className="flex items-center gap-4 relative">
+          <div className="relative" ref={dropdownRef}>
           <button 
             onClick={() => setShowDropdown(!showDropdown)}
             className="text-on-surface-variant dark:text-gray-300 hover:text-primary dark:hover:text-white transition-colors p-2 rounded-full hover:bg-surface-container-low dark:hover:bg-[#1E1E1E] relative"
@@ -159,8 +179,60 @@ export function Header() {
             </div>
           )}
         </div>
-        <ConnectWalletButton />
-      </div>
-    </header>
+          <ConnectWalletButton />
+        </div>
+      </header>
+
+      {/* Mobile Sidebar Overlay */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 z-50 flex">
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setIsMobileMenuOpen(false)}
+          ></div>
+          
+          {/* Drawer */}
+          <div className="relative flex flex-col bg-surface dark:bg-black w-64 h-full shadow-2xl animate-in slide-in-from-left z-50 py-stack-lg px-gutter border-r border-outline-variant dark:border-[#333]">
+            <div className="flex items-center justify-between mb-section-gap">
+              <div className="flex items-center gap-3">
+                <img alt="Sedge Brand Logo" className="w-10 h-10 rounded-full object-cover shadow-sm" src="/icons/sedge-logo.png"/>
+                <div>
+                  <h1 className="font-headline-md text-xl font-bold text-primary dark:text-white">Sedge</h1>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container-low text-on-surface-variant hover:text-on-surface transition-colors"
+              >
+                <span className="material-symbols-outlined text-sm">close</span>
+              </button>
+            </div>
+            
+            <nav className="flex-1 space-y-2 overflow-y-auto">
+              {links.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <Link 
+                    key={link.href} 
+                    href={link.href} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center justify-between px-4 py-3 rounded-lg transition-colors font-body-md text-body-md ${isActive ? 'text-primary dark:text-white font-bold bg-surface-container-low dark:bg-[#1E1E1E]' : 'hover:bg-surface-container-low dark:hover:bg-[#1E1E1E] text-on-surface-variant dark:text-gray-300 hover:dark:text-white'}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className={`material-symbols-outlined ${isActive ? 'fill' : ''}`} data-icon={link.icon}>{link.icon}</span>
+                      <span>{link.label}</span>
+                    </div>
+                    {link.isSoon && (
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary-container text-on-primary-container">SOON</span>
+                    )}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
