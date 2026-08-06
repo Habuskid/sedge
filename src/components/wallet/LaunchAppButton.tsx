@@ -2,24 +2,23 @@
 
 import { useAccount, useConnect } from 'wagmi';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 
 export function LaunchAppButton({ className, children }: { className?: string, children: React.ReactNode }) {
   const { isConnected } = useAccount();
-  const { connect, connectors } = useConnect();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (isConnected) {
-      router.push('/dashboard');
+  const { connect, connectors } = useConnect({
+    mutation: {
+      onSuccess: () => {
+        router.push('/command-center');
+      }
     }
-  }, [isConnected, router]);
+  });
+  const router = useRouter();
 
   return (
     <button
       onClick={() => {
         if (isConnected) {
-          router.push('/dashboard');
+          router.push('/command-center');
         } else {
           const injectedConnector = connectors.find(c => c.id === 'injected');
           if (injectedConnector) {
