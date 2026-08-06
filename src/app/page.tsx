@@ -11,20 +11,20 @@ export default function LandingPage() {
 
       <main>
         {/* Hero Section */}
-        <section className="relative py-24 overflow-hidden bg-mesh min-h-[90vh] flex items-center">
+        <section className="relative py-16 md:py-24 overflow-hidden bg-mesh min-h-[90vh] flex items-center">
           <div className="max-w-6xl mx-auto px-4 md:px-12 w-full">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               
               {/* Hero Content */}
-              <div className="lg:col-span-6 flex flex-col gap-8 z-10 relative">
-                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-surface-container border border-outline-variant/30 w-fit backdrop-blur-sm shadow-sm">
+              <div className="lg:col-span-6 flex flex-col gap-6 md:gap-8 z-10 relative text-center lg:text-left items-center lg:items-start">
+                <div className="inline-flex items-center gap-2 md:gap-3 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-surface-container border border-outline-variant/30 w-fit backdrop-blur-sm shadow-sm">
                   <img src="/icons/sedge-logo.png" alt="Sedge Logo" className="w-12 h-12 rounded-full object-cover" />
                   <span className="font-label-caps text-on-surface-variant text-sm font-bold tracking-widest">AI-FIRST FINANCIAL COPILOT</span>
                 </div>
-                <h1 className="font-display-lg text-4xl md:text-5xl lg:text-6xl text-on-surface text-balance font-bold leading-tight">
+                <h1 className="font-display-lg text-4xl md:text-5xl lg:text-6xl text-on-surface text-balance font-bold leading-tight px-2 md:px-0">
                   The AI Financial Copilot for Stablecoins
                 </h1>
-                <p className="font-body-lg text-on-surface-variant max-w-xl text-balance text-lg">
+                <p className="font-body-lg text-on-surface-variant max-w-xl text-balance text-base md:text-lg px-4 md:px-0">
                   Manage swaps, cross-chain transfers, payments, recurring transactions, and portfolio insights using natural language instead of complicated blockchain tools.
                 </p>
                 
@@ -111,9 +111,9 @@ export default function LandingPage() {
           </div>
         </section>
         {/* Features Section */}
-        <section id="features" className="py-24 bg-surface">
+        <section id="features" className="py-16 md:py-24 bg-surface">
           <div className="max-w-6xl mx-auto px-4 md:px-12 w-full">
-            <div className="text-center max-w-2xl mx-auto mb-16">
+            <div className="text-center max-w-2xl mx-auto mb-12 md:mb-16 px-4 md:px-0">
               <h2 className="font-display-md text-3xl md:text-4xl text-on-surface font-bold mb-4">Powerful Features, Zero Complexity</h2>
               <p className="font-body-md text-on-surface-variant text-lg">
                 Sedge combines the security of self-custody with the simplicity of natural language.
@@ -161,9 +161,9 @@ export default function LandingPage() {
         </section>
 
         {/* How It Works Section */}
-        <section id="how-it-works" className="py-24 bg-mesh relative overflow-hidden">
+        <section id="how-it-works" className="py-16 md:py-24 bg-mesh relative overflow-hidden">
           <div className="max-w-6xl mx-auto px-4 md:px-12 w-full relative z-10">
-            <div className="text-center max-w-2xl mx-auto mb-16">
+            <div className="text-center max-w-2xl mx-auto mb-12 md:mb-16 px-4 md:px-0">
               <h2 className="font-display-md text-3xl md:text-4xl text-on-surface font-bold mb-4">How it Works</h2>
               <p className="font-body-md text-on-surface-variant text-lg">
                 Three simple steps to execute complex financial operations.
