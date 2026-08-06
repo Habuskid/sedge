@@ -40,10 +40,22 @@ export function ConnectWalletButton() {
               <p className="font-mono-data text-[12px] text-on-surface mt-0.5 break-all">{address}</p>
             </div>
             <button
-              onClick={() => {
+              onClick={async () => {
                 disconnect();
                 document.cookie = 'wagmi.store=; Max-Age=0; path=/';
                 setIsOpen(false);
+                
+                try {
+                  if (typeof window !== 'undefined' && (window as any).ethereum) {
+                    await (window as any).ethereum.request({
+                      method: "wallet_revokePermissions",
+                      params: [{ eth_accounts: {} }]
+                    });
+                  }
+                } catch (e) {
+                  console.error("Failed to revoke permissions", e);
+                }
+                
                 window.location.href = '/';
               }}
               className="w-full text-left px-3 py-2 font-body-sm text-error hover:bg-error-container/20 transition-colors flex items-center gap-2"
