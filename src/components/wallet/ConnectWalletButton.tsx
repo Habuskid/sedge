@@ -41,6 +41,7 @@ export function ConnectWalletButton() {
             <button
               onClick={() => {
                 disconnect();
+                document.cookie = 'wagmi.store=; Max-Age=0; path=/';
                 setIsOpen(false);
               }}
               className="w-full text-left px-3 py-2 font-body-sm text-error hover:bg-error-container/20 transition-colors flex items-center gap-2"

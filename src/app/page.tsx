@@ -39,10 +39,10 @@ export default function LandingPage() {
               {/* Hero Visuals */}
               <div className="lg:col-span-6 relative mt-16 lg:mt-0 perspective-[1000px]">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-[500px] max-h-[500px] bg-primary-fixed rounded-full blur-[100px] opacity-30 z-0"></div>
-                <div className="relative z-10 flex flex-col md:flex-row items-end md:items-center gap-4 transform-gpu lg:rotate-y-[-5deg] lg:rotate-x-2">
+                <div className="relative z-10 flex flex-col md:flex-row items-stretch md:items-center gap-4 transform-gpu lg:rotate-y-[-5deg] lg:rotate-x-2">
                   
                   {/* Left: AI Chat Interface */}
-                  <div className="w-full md:w-[48%] ai-gradient-border p-5 flex flex-col gap-4 ambient-shadow bg-surface/90 backdrop-blur-xl transform translate-y-4 md:translate-y-0 z-20 rounded-2xl">
+                  <div className="w-full md:w-[48%] ai-gradient-border p-5 flex flex-col gap-4 ambient-shadow bg-surface/90 backdrop-blur-xl z-20 rounded-2xl">
                     <div className="flex items-center gap-3 border-b border-outline-variant/30 pb-3">
                       <div className="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary">
                         <span className="material-symbols-outlined text-[18px]">smart_toy</span>
@@ -79,7 +79,7 @@ export default function LandingPage() {
                   </div>
 
                   {/* Right: Transaction Card */}
-                  <div className="w-full md:w-[55%] bg-surface rounded-2xl border border-outline-variant p-5 ambient-shadow transform -translate-x-4 md:-translate-x-12 -translate-y-8 md:translate-y-12 z-10">
+                  <div className="w-full md:w-[55%] bg-surface rounded-2xl border border-outline-variant p-5 ambient-shadow transform md:-translate-x-12 md:translate-y-12 z-10 mt-4 md:mt-0">
                     <div className="flex items-center justify-between mb-6">
                       <span className="font-label-caps text-on-surface-variant">TRANSACTION SIMULATION</span>
                       <span className="px-2 py-1 bg-surface-container-highest text-on-surface text-[10px] rounded font-mono-data tracking-wider">EXECUTE</span>
