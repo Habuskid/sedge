@@ -46,11 +46,20 @@ export function ConnectWalletButton() {
                 setIsOpen(false);
                 
                 try {
-                  if (typeof window !== 'undefined' && (window as any).ethereum) {
-                    await (window as any).ethereum.request({
-                      method: "wallet_revokePermissions",
-                      params: [{ eth_accounts: {} }]
+                  if (typeof window !== 'undefined') {
+                    // Aggressively clear local storage keys that might cache the connection
+                    Object.keys(localStorage).forEach(key => {
+                      if (key.toLowerCase().includes('wagmi') || key.toLowerCase().includes('wallet')) {
+                        localStorage.removeItem(key);
+                      }
                     });
+                    
+                    if ((window as any).ethereum) {
+                      await (window as any).ethereum.request({
+                        method: "wallet_revokePermissions",
+                        params: [{ eth_accounts: {} }]
+                      });
+                    }
                   }
                 } catch (e) {
                   console.error("Failed to revoke permissions", e);
@@ -72,9 +81,16 @@ export function ConnectWalletButton() {
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        onClick={() => {
+        onClick={async () => {
           const injectedConnector = connectors.find(c => c.id === 'injected');
           if (injectedConnector) {
+            try {
+              if (typeof window !== 'undefined' && (window as any).ethereum) {
+                await (window as any).ethereum.request({ method: 'wallet_requestPermissions', params: [{ eth_accounts: {} }] });
+              }
+            } catch (e) {
+              console.log("Permission request rejected or unsupported", e);
+            }
             connect({ connector: injectedConnector });
           } else if (connectors.length > 0) {
             connect({ connector: connectors[0] });
