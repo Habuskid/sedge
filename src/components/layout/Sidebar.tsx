@@ -18,7 +18,7 @@ export function Sidebar() {
   return (
     <aside className="bg-surface dark:bg-black border-r border-outline-variant dark:border-[#333] fixed left-0 top-0 h-screen w-64 flex-col py-stack-lg px-gutter hidden md:flex z-50">
       <div className="flex items-center gap-4 mb-section-gap">
-        <img alt="Sedge Brand Logo" className="w-16 h-16 rounded-full object-cover shadow-sm" src="/icons/sedge-logo.png"/>
+        <img alt="Sedge Brand Logo" className="w-16 h-16 object-contain" src="/icons/sedge-logo.png"/>
         <div>
           <h1 className="font-headline-md text-2xl font-bold text-primary dark:text-white">Sedge</h1>
           <p className="font-label-caps text-label-caps text-on-surface-variant dark:text-gray-400">AI Copilot</p>

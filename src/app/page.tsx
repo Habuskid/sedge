@@ -18,7 +18,7 @@ export default function LandingPage() {
               {/* Hero Content */}
               <div className="lg:col-span-6 flex flex-col gap-6 md:gap-8 z-10 relative text-center lg:text-left items-center lg:items-start">
                 <div className="inline-flex items-center gap-2 md:gap-3 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-surface-container border border-outline-variant/30 w-fit backdrop-blur-sm shadow-sm">
-                  <img src="/icons/sedge-logo.png" alt="Sedge Logo" className="w-12 h-12 rounded-full object-cover" />
+                  <img src="/icons/sedge-logo.png" alt="Sedge Logo" className="w-12 h-12 object-contain" />
                   <span className="font-label-caps text-on-surface-variant text-sm font-bold tracking-widest">AI-FIRST FINANCIAL COPILOT</span>
                 </div>
                 <h1 className="font-display-lg text-4xl md:text-5xl lg:text-6xl text-on-surface text-balance font-bold leading-tight px-2 md:px-0">

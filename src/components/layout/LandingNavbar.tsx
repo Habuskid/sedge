@@ -24,7 +24,7 @@ export function LandingNavbar() {
       <nav className="sticky top-0 z-50 w-full glass-panel border-b border-outline-variant/30 bg-background/80 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/icons/sedge-logo.png" alt="Sedge Logo" className="w-10 h-10 md:w-14 md:h-14 rounded-full object-cover shadow-sm" />
+            <img src="/icons/sedge-logo.png" alt="Sedge Logo" className="w-10 h-10 md:w-14 md:h-14 object-contain" />
             <span className="font-headline-md font-bold text-on-surface text-xl">Sedge</span>
           </div>
           <div className="hidden md:flex items-center gap-8 font-body-sm text-on-surface-variant">

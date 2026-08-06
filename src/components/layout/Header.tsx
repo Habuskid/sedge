@@ -113,7 +113,7 @@ export function Header() {
             >
               <span className="material-symbols-outlined">menu</span>
             </button>
-            <img alt="Sedge Brand Logo" className="w-8 h-8 rounded-full object-cover shadow-sm" src="/icons/sedge-logo.png"/>
+            <img alt="Sedge Brand Logo" className="w-8 h-8 object-contain" src="/icons/sedge-logo.png"/>
           </div>
         </div>
         <div className="flex items-center gap-4 relative">
@@ -196,7 +196,7 @@ export function Header() {
           <div className="relative flex flex-col bg-surface dark:bg-black w-64 h-full shadow-2xl animate-in slide-in-from-left z-50 py-stack-lg px-gutter border-r border-outline-variant dark:border-[#333]">
             <div className="flex items-center justify-between mb-section-gap">
               <div className="flex items-center gap-3">
-                <img alt="Sedge Brand Logo" className="w-10 h-10 rounded-full object-cover shadow-sm" src="/icons/sedge-logo.png"/>
+                <img alt="Sedge Brand Logo" className="w-10 h-10 object-contain" src="/icons/sedge-logo.png"/>
                 <div>
                   <h1 className="font-headline-md text-xl font-bold text-primary dark:text-white">Sedge</h1>
                 </div>
