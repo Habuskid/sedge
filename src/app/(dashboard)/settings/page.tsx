@@ -67,7 +67,7 @@ export default function SettingsPage() {
             </label>
           </section>
 
-          <div className="pt-4 flex justify-between items-center">
+          <div className="pt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <span className={`font-body-sm text-green-600 dark:text-green-400 font-medium transition-opacity duration-300 ${showSaved ? 'opacity-100' : 'opacity-0'}`}>
               Settings saved successfully!
             </span>

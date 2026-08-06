@@ -33,7 +33,7 @@ export function ConnectWalletButton() {
           <span className="material-symbols-outlined text-[16px] text-outline">expand_more</span>
         </button>
         {isOpen && (
-          <div className="absolute right-0 top-full mt-2 w-48 bg-surface-container-lowest border border-outline-variant rounded-lg shadow-lg py-1 z-50">
+          <div className="absolute right-0 top-full mt-2 w-48 bg-surface-container-lowest border border-outline-variant rounded-lg shadow-lg py-1 z-50 origin-top-right">
             <div className="px-3 py-2 border-b border-outline-variant/50">
               <p className="font-label-caps text-[10px] text-outline uppercase tracking-wider">Connected</p>
               <p className="font-mono-data text-[12px] text-on-surface mt-0.5 break-all">{address}</p>

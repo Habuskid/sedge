@@ -131,7 +131,7 @@ export function Header() {
           </button>
           
           {showDropdown && (
-            <div className="absolute right-0 mt-2 w-80 bg-surface-container-lowest dark:bg-[#1E1E1E] border border-outline-variant dark:border-[#333] rounded-xl shadow-lg overflow-hidden z-50">
+            <div className="absolute -right-2 sm:right-0 mt-2 w-[90vw] sm:w-80 max-w-sm bg-surface-container-lowest dark:bg-[#1E1E1E] border border-outline-variant dark:border-[#333] rounded-xl shadow-lg overflow-hidden z-50 origin-top-right">
               <div className="p-3 border-b border-outline-variant dark:border-[#333] bg-surface-container-low dark:bg-[#2A2A2A] flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <h3 className="font-body-sm font-semibold text-on-surface dark:text-gray-100">Notifications</h3>

@@ -325,7 +325,7 @@ export default function CommandCenterPage() {
             <div key={msg.id}>
               {msg.role === 'user' ? (
                 <div className="flex gap-3 justify-end">
-                  <div className="bg-surface-container-high dark:bg-[#2A2A2A] rounded-2xl rounded-br-sm px-5 py-3 text-on-surface dark:text-gray-100 font-body-md max-w-[80%]">
+                  <div className="bg-surface-container-high dark:bg-[#2A2A2A] rounded-2xl rounded-br-sm px-4 py-3 md:px-5 text-on-surface dark:text-gray-100 font-body-md max-w-[90%] md:max-w-[80%]">
                     {msg.content}
                   </div>
                 </div>
@@ -334,9 +334,9 @@ export default function CommandCenterPage() {
                   <div className="w-10 h-10 rounded-full bg-surface-tint/10 flex items-center justify-center shrink-0 mt-auto border border-primary-container/20">
                     <span className="material-symbols-outlined text-primary text-[20px]">smart_toy</span>
                   </div>
-                  <div className="flex-1 max-w-[90%]">
+                  <div className="flex-1 max-w-full md:max-w-[90%] overflow-hidden">
                     {!msg.intent && msg.content && (
-                      <p className="font-body-md text-on-surface dark:text-gray-200 mb-3 whitespace-pre-wrap">{msg.content}</p>
+                      <p className="font-body-md text-on-surface dark:text-gray-200 mb-3 whitespace-pre-wrap break-words">{msg.content}</p>
                     )}
                     {msg.balances && (
                       <div className="bg-white dark:bg-[#1E1E1E] border border-outline-variant dark:border-[#333] p-4 rounded-[16px] shadow-sm w-full max-w-sm mt-1 mb-3">
@@ -420,17 +420,17 @@ export default function CommandCenterPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
-          <div className="bg-surface-container-lowest rounded-full border border-outline-variant p-2 transition-all duration-200 focus-within:shadow-md focus-within:border-primary-container/30">
-            <div className="flex items-center gap-3 px-4 py-2 bg-surface-bright rounded-full border border-outline-variant/50 focus-within:border-primary-container transition-colors">
-              <span className="material-symbols-outlined text-primary">smart_toy</span>
+        <form onSubmit={handleSubmit} className="max-w-2xl mx-auto w-full">
+          <div className="bg-surface-container-lowest rounded-full border border-outline-variant p-1 md:p-2 transition-all duration-200 focus-within:shadow-md focus-within:border-primary-container/30">
+            <div className="flex items-center gap-2 md:gap-3 px-2 md:px-4 py-1 md:py-2 bg-surface-bright rounded-full border border-outline-variant/50 focus-within:border-primary-container transition-colors">
+              <span className="material-symbols-outlined text-primary hidden sm:block">smart_toy</span>
               
               <input
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 disabled={isLoading}
-                className="flex-1 bg-transparent border-none focus:ring-0 focus:outline-none font-body-lg text-on-surface placeholder:text-on-surface-variant/50 px-2"
+                className="flex-1 min-w-0 bg-transparent border-none focus:ring-0 focus:outline-none font-body-md md:font-body-lg text-on-surface placeholder:text-on-surface-variant/50 px-2"
                 placeholder="What would you like to do today?"
                 type="text"
                 maxLength={500}
