@@ -403,8 +403,8 @@ function SuccessScreen({ execState, intent, onDone }: { execState: IntentExecSta
         <div className="space-y-4 font-body-sm text-[14px] text-gray-600 dark:text-gray-400">
           <div className="flex justify-between items-center bg-[#F8F9FA] dark:bg-[#1E1E1E] p-4 rounded-[16px]">
             <span className="font-medium">Status</span>
-            <div className="flex items-center gap-1.5 text-green-600 dark:text-green-400 font-medium bg-green-100 dark:bg-green-900/30 px-2.5 py-1 rounded-full text-[12px]">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span> Confirmed
+            <div className="flex items-center gap-1.5 text-black dark:text-white font-medium bg-black/10 dark:bg-white/10 px-2.5 py-1 rounded-full text-[12px]">
+              <span className="w-1.5 h-1.5 rounded-full bg-black dark:bg-white"></span> Confirmed
             </div>
           </div>
           
