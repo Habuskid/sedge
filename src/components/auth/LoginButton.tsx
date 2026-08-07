@@ -57,22 +57,9 @@ export function LoginButton() {
   }
 
   // If they are connected to a wallet, but signed in with a DIFFERENT wallet, maybe warn them?
-  // For now, if they are authenticated, show a Sign Out button
+  // For now, if they are authenticated, we don't need to show any extra UI since ConnectWalletButton handles the connection display.
   if (status === 'authenticated') {
-    return (
-      <div className="flex items-center gap-2">
-        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-semibold">
-          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-          Secure Session Active
-        </div>
-        <button
-          onClick={() => signOut()}
-          className="text-xs font-medium px-3 py-1.5 rounded-full bg-surface-container-low hover:bg-surface-container-highest transition-colors text-on-surface-variant"
-        >
-          Sign Out
-        </button>
-      </div>
-    );
+    return null;
   }
 
   return (
