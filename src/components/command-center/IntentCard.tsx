@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { ParsedIntent, IntentExecState, EstimationData } from '@/types/intents';
 import { CHAIN_DISPLAY_NAMES, CHAIN_EXPLORER_URLS } from '@/config/chains';
 
@@ -159,6 +159,21 @@ function BridgeCard({
   estimation?: EstimationData;
 }) {
   const isEstimating = phase === 'estimating';
+  const isExecuting = phase === 'executing';
+  const [bridgeStep, setBridgeStep] = useState(0);
+
+  // Live simulation of CCTP bridge steps
+  useEffect(() => {
+    if (isExecuting) {
+      setBridgeStep(1); // Approving
+      const t1 = setTimeout(() => setBridgeStep(2), 2000);  // Burning
+      const t2 = setTimeout(() => setBridgeStep(3), 8000);  // Attesting
+      const t3 = setTimeout(() => setBridgeStep(4), 16000); // Minting
+      return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+    } else {
+      setBridgeStep(0);
+    }
+  }, [isExecuting]);
 
   return (
     <>
@@ -173,7 +188,7 @@ function BridgeCard({
         </div>
         
         <div className="w-8 h-8 rounded-full bg-gray-50 dark:bg-[#1A1A1A] flex items-center justify-center border border-gray-100 dark:border-gray-800 shrink-0 relative overflow-hidden">
-          {isEstimating ? (
+          {isEstimating || isExecuting ? (
             <span className="material-symbols-outlined text-[16px] text-primary animate-spin">progress_activity</span>
           ) : (
             <span className="material-symbols-outlined text-[18px] text-gray-400">flight_takeoff</span>
@@ -194,8 +209,74 @@ function BridgeCard({
           <span className="font-body-sm text-[11px] text-gray-400">{getChainDisplayName(intent.toChainId)}</span>
         </div>
       </div>
+      
       <div className="px-5 pb-5">
-        <FeeGrid estimation={estimation} intent={intent} isEstimating={isEstimating} />
+        <div className="w-full bg-[#F8F9FA] dark:bg-[#1E1E1E] rounded-[20px] p-4 flex flex-col gap-3 mt-4 transition-all duration-300">
+          {!isEstimating && estimation?.fees && (
+            <div className="flex justify-between items-center">
+              <span className="font-body-sm text-[12px] text-gray-500 dark:text-gray-400 font-medium">Est. Network Fee</span>
+              <span className="font-body-sm text-[13px] text-gray-900 dark:text-gray-100 font-medium">
+                {estimation.fees.reduce((sum, f) => sum + parseFloat(f.amount || '0'), 0).toFixed(6)} {estimation.fees[0]?.token || 'USDC'}
+              </span>
+            </div>
+          )}
+          
+          <div className="flex justify-between items-center">
+            <span className="font-body-sm text-[12px] text-gray-500 dark:text-gray-400 font-medium">Network</span>
+            <span className="font-body-sm text-[13px] text-gray-900 dark:text-gray-100 font-medium">
+              {getChainDisplayName(intent.fromChainId)} → {getChainDisplayName(intent.toChainId)}
+            </span>
+          </div>
+
+          <div className="flex flex-col gap-3 pt-3 border-t border-gray-200 dark:border-gray-800">
+            <div className="flex justify-between items-center">
+              <span className="font-body-sm text-[12px] text-gray-500 dark:text-gray-400 font-medium">Protocol</span>
+              <span className="font-body-sm text-[13px] text-primary font-medium flex items-center gap-1">
+                Circle CCTP
+                <span className="material-symbols-outlined text-[14px]">route</span>
+              </span>
+            </div>
+            
+            {/* Live Simulation / Static Process */}
+            {isExecuting ? (
+              <div className="mt-1 bg-white dark:bg-[#121212] rounded-xl p-3 border border-outline-variant/30 flex flex-col gap-2.5">
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Live Simulation</span>
+                {[
+                  { id: 1, label: 'Approve USDC' },
+                  { id: 2, label: 'Burn on Source Chain' },
+                  { id: 3, label: 'Circle Attestation' },
+                  { id: 4, label: 'Mint on Destination' },
+                ].map((step) => {
+                  const isActive = bridgeStep === step.id;
+                  const isPast = bridgeStep > step.id;
+                  return (
+                    <div key={step.id} className="flex items-center gap-2">
+                      {isPast ? (
+                        <span className="material-symbols-outlined text-[14px] text-green-500">check_circle</span>
+                      ) : isActive ? (
+                        <span className="material-symbols-outlined text-[14px] text-primary animate-spin">progress_activity</span>
+                      ) : (
+                        <span className="material-symbols-outlined text-[14px] text-gray-300 dark:text-gray-700">radio_button_unchecked</span>
+                      )}
+                      <span className={`text-[12px] ${isActive ? 'text-primary font-medium' : isPast ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500'}`}>
+                        {step.label}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="flex justify-between items-center">
+                <span className="font-body-sm text-[12px] text-gray-500 dark:text-gray-400 font-medium">Process</span>
+                <div className="flex items-center gap-1">
+                  <span className="text-[11px] font-medium bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 px-1.5 py-0.5 rounded">Burn (Source)</span>
+                  <span className="material-symbols-outlined text-[12px] text-gray-400">arrow_forward</span>
+                  <span className="text-[11px] font-medium bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400 px-1.5 py-0.5 rounded">Mint (Dest)</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </>
   );
