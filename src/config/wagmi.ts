@@ -1,6 +1,6 @@
 import { http, createConfig, cookieStorage, createStorage } from 'wagmi';
 import { sepolia, baseSepolia, arbitrumSepolia } from 'wagmi/chains';
-import { injected } from 'wagmi/connectors';
+import { injected, metaMask, coinbaseWallet, safe } from 'wagmi/connectors';
 import { arcTestnet } from './chains';
 
 export const wagmiConfig = createConfig({
@@ -9,6 +9,9 @@ export const wagmiConfig = createConfig({
   chains: [arcTestnet, sepolia, baseSepolia, arbitrumSepolia],
   connectors: [
     injected(),
+    metaMask(),
+    coinbaseWallet({ appName: 'Sedge' }),
+    safe(),
   ],
   transports: {
     [arcTestnet.id]: http(process.env.NEXT_PUBLIC_ARC_RPC_URL),

@@ -1,15 +1,16 @@
 'use client';
 
-import { useAccount, useConnect } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { useRouter } from 'next/navigation';
 import { useSiweAuth } from '@/hooks/useSiweAuth';
 import { useState } from 'react';
+import { useWalletModal } from '@/components/providers/WalletModalProvider';
 
 export function LaunchAppButton({ className, children }: { className?: string; children: React.ReactNode }) {
   const { isConnected } = useAccount();
-  const { connect, connectors } = useConnect();
   const { signInWithEthereum, isAuthenticated, isSigningIn } = useSiweAuth();
   const router = useRouter();
+  const { openModal } = useWalletModal();
   const [isConnecting, setIsConnecting] = useState(false);
 
   const handleLaunch = async () => {
@@ -19,51 +20,18 @@ export function LaunchAppButton({ className, children }: { className?: string; c
       return;
     }
 
-    setIsConnecting(true);
-
-    try {
-      if (isConnected) {
-        // Wallet connected but no SIWE session → just sign
+    if (isConnected) {
+      // Wallet connected but no SIWE session → just sign
+      setIsConnecting(true);
+      try {
         const success = await signInWithEthereum();
         if (success) router.push('/command-center');
-      } else {
-        // Connect wallet first, then SIWE
-        const injectedConnector = connectors.find(c => c.id === 'injected') || connectors[0];
-        if (!injectedConnector) return;
-
-        try {
-          if (typeof window !== 'undefined' && (window as any).ethereum) {
-            await (window as any).ethereum.request({
-              method: 'wallet_requestPermissions',
-              params: [{ eth_accounts: {} }],
-            });
-          }
-        } catch {
-          // Permission request rejected or unsupported — continue anyway
-        }
-
-        // Connect and wait for it
-        await new Promise<void>((resolve, reject) => {
-          connect(
-            { connector: injectedConnector },
-            {
-              onSuccess: () => resolve(),
-              onError: (err) => reject(err),
-            }
-          );
-        });
-
-        // Small delay to let wagmi state settle
-        await new Promise(r => setTimeout(r, 500));
-
-        // Now trigger SIWE
-        const success = await signInWithEthereum();
-        if (success) router.push('/command-center');
+      } finally {
+        setIsConnecting(false);
       }
-    } catch (e) {
-      console.error('Launch failed:', e);
-    } finally {
-      setIsConnecting(false);
+    } else {
+      // Not connected -> open the custom modal to let user choose wallet
+      openModal();
     }
   };
 

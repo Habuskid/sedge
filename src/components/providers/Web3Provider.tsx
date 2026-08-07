@@ -9,6 +9,7 @@ import { installCircleFetchProxy } from '@/lib/circle-fetch-proxy';
 installCircleFetchProxy();
 
 import { SessionProvider } from 'next-auth/react';
+import { WalletModalProvider } from './WalletModalProvider';
 
 export function Web3Provider({ children, cookie }: { children: ReactNode, cookie?: string | null }) {
   const [queryClient] = useState(() => new QueryClient());
@@ -18,7 +19,9 @@ export function Web3Provider({ children, cookie }: { children: ReactNode, cookie
     <WagmiProvider config={wagmiConfig} initialState={initialState}>
       <QueryClientProvider client={queryClient}>
         <SessionProvider>
-          {children}
+          <WalletModalProvider>
+            {children}
+          </WalletModalProvider>
         </SessionProvider>
       </QueryClientProvider>
     </WagmiProvider>
