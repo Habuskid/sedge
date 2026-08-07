@@ -133,9 +133,8 @@ export default function CommandCenterPage() {
           const balanceStr = arcBalance
             ? parseFloat(formatUnits(arcBalance.value, arcBalance.decimals)).toFixed(2)
             : '0.00';
-          const eurcStr = arcBalance 
-            ? (parseFloat(formatUnits(arcBalance.value, arcBalance.decimals)) * 0.2).toFixed(2) 
-            : '0.00';
+          const eurcStr = '0.00'; // Removed mock fallback
+
 
           const aiMsg: ChatMessage = {
             id: aiMsgId,

@@ -25,7 +25,7 @@ export default function PortfolioLiveOverview() {
     
   const usdcBalance = parseFloat(formattedBalance) || 0;
   const eurcUsdPrice = 1.08; // Approx fixed rate for display
-  const eurcBalance = usdcBalance * 0.2;
+  const eurcBalance = 0; // Removed mock fallback
   const totalValueUsd = usdcBalance + (eurcBalance * eurcUsdPrice);
   const totalValueFormatted = totalValueUsd.toFixed(2);
 
