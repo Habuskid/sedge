@@ -253,7 +253,7 @@ function BridgeCard({
                 return (
                   <div key={step.id} className="flex items-center gap-2">
                     {isPast ? (
-                      <span className="material-symbols-outlined text-[14px] text-green-500">check_circle</span>
+                      <span className="material-symbols-outlined text-[14px] text-black dark:text-white">check_circle</span>
                     ) : isActive ? (
                       <span className="material-symbols-outlined text-[14px] text-primary animate-spin">progress_activity</span>
                     ) : (
