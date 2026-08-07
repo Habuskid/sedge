@@ -51,10 +51,19 @@ export async function POST(request: Request) {
     // Determine next execution time (default to tomorrow if not specified)
     const nextExecutionTime = startDate ? new Date(startDate) : new Date(Date.now() + 24 * 60 * 60 * 1000);
 
+    let walletId = process.env.CIRCLE_WALLET_ID;
+    
+    // Create an SCA Wallet dynamically if one isn't globally provided
+    if (!walletId || walletId === 'derive-at-runtime') {
+      const { CircleWalletService } = await import('@/services/circle-wallet-service');
+      const scaWallet = await CircleWalletService.createScaWallet();
+      walletId = scaWallet.id;
+    }
+
     const newSchedule = {
       id: crypto.randomUUID(),
       status: 'active',
-      walletId: process.env.CIRCLE_WALLET_ID || 'derive-at-runtime',
+      walletId,
       tokenId: validIntent.token.toUpperCase(),
       destinationAddress: validIntent.recipientAddress, // Now strictly checksummed
       amount: validIntent.amount, // Now strictly validated as a positive finite number

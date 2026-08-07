@@ -32,6 +32,12 @@ function FeeGrid({ estimation, intent, isEstimating }: { estimation?: Estimation
           <span className="font-body-sm text-[12px] text-gray-500 dark:text-gray-400 font-medium">Network</span>
           <div className="h-4 w-24 bg-surface-container-high rounded animate-pulse"></div>
         </div>
+        {(intent.type === 'swap' || intent.type === 'bridge') && (
+          <div className="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-800">
+            <span className="font-body-sm text-[12px] text-gray-500 dark:text-gray-400 font-medium">Route</span>
+            <div className="h-4 w-20 bg-surface-container-high rounded animate-pulse"></div>
+          </div>
+        )}
       </div>
     );
   }
@@ -61,6 +67,15 @@ function FeeGrid({ estimation, intent, isEstimating }: { estimation?: Estimation
             : getChainDisplayName('chainId' in intent ? intent.chainId : undefined)}
         </span>
       </div>
+      {(intent.type === 'swap' || intent.type === 'bridge') && (
+        <div className="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-800">
+          <span className="font-body-sm text-[12px] text-gray-500 dark:text-gray-400 font-medium">Route</span>
+          <span className="font-body-sm text-[13px] text-primary font-medium flex items-center gap-1">
+            {intent.type === 'swap' ? 'Uniswap V3' : 'Circle CCTP'}
+            <span className="material-symbols-outlined text-[14px]">route</span>
+          </span>
+        </div>
+      )}
     </div>
   );
 }
