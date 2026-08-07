@@ -12,9 +12,9 @@ const TYPE_ICONS: Record<string, string> = {
 };
 
 const TYPE_COLORS: Record<string, string> = {
-  swap: 'bg-black text-white dark:bg-white dark:text-black',
-  bridge: 'bg-black text-white dark:bg-white dark:text-black',
-  send: 'bg-black text-white dark:bg-white dark:text-black',
+  swap: 'bg-primary/10 text-primary',
+  bridge: 'bg-primary/10 text-primary',
+  send: 'bg-primary/10 text-primary',
 };
 
 function formatDate(ts: number): string {
