@@ -127,6 +127,7 @@ export function validateIntent(raw: unknown): { valid: boolean; intent: ParsedIn
         errors.push('Invalid frequency: must be daily, weekly, or monthly');
       }
       if (obj.chainId !== undefined && !isValidChainId(obj.chainId)) errors.push(`Invalid chainId: must be one of ${SUPPORTED_CHAIN_IDS.join(', ')}`);
+      if (obj.endsAt !== undefined && typeof obj.endsAt !== 'string') errors.push('Invalid endsAt: must be a date string');
       if (errors.length) return { valid: false, intent: null, errors };
       return {
         valid: true,
@@ -137,6 +138,7 @@ export function validateIntent(raw: unknown): { valid: boolean; intent: ParsedIn
           amount: obj.amount as string,
           recipientAddress: addr!,
           frequency: obj.frequency as 'daily' | 'weekly' | 'monthly',
+          ...(obj.endsAt !== undefined ? { endsAt: obj.endsAt as string } : {}),
           ...(obj.chainId !== undefined ? { chainId: obj.chainId as number } : {}),
         },
       };

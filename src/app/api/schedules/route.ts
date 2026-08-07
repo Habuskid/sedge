@@ -26,7 +26,7 @@ function frequencyToCron(frequency: string): string {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { amount, token, recipientAddress, frequency, startDate } = body;
+    const { amount, token, recipientAddress, frequency, startDate, endsAt } = body;
 
     // High-Severity Fix: Unvalidated Data Injection
     // Validate the incoming request strictly using the same logic as the AI Intent Parser
@@ -36,6 +36,7 @@ export async function POST(request: Request) {
       token,
       recipientAddress,
       frequency,
+      ...(endsAt ? { endsAt } : {}),
     };
 
     const validation = validateIntent(fakeIntent);
@@ -71,7 +72,7 @@ export async function POST(request: Request) {
       nextExecutionTime,
       executionCount: 0,
       createdAt: new Date(),
-      endsAt: body.endsAt ? new Date(body.endsAt) : null,
+      endsAt: validIntent.endsAt ? new Date(validIntent.endsAt) : null,
     };
 
     await db.insert(recurringSchedules).values(newSchedule);
