@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getTransactions, type TransactionRecord } from '@/lib/transaction-store';
+import { getAllTransactions, type TransactionRecord } from '@/lib/transaction-store';
 import { CHAIN_DISPLAY_NAMES } from '@/config/chains';
 import { ModernReceiptModal } from '@/components/activity/ModernReceiptModal';
 
@@ -37,7 +37,9 @@ export default function ActivityPage() {
   const [selectedTx, setSelectedTx] = useState<TransactionRecord | null>(null);
 
   useEffect(() => {
-    setTransactions(getTransactions());
+    getAllTransactions().then((txs) => {
+      setTransactions(txs);
+    });
   }, []);
 
   const filtered = filter === 'all'

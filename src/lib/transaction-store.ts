@@ -35,6 +35,29 @@ export function getTransactions(): TransactionRecord[] {
   }
 }
 
+export async function getAllTransactions(): Promise<TransactionRecord[]> {
+  const local = getTransactions();
+  try {
+    const res = await fetch('/api/transactions');
+    if (res.ok) {
+      const dbTxs: TransactionRecord[] = await res.json();
+      // Merge and sort descending by timestamp
+      const combined = [...local, ...dbTxs];
+      combined.sort((a, b) => b.timestamp - a.timestamp);
+      // Remove exact duplicates by txHash (if they exist)
+      const unique = combined.filter((tx, index, self) => 
+        index === self.findIndex((t) => (
+          t.txHash === tx.txHash && t.txHash !== undefined
+        ) || (t.id === tx.id))
+      );
+      return unique;
+    }
+  } catch (error) {
+    console.error('Failed to fetch DB transactions', error);
+  }
+  return local;
+}
+
 export function buildTransactionRecord(
   intent: ParsedIntent,
   txHash?: string,

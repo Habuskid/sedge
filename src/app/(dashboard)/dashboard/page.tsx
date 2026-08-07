@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import PortfolioLiveOverview from './PortfolioLiveOverview';
-import { getTransactions, type TransactionRecord } from '@/lib/transaction-store';
+import { getAllTransactions, type TransactionRecord } from '@/lib/transaction-store';
 import { ModernReceiptModal } from '@/components/activity/ModernReceiptModal';
 
 function formatDate(ts: number): string {
@@ -19,7 +19,9 @@ export default function Dashboard() {
   const [selectedTx, setSelectedTx] = useState<TransactionRecord | null>(null);
 
   useEffect(() => {
-    setActivities(getTransactions().slice(0, 5));
+    getAllTransactions().then(txs => {
+      setActivities(txs.slice(0, 5));
+    });
   }, []);
 
   return (

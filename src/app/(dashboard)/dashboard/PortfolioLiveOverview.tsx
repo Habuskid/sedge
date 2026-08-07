@@ -6,7 +6,7 @@ import { formatUnits } from 'viem';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useSettings, getCurrencySymbol } from '@/providers/SettingsProvider';
 
-import { getTransactions } from '@/lib/transaction-store';
+import { getAllTransactions } from '@/lib/transaction-store';
 
 export default function PortfolioLiveOverview() {
   const { address, isConnected, isConnecting, isReconnecting } = useAccount();
@@ -37,47 +37,41 @@ export default function PortfolioLiveOverview() {
       return;
     }
     
-    const txs = getTransactions();
-    const currentBalance = totalValueUsd;
-    
-    const data = [];
-    let runningBalance = currentBalance;
-    const now = new Date();
-    
-    // Create the last 7 days starting from today and going backward
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(now);
-      d.setDate(d.getDate() - i);
-      const dateStr = d.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+    getAllTransactions().then(txs => {
+      const currentBalance = totalValueUsd;
       
-      // Filter transactions for this day
-      const dayStart = new Date(d.setHours(0,0,0,0)).getTime();
-      const dayEnd = new Date(d.setHours(23,59,59,999)).getTime();
+      const data = [];
+      let runningBalance = currentBalance;
+      const now = new Date();
       
-      const dayTxs = txs.filter(tx => tx.timestamp >= dayStart && tx.timestamp <= dayEnd && tx.status === 'success');
-      
-      // Calculate what the balance was AT THE START of this day
-      // Since `runningBalance` is the balance at the END of this day,
-      // and outflow transactions decreased it during the day:
-      // Start_Balance = End_Balance + Outflows
-      
-      // Push the end-of-day balance (which is visually what we want for "that day")
-      data.unshift({ date: dateStr, balance: runningBalance });
-      
-      // Adjust runningBalance backwards for the previous day
-      for (const tx of dayTxs) {
-        if (tx.type === 'send' || tx.type === 'swap' || tx.type === 'bridge') {
-           const amt = parseFloat(tx.amount || '0');
-           if (tx.token === 'EURC') {
-             runningBalance += (amt * eurcUsdPrice);
-           } else {
-             runningBalance += amt;
-           }
+      // Create the last 7 days starting from today and going backward
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(now);
+        d.setDate(d.getDate() - i);
+        const dateStr = d.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+        
+        const dayStart = new Date(d.setHours(0,0,0,0)).getTime();
+        const dayEnd = new Date(d.setHours(23,59,59,999)).getTime();
+        
+        const dayTxs = txs.filter(tx => tx.timestamp >= dayStart && tx.timestamp <= dayEnd && tx.status === 'success');
+        
+        data.unshift({ date: dateStr, balance: runningBalance });
+        
+        // Adjust runningBalance backwards for the previous day
+        for (const tx of dayTxs) {
+          if (tx.type === 'send' || tx.type === 'swap' || tx.type === 'bridge' || tx.type === 'recurring_payment') {
+             const amt = parseFloat(tx.amount || '0');
+             if (tx.token === 'EURC') {
+               runningBalance += (amt * eurcUsdPrice);
+             } else {
+               runningBalance += amt;
+             }
+          }
         }
       }
-    }
-    
-    setHistoryData(data);
+      
+      setHistoryData(data);
+    });
   }, [isConnected, totalValueUsd]);
 
   const isOnline = isConnected && !arcLoading;

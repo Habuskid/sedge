@@ -29,3 +29,17 @@ export const notifications = pgTable('notifications', {
   isRead: boolean('is_read').notNull().default(false),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
+
+export const transactions = pgTable('transactions', {
+  id: text('id').primaryKey(),
+  type: varchar('type', { length: 50 }).notNull(), // e.g. 'recurring_payment', 'send'
+  status: varchar('status', { length: 20 }).notNull().default('success'),
+  amount: text('amount').notNull(),
+  token: text('token').notNull(),
+  txHash: text('tx_hash'),
+  explorerUrl: text('explorer_url'),
+  description: text('description'),
+  chainId: integer('chain_id').notNull().default(5042002), // Arc Testnet
+  walletId: text('wallet_id'), // Optional link to SCA
+  timestamp: timestamp('timestamp').defaultNow().notNull(),
+});
