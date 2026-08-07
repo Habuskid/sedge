@@ -54,7 +54,7 @@ export type SupportedToken = (typeof SUPPORTED_TOKENS)[number];
 export const CHAIN_ID_TO_APP_KIT_NAME: Record<number, string> = {
   5042002: 'Arc_Testnet',
   11155111: 'Ethereum_Sepolia',
-  80002: 'Polygon_Amoy',
+  80002: 'Polygon_Amoy_Testnet',
   84532: 'Base_Sepolia',
   421614: 'Arbitrum_Sepolia',
 };
