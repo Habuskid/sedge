@@ -224,14 +224,20 @@ export default function PortfolioLiveOverview() {
                   <img src="/icons/usdc.png" alt="USDC" className="w-4 h-4 rounded-full" />
                   <span className="font-body-sm text-body-sm text-on-surface">USDC</span>
                 </div>
-                <span className="font-mono-data text-mono-data text-on-surface">83.3%</span>
+                <div className="flex items-center gap-2">
+                  <span className="font-mono-data text-[12px] text-outline">{usdcBalance.toFixed(2)}</span>
+                  <span className="font-mono-data text-mono-data text-on-surface">83.3%</span>
+                </div>
               </div>
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <img src="/icons/eurc.png" alt="EURC" className="w-4 h-4 rounded-full" />
                   <span className="font-body-sm text-body-sm text-on-surface">EURC</span>
                 </div>
-                <span className="font-mono-data text-mono-data text-on-surface">16.7%</span>
+                <div className="flex items-center gap-2">
+                  <span className="font-mono-data text-[12px] text-outline">{eurcBalance.toFixed(2)}</span>
+                  <span className="font-mono-data text-mono-data text-on-surface">16.7%</span>
+                </div>
               </div>
             </div>
           )}
