@@ -1,8 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useAccount, useBalance, useReadContract } from 'wagmi';
-import { arcTestnet, TOKEN_ADDRESSES } from '@/config/chains';
-import { formatUnits, erc20Abi } from 'viem';
+import { useAccount } from 'wagmi';
+import { useCrossChainBalances } from '@/hooks/useCrossChainBalances';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useSettings, getCurrencySymbol } from '@/providers/SettingsProvider';
 
@@ -10,34 +9,10 @@ import { getAllTransactions } from '@/lib/transaction-store';
 
 export default function PortfolioLiveOverview() {
   const { address, isConnected, isConnecting, isReconnecting } = useAccount();
-  const { data: usdcBalanceRaw, isLoading: arcLoading } = useReadContract({
-    address: TOKEN_ADDRESSES[arcTestnet.id].USDC,
-    abi: erc20Abi,
-    functionName: 'balanceOf',
-    args: address ? [address] : undefined,
-    query: { enabled: isConnected && !!address },
-  });
-  const { data: eurcBalanceRaw } = useReadContract({
-    address: TOKEN_ADDRESSES[arcTestnet.id].EURC,
-    abi: erc20Abi,
-    functionName: 'balanceOf',
-    args: address ? [address] : undefined,
-    query: { enabled: isConnected && !!address },
-  });
+  const { usdcBalance, eurcBalance, usdcFormatted: formattedBalance, eurcFormatted: formattedEurcBalance, isLoading: arcLoading } = useCrossChainBalances();
 
   const { currency } = useSettings();
   const currencySymbol = getCurrencySymbol(currency);
-
-  const formattedBalance = usdcBalanceRaw !== undefined
-    ? parseFloat(formatUnits(usdcBalanceRaw, 6)).toFixed(2)
-    : '0.00';
-    
-  const usdcBalance = parseFloat(formattedBalance) || 0;
-  
-  const formattedEurcBalance = eurcBalanceRaw !== undefined
-    ? parseFloat(formatUnits(eurcBalanceRaw, 6)).toFixed(2)
-    : '0.00';
-  const eurcBalance = parseFloat(formattedEurcBalance) || 0;
   
   const eurcUsdPrice = 1.08; // Approx fixed rate for display
   const totalValueUsd = usdcBalance + (eurcBalance * eurcUsdPrice);

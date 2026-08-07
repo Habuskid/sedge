@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { useAccount, useBalance, useReadContract } from 'wagmi';
-import { formatUnits, erc20Abi } from 'viem';
-import { arcTestnet, TOKEN_ADDRESSES } from '@/config/chains';
+import { useAccount } from 'wagmi';
 import { CHAIN_DISPLAY_NAMES } from '@/config/chains';
+import { useCrossChainBalances } from '@/hooks/useCrossChainBalances';
+
 import type { ChatMessage, ParseIntentResponse, ParsedIntent, IntentExecState } from '@/types/intents';
 import IntentCard from '@/components/command-center/IntentCard';
 import { useIntentExecution } from '@/hooks/useIntentExecution';
@@ -20,20 +20,7 @@ const PROMPT_CHIPS = [
 
 export default function CommandCenterPage() {
   const { address, isConnected } = useAccount();
-  const { data: usdcBalanceRaw } = useReadContract({
-    address: TOKEN_ADDRESSES[arcTestnet.id].USDC,
-    abi: erc20Abi,
-    functionName: 'balanceOf',
-    args: address ? [address] : undefined,
-    query: { enabled: isConnected && !!address },
-  });
-  const { data: eurcBalanceRaw } = useReadContract({
-    address: TOKEN_ADDRESSES[arcTestnet.id].EURC,
-    abi: erc20Abi,
-    functionName: 'balanceOf',
-    args: address ? [address] : undefined,
-    query: { enabled: isConnected && !!address },
-  });
+  const { refetch: fetchBalances } = useCrossChainBalances();
   const { estimateIntent, executeIntent, isReady: adapterReady } = useIntentExecution();
   const { currency } = useSettings();
   const currencySymbol = getCurrencySymbol(currency);
@@ -139,12 +126,8 @@ export default function CommandCenterPage() {
         const aiMsgId = crypto.randomUUID();
         
         if (data.intent?.type === 'balance_check') {
-          const balanceStr = usdcBalanceRaw !== undefined
-            ? parseFloat(formatUnits(usdcBalanceRaw, 6)).toFixed(2)
-            : '0.00';
-          const eurcStr = eurcBalanceRaw !== undefined
-            ? parseFloat(formatUnits(eurcBalanceRaw, 6)).toFixed(2)
-            : '0.00';
+          // Await a fresh RPC fetch so we never read stale/undefined state
+          const fresh = await fetchBalances();
 
           const aiMsg: ChatMessage = {
             id: aiMsgId,
@@ -152,8 +135,8 @@ export default function CommandCenterPage() {
             content: data.message || `Here are your available token balances on Arc Testnet:`,
             intent: null,
             balances: [
-              { token: 'USDC', amount: balanceStr, color: '#38BDF8' },
-              { token: 'EURC', amount: eurcStr, color: '#818CF8' }
+              { token: 'USDC', amount: fresh.usdc, color: '#38BDF8' },
+              { token: 'EURC', amount: fresh.eurc, color: '#818CF8' }
             ],
             timestamp: Date.now(),
           };
@@ -275,7 +258,7 @@ export default function CommandCenterPage() {
         }).catch(console.error);
       }
     },
-    [adapterReady, usdcBalanceRaw, executeIntent],
+    [adapterReady, executeIntent],
   );
 
   const handleDismiss = (msgId: string) => {
