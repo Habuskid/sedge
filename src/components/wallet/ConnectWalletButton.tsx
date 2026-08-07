@@ -28,7 +28,6 @@ export function ConnectWalletButton() {
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-1.5 bg-surface-container-low border border-outline-variant rounded-lg font-mono-data text-mono-data text-on-surface hover:bg-surface-container transition-colors"
         >
-          <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
           <span className="hidden sm:inline">{truncated}</span>
           <span className="material-symbols-outlined text-[16px] text-on-surface sm:hidden shrink-0">account_balance_wallet</span>
           <span className="material-symbols-outlined text-[16px] text-outline shrink-0">expand_more</span>
