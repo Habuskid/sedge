@@ -177,7 +177,7 @@ function BridgeCard({
 
   return (
     <>
-      <div className="flex items-center justify-between px-4 pt-4 pb-1">
+      <div className="flex items-center justify-between px-5 pt-5 pb-1">
         <div className="flex flex-col gap-1 w-[40%]">
           <span className="font-body-sm text-[12px] text-gray-500 dark:text-gray-400 font-medium">Bridge</span>
           <div className="flex items-baseline gap-1.5">
@@ -210,8 +210,8 @@ function BridgeCard({
         </div>
       </div>
       
-      <div className="px-4 pb-4">
-        <div className="w-full bg-[#F8F9FA] dark:bg-[#1E1E1E] rounded-[16px] p-3 flex flex-col gap-2 mt-2 transition-all duration-300">
+      <div className="px-5 pb-5">
+        <div className="w-full bg-[#F8F9FA] dark:bg-[#1E1E1E] rounded-[20px] p-4 flex flex-col gap-3 mt-4 transition-all duration-300">
           {!isEstimating && estimation?.fees && (
             <div className="flex justify-between items-center">
               <span className="font-body-sm text-[12px] text-gray-500 dark:text-gray-400 font-medium">Est. Network Fee</span>
@@ -228,7 +228,7 @@ function BridgeCard({
             </span>
           </div>
 
-          <div className="flex flex-col gap-2 pt-2 border-t border-gray-200 dark:border-gray-800">
+          <div className="flex flex-col gap-3 pt-3 border-t border-gray-200 dark:border-gray-800">
             <div className="flex justify-between items-center">
               <span className="font-body-sm text-[12px] text-gray-500 dark:text-gray-400 font-medium">Protocol</span>
               <span className="font-body-sm text-[13px] text-primary font-medium flex items-center gap-1">
@@ -238,7 +238,7 @@ function BridgeCard({
             </div>
             
             {/* Live Simulation / Static Process */}
-            <div className="mt-1 bg-white dark:bg-[#121212] rounded-xl p-2.5 border border-outline-variant/30 flex flex-col gap-1.5">
+            <div className="mt-1 bg-white dark:bg-[#121212] rounded-xl p-3 border border-outline-variant/30 flex flex-col gap-2.5">
               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">
                 {isExecuting ? 'Live Simulation' : 'Bridge Process'}
               </span>
@@ -251,7 +251,7 @@ function BridgeCard({
                 const isActive = isExecuting && bridgeStep === step.id;
                 const isPast = (isExecuting && bridgeStep > step.id) || phase === 'success';
                 return (
-                  <div key={step.id} className="flex items-center gap-1.5">
+                  <div key={step.id} className="flex items-center gap-2">
                     {isPast ? (
                       <span className="material-symbols-outlined text-[14px] text-black dark:text-white">check_circle</span>
                     ) : isActive ? (
