@@ -12,9 +12,9 @@ const TYPE_ICONS: Record<string, string> = {
 };
 
 const TYPE_COLORS: Record<string, string> = {
-  swap: 'bg-blue-50 text-blue-600',
-  bridge: 'bg-violet-50 text-violet-600',
-  send: 'bg-teal-50 text-teal-600',
+  swap: 'bg-black text-white dark:bg-white dark:text-black',
+  bridge: 'bg-black text-white dark:bg-white dark:text-black',
+  send: 'bg-black text-white dark:bg-white dark:text-black',
 };
 
 function formatDate(ts: number): string {
@@ -150,8 +150,8 @@ export default function ActivityPage() {
                       <span
                         className={`inline-flex items-center px-2 py-1 rounded font-label-caps text-[10px] uppercase ${
                           tx.status === 'success'
-                            ? 'bg-emerald-50 text-emerald-700'
-                            : 'bg-rose-50 text-rose-700'
+                            ? 'bg-black/10 text-black dark:bg-white/10 dark:text-white'
+                            : 'bg-gray-200 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
                         }`}
                       >
                         {tx.status}
