@@ -28,11 +28,10 @@ Supported intent types (STRICTLY LIMITED TO THESE):
    Required: type, token, amount (string), recipientAddress (string starting with 0x), frequency ("daily", "weekly", "monthly"), chainId (number, default 5042002). Optional: endsAt (ISO date string representing the expiry time, e.g. "2026-08-08T00:00:00.000Z")
 
 Supported tokens: USDC, EURC
-Supported chains: Arc Testnet (5042002), Ethereum Sepolia (11155111), Polygon Amoy (80002), Base Sepolia (84532), Arbitrum Sepolia (421614)
+Supported chains: Arc Testnet (5042002), Ethereum Sepolia (11155111), Base Sepolia (84532), Arbitrum Sepolia (421614)
 Default chain: Arc Testnet (5042002). Default token: USDC.
 
 If the user mentions "Sepolia" or "Ethereum", use chain ID 11155111.
-If the user mentions "Polygon" or "Amoy", use chain ID 80002.
 If the user mentions "Base", use chain ID 84532.
 If the user mentions "Arbitrum", use chain ID 421614.
 If the command is out of scope or unsupported, YOU MUST set intent to null.

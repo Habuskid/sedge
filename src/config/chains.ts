@@ -37,7 +37,7 @@ export const arcTestnet = defineChain({
  * Supported chain IDs allowlist.
  * Used by the intent parser validator to reject any chain not in this list.
  */
-export const SUPPORTED_CHAIN_IDS = [5042002, 11155111, 80002, 84532, 421614] as const;
+export const SUPPORTED_CHAIN_IDS = [5042002, 11155111, 84532, 421614] as const;
 export type SupportedChainId = (typeof SUPPORTED_CHAIN_IDS)[number];
 
 /**
@@ -54,7 +54,6 @@ export type SupportedToken = (typeof SUPPORTED_TOKENS)[number];
 export const CHAIN_ID_TO_APP_KIT_NAME: Record<number, string> = {
   5042002: 'Arc_Testnet',
   11155111: 'Ethereum_Sepolia',
-  80002: 'Polygon_Amoy_Testnet',
   84532: 'Base_Sepolia',
   421614: 'Arbitrum_Sepolia',
 };
@@ -62,7 +61,6 @@ export const CHAIN_ID_TO_APP_KIT_NAME: Record<number, string> = {
 export const CHAIN_DISPLAY_NAMES: Record<number, string> = {
   5042002: 'Arc Testnet',
   11155111: 'Ethereum Sepolia',
-  80002: 'Polygon Amoy',
   84532: 'Base Sepolia',
   421614: 'Arbitrum Sepolia',
 };
@@ -70,7 +68,6 @@ export const CHAIN_DISPLAY_NAMES: Record<number, string> = {
 export const CHAIN_EXPLORER_URLS: Record<number, string> = {
   5042002: 'https://testnet.arcscan.app',
   11155111: 'https://sepolia.etherscan.io',
-  80002: 'https://amoy.polygonscan.com',
   84532: 'https://sepolia.basescan.org',
   421614: 'https://sepolia.arbiscan.io',
 };
