@@ -68,21 +68,21 @@ export function WalletConnectModal({ onClose }: { onClose: () => void }) {
     switch (id) {
       case 'metaMask':
       case 'metaMaskSDK':
-        return '🦊';
+        return <img src="https://raw.githubusercontent.com/MetaMask/brand-resources/master/SVG/metamask-fox.svg" alt="MetaMask" className="w-7 h-7 object-contain" />;
       case 'coinbaseWallet':
       case 'coinbaseWalletSDK':
-        return '🔵';
+        return <img src="https://avatars.githubusercontent.com/u/18060234?s=200&v=4" alt="Coinbase Wallet" className="w-7 h-7 rounded-full object-contain" />;
       case 'safe':
-        return '🛡️';
+        return <img src="https://raw.githubusercontent.com/safe-global/safe-design-system/main/assets/safe-logo-green.svg" alt="Safe" className="w-7 h-7 object-contain" onError={(e) => { e.currentTarget.src = "https://avatars.githubusercontent.com/u/81282111?s=200&v=4"; }} />;
       case 'injected':
-        return '🔌';
+        return <span className="material-symbols-outlined text-[24px] text-primary">extension</span>;
       default:
-        return '💼';
+        return <span className="material-symbols-outlined text-[24px] text-on-surface-variant">account_balance_wallet</span>;
     }
   };
 
   const getConnectorName = (connector: any) => {
-    if (connector.id === 'injected') return 'Browser Wallet';
+    if (connector.id === 'injected') return 'Browser Extension';
     return connector.name;
   };
 
