@@ -238,43 +238,34 @@ function BridgeCard({
             </div>
             
             {/* Live Simulation / Static Process */}
-            {isExecuting ? (
-              <div className="mt-1 bg-white dark:bg-[#121212] rounded-xl p-3 border border-outline-variant/30 flex flex-col gap-2.5">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Live Simulation</span>
-                {[
-                  { id: 1, label: 'Approve USDC' },
-                  { id: 2, label: 'Burn on Source Chain' },
-                  { id: 3, label: 'Circle Attestation' },
-                  { id: 4, label: 'Mint on Destination' },
-                ].map((step) => {
-                  const isActive = bridgeStep === step.id;
-                  const isPast = bridgeStep > step.id;
-                  return (
-                    <div key={step.id} className="flex items-center gap-2">
-                      {isPast ? (
-                        <span className="material-symbols-outlined text-[14px] text-green-500">check_circle</span>
-                      ) : isActive ? (
-                        <span className="material-symbols-outlined text-[14px] text-primary animate-spin">progress_activity</span>
-                      ) : (
-                        <span className="material-symbols-outlined text-[14px] text-gray-300 dark:text-gray-700">radio_button_unchecked</span>
-                      )}
-                      <span className={`text-[12px] ${isActive ? 'text-primary font-medium' : isPast ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500'}`}>
-                        {step.label}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="flex justify-between items-center">
-                <span className="font-body-sm text-[12px] text-gray-500 dark:text-gray-400 font-medium">Process</span>
-                <div className="flex items-center gap-1">
-                  <span className="text-[11px] font-medium bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 px-1.5 py-0.5 rounded">Burn (Source)</span>
-                  <span className="material-symbols-outlined text-[12px] text-gray-400">arrow_forward</span>
-                  <span className="text-[11px] font-medium bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400 px-1.5 py-0.5 rounded">Mint (Dest)</span>
-                </div>
-              </div>
-            )}
+            <div className="mt-1 bg-white dark:bg-[#121212] rounded-xl p-3 border border-outline-variant/30 flex flex-col gap-2.5">
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">
+                {isExecuting ? 'Live Simulation' : 'Bridge Process'}
+              </span>
+              {[
+                { id: 1, label: 'Approve USDC' },
+                { id: 2, label: 'Burn on Source Chain' },
+                { id: 3, label: 'Circle Attestation' },
+                { id: 4, label: 'Mint on Destination' },
+              ].map((step) => {
+                const isActive = isExecuting && bridgeStep === step.id;
+                const isPast = (isExecuting && bridgeStep > step.id) || phase === 'success';
+                return (
+                  <div key={step.id} className="flex items-center gap-2">
+                    {isPast ? (
+                      <span className="material-symbols-outlined text-[14px] text-green-500">check_circle</span>
+                    ) : isActive ? (
+                      <span className="material-symbols-outlined text-[14px] text-primary animate-spin">progress_activity</span>
+                    ) : (
+                      <span className="material-symbols-outlined text-[14px] text-gray-300 dark:text-gray-700">radio_button_unchecked</span>
+                    )}
+                    <span className={`text-[12px] ${isActive ? 'text-primary font-medium' : isPast ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500'}`}>
+                      {step.label}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
