@@ -255,11 +255,11 @@ function BridgeCard({
                     {isPast ? (
                       <span className="material-symbols-outlined text-[14px] text-black dark:text-white">check_circle</span>
                     ) : isActive ? (
-                      <span className="material-symbols-outlined text-[14px] text-primary animate-spin">progress_activity</span>
+                      <span className="material-symbols-outlined text-[14px] text-black dark:text-white animate-spin">progress_activity</span>
                     ) : (
                       <span className="material-symbols-outlined text-[14px] text-gray-300 dark:text-gray-700">radio_button_unchecked</span>
                     )}
-                    <span className={`text-[12px] ${isActive ? 'text-primary font-medium' : isPast ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500'}`}>
+                    <span className={`text-[12px] ${isActive ? 'text-black dark:text-white font-medium' : isPast ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500'}`}>
                       {step.label}
                     </span>
                   </div>
