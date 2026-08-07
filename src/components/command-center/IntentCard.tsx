@@ -426,7 +426,7 @@ function SuccessScreen({ execState, intent, onDone }: { execState: IntentExecSta
               <div className="flex items-center justify-between gap-2 bg-[#F8F9FA] dark:bg-[#1E1E1E] p-3 rounded-[16px] break-all text-xs font-mono text-gray-900 dark:text-gray-100 border border-outline-variant/20">
                 <span className="truncate">{txHash}</span>
                 {explorerUrl && (
-                  <a href={explorerUrl} target="_blank" rel="noreferrer" title="View on Explorer" className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-white dark:bg-[#2A2A2A] shadow-sm hover:scale-105 transition-transform text-primary">
+                  <a href={explorerUrl} target="_blank" rel="noreferrer" title="View on Explorer" className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-white dark:bg-[#2A2A2A] shadow-sm hover:scale-105 transition-transform text-gray-900 dark:text-gray-100">
                      <span className="material-symbols-outlined text-[16px]">open_in_new</span>
                   </a>
                 )}
