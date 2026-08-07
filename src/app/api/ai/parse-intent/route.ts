@@ -19,7 +19,7 @@ Supported intent types (STRICTLY LIMITED TO THESE):
 1. "swap" - Same-chain token swap (only on Arc Testnet, chain ID 5042002)
    Required: type, fromToken, toToken, amount (string), chainId (number, default 5042002)
 2. "bridge" - Cross-chain transfer via CCTP
-   Required: type, token, amount (string), fromChainId (number), toChainId (number)
+   Required: type, token, amount (string), fromChainId (number), toChainId (number). If the source chain is omitted, assume fromChainId is 5042002 (Arc Testnet). If destination is omitted, assume toChainId is 11155111 (Ethereum Sepolia).
 3. "send" - Send tokens to an address
    Required: type, token, amount (string), recipientAddress (string starting with 0x), chainId (number, default 5042002)
 4. "balance_check" - Check balances or view portfolio
