@@ -1,25 +1,53 @@
 'use client';
 
 import { useAccount } from 'wagmi';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSiweAuth } from '@/hooks/useSiweAuth';
 
 export function WalletGate({ children }: { children: ReactNode }) {
   const { isConnected, isConnecting, isReconnecting } = useAccount();
+  const { isAuthenticated, isSessionLoading, signInWithEthereum, isSigningIn } = useSiweAuth();
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
+  const hasAutoSigned = useRef(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Redirect to landing if wallet disconnects
   useEffect(() => {
     if (mounted && !isConnecting && !isReconnecting && !isConnected) {
       router.replace('/');
     }
   }, [mounted, isConnecting, isReconnecting, isConnected, router]);
 
-  // Show a unified, modern skeleton if not mounted, resolving connection state, or about to redirect
+  // Auto-trigger SIWE if wallet is connected but session is missing (e.g. page refresh)
+  useEffect(() => {
+    if (
+      mounted &&
+      isConnected &&
+      !isConnecting &&
+      !isReconnecting &&
+      !isAuthenticated &&
+      !isSessionLoading &&
+      !isSigningIn &&
+      !hasAutoSigned.current
+    ) {
+      hasAutoSigned.current = true;
+      signInWithEthereum();
+    }
+  }, [mounted, isConnected, isConnecting, isReconnecting, isAuthenticated, isSessionLoading, isSigningIn, signInWithEthereum]);
+
+  // Reset auto-sign flag if wallet disconnects
+  useEffect(() => {
+    if (!isConnected) {
+      hasAutoSigned.current = false;
+    }
+  }, [isConnected]);
+
+  // Show skeleton while resolving state
   if (!mounted || isConnecting || isReconnecting || !isConnected) {
     return (
       <div className="w-full h-full space-y-6 max-w-5xl mx-auto animate-in fade-in duration-500">
@@ -36,7 +64,6 @@ export function WalletGate({ children }: { children: ReactNode }) {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[minmax(280px,auto)]">
           {/* Main Large Card */}
           <div className="glass-card animate-pulse rounded-[24px] p-6 md:col-span-8 shadow-sm flex flex-col relative overflow-hidden">
-            {/* Shimmer gradient effect inside the glass card */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_2s_infinite]"></div>
             <div className="flex justify-between items-center mb-6 relative z-10">
               <div className="h-5 bg-surface-container/80 rounded w-1/3"></div>
