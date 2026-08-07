@@ -17,7 +17,11 @@ export const arcTestnet = defineChain({
   rpcUrls: {
     default: {
       http: [process.env.NEXT_PUBLIC_ARC_RPC_URL as string],
-      webSocket: ['wss://rpc.testnet.arc.network'],
+      webSocket: [
+        process.env.NEXT_PUBLIC_ARC_RPC_URL
+          ? (process.env.NEXT_PUBLIC_ARC_RPC_URL as string).replace('https://', 'wss://')
+          : 'wss://rpc.testnet.arc.network'
+      ],
     },
   },
   blockExplorers: {
