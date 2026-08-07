@@ -94,7 +94,7 @@ export default function RecurringPaymentsPage() {
           <p className="text-3xl font-bold">{schedules.filter(s => s.status === 'active').length}</p>
         </div>
         <div className="glass-panel rounded-2xl p-6 ambient-shadow">
-          <div className="flex items-center gap-3 text-green-500 mb-2">
+          <div className="flex items-center gap-3 text-primary mb-2">
             <CheckCircle2 size={24} />
             <h3 className="font-semibold">Total Executed</h3>
           </div>
