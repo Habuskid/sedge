@@ -15,6 +15,7 @@ export default function RecurringPaymentsPage() {
     token: 'USDC',
     recipientAddress: '',
     frequency: 'monthly',
+    endsAt: '',
   });
 
   const fetchSchedules = async () => {
@@ -48,7 +49,7 @@ export default function RecurringPaymentsPage() {
       if (res.ok) {
         toast.success('Recurring payment created successfully! (SCA Provisioned)');
         setIsModalOpen(false);
-        setFormData({ amount: '', token: 'USDC', recipientAddress: '', frequency: 'monthly' });
+        setFormData({ amount: '', token: 'USDC', recipientAddress: '', frequency: 'monthly', endsAt: '' });
         fetchSchedules();
       } else {
         const err = await res.json();
@@ -153,16 +154,30 @@ export default function RecurringPaymentsPage() {
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-6 text-sm text-on-surface-variant bg-surface-container/50 p-3 rounded-xl w-full sm:w-auto justify-between sm:justify-start">
-                    <div>
+                  <div className="flex items-center gap-4 text-sm text-on-surface-variant bg-surface-container/50 p-3 rounded-xl w-full sm:w-auto overflow-x-auto">
+                    <div className="shrink-0">
                       <p className="text-xs text-outline mb-0.5 uppercase tracking-wider font-semibold">Frequency</p>
                       <p className="font-medium text-on-surface">{schedule.cronExpression === '0 0 * * *' ? 'Daily' : schedule.cronExpression === '0 0 * * 1' ? 'Weekly' : 'Monthly'}</p>
                     </div>
-                    <div className="h-8 w-[1px] bg-outline/20"></div>
-                    <div>
+                    <div className="h-8 w-[1px] bg-outline/20 shrink-0"></div>
+                    <div className="shrink-0">
                       <p className="text-xs text-outline mb-0.5 uppercase tracking-wider font-semibold">Next Run</p>
                       <p className="font-medium text-on-surface">
                         {new Date(schedule.nextExecutionTime).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                      </p>
+                    </div>
+                    <div className="h-8 w-[1px] bg-outline/20 shrink-0"></div>
+                    <div className="shrink-0">
+                      <p className="text-xs text-outline mb-0.5 uppercase tracking-wider font-semibold">Expires</p>
+                      <p className="font-medium text-on-surface">
+                        {schedule.endsAt ? new Date(schedule.endsAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Never'}
+                      </p>
+                    </div>
+                    <div className="h-8 w-[1px] bg-outline/20 shrink-0"></div>
+                    <div className="shrink-0">
+                      <p className="text-xs text-outline mb-0.5 uppercase tracking-wider font-semibold">Created</p>
+                      <p className="font-medium text-on-surface">
+                        {new Date(schedule.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                       </p>
                     </div>
                   </div>
@@ -224,6 +239,16 @@ export default function RecurringPaymentsPage() {
                   <option value="weekly">Weekly</option>
                   <option value="monthly">Monthly</option>
                 </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-on-surface mb-1.5">Expiry Date (Optional)</label>
+                <input 
+                  type="date"
+                  className="w-full px-4 py-3 rounded-xl border border-outline/30 bg-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors text-sm"
+                  value={formData.endsAt}
+                  onChange={e => setFormData({...formData, endsAt: e.target.value})}
+                />
               </div>
 
               <div className="pt-4">

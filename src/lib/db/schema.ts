@@ -17,6 +17,7 @@ export const recurringSchedules = pgTable('recurring_schedules', {
   // Metadata
   executionCount: integer('execution_count').notNull().default(0),
   lastExecutedAt: timestamp('last_executed_at'),
+  endsAt: timestamp('ends_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 

@@ -9,7 +9,7 @@ export function Sidebar() {
   const links = [
     { href: '/dashboard', icon: 'dashboard', label: 'Portfolio' },
     { href: '/command-center', icon: 'smart_toy', label: 'Command Center' },
-    { href: '/recurring-payments', icon: 'cached', label: 'Recurring Payments', isSoon: true },
+    { href: '/recurring-payments', icon: 'cached', label: 'Recurring Payments' },
     { href: '/activity', icon: 'history', label: 'Activity' },
     { href: '/market-intelligence', icon: 'monitoring', label: 'Market Intelligence' },
     { href: '/settings', icon: 'settings', label: 'Settings' },

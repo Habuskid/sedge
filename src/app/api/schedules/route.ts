@@ -71,6 +71,7 @@ export async function POST(request: Request) {
       nextExecutionTime,
       executionCount: 0,
       createdAt: new Date(),
+      endsAt: body.endsAt ? new Date(body.endsAt) : null,
     };
 
     await db.insert(recurringSchedules).values(newSchedule);
