@@ -22,6 +22,12 @@ export default function PortfolioLiveOverview() {
   const formattedBalance = arcBalance
     ? parseFloat(formatUnits(arcBalance.value, arcBalance.decimals)).toFixed(2)
     : '0.00';
+    
+  const usdcBalance = parseFloat(formattedBalance) || 0;
+  const eurcUsdPrice = 1.08; // Approx fixed rate for display
+  const eurcBalance = usdcBalance * 0.2;
+  const totalValueUsd = usdcBalance + (eurcBalance * eurcUsdPrice);
+  const totalValueFormatted = totalValueUsd.toFixed(2);
 
   const [historyData, setHistoryData] = useState<{date: string, balance: number}[]>([]);
 
@@ -32,7 +38,7 @@ export default function PortfolioLiveOverview() {
     }
     
     const txs = getTransactions();
-    const currentBalance = parseFloat(formattedBalance) || 0;
+    const currentBalance = totalValueUsd;
     
     const data = [];
     let runningBalance = currentBalance;
@@ -61,20 +67,25 @@ export default function PortfolioLiveOverview() {
       // Adjust runningBalance backwards for the previous day
       for (const tx of dayTxs) {
         if (tx.type === 'send' || tx.type === 'swap' || tx.type === 'bridge') {
-           runningBalance += parseFloat(tx.amount || '0');
+           const amt = parseFloat(tx.amount || '0');
+           if (tx.token === 'EURC') {
+             runningBalance += (amt * eurcUsdPrice);
+           } else {
+             runningBalance += amt;
+           }
         }
       }
     }
     
     setHistoryData(data);
-  }, [isConnected, formattedBalance]);
+  }, [isConnected, totalValueUsd]);
 
   const isOnline = isConnected && !arcLoading;
 
   const pieData = isConnected && arcBalance && arcBalance.value > 0n
     ? [
-        { name: 'USDC', value: parseFloat(formattedBalance), color: '#38BDF8' },
-        { name: 'EURC', value: parseFloat(formattedBalance) * 0.2, color: '#818CF8' }
+        { name: 'USDC', value: usdcBalance, color: '#38BDF8' },
+        { name: 'EURC', value: eurcBalance * eurcUsdPrice, color: '#818CF8' }
       ]
     : [{ name: 'Empty', value: 1, color: '#F3F4F6' }];
 
@@ -142,7 +153,7 @@ export default function PortfolioLiveOverview() {
             </div>
             <div className="flex items-baseline gap-4 mt-2">
               <h1 className="font-display-lg text-display-lg text-on-surface tracking-tight">
-                {currencySymbol}{formattedBalance}
+                {currencySymbol}{totalValueFormatted}
               </h1>
             </div>
           </div>
