@@ -25,7 +25,7 @@ Supported intent types (STRICTLY LIMITED TO THESE):
 4. "balance_check" - Check balances or view portfolio
    Required: type. Optional: token (string), chainId (number)
 5. "recurring_payment" - Schedule an automated recurring transfer
-   Required: type, token, amount (string), recipientAddress (string starting with 0x), frequency ("daily", "weekly", "monthly"), chainId (number, default 5042002)
+   Required: type, token, amount (string), recipientAddress (string starting with 0x), frequency ("daily", "weekly", "monthly"), chainId (number, default 5042002). Optional: endsAt (ISO date string representing the expiry time, e.g. "2026-08-08T00:00:00.000Z")
 
 Supported tokens: USDC, EURC
 Supported chains: Arc Testnet (5042002), Ethereum Sepolia (11155111)
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         model: ANTHROPIC_MODEL,
         max_tokens: 512,
-        system: SYSTEM_PROMPT,
+        system: SYSTEM_PROMPT.replace('</strict_rules>', `5. The current date and time is ${new Date().toISOString()}.\n</strict_rules>`),
         thinking: { type: 'disabled' },
         messages: aiMessages,
       }),

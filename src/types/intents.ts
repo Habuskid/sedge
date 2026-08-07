@@ -41,6 +41,7 @@ export interface RecurringPaymentIntent {
   amount: string;
   recipientAddress: string;
   frequency: 'daily' | 'weekly' | 'monthly';
+  endsAt?: string;
   chainId?: number;
 }
 
