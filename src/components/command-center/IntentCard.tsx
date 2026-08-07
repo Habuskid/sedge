@@ -67,13 +67,32 @@ function FeeGrid({ estimation, intent, isEstimating }: { estimation?: Estimation
             : getChainDisplayName('chainId' in intent ? intent.chainId : undefined)}
         </span>
       </div>
-      {(intent.type === 'swap' || intent.type === 'bridge') && (
+      {intent.type === 'swap' && (
         <div className="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-800">
           <span className="font-body-sm text-[12px] text-gray-500 dark:text-gray-400 font-medium">Route</span>
           <span className="font-body-sm text-[13px] text-primary font-medium flex items-center gap-1">
-            {intent.type === 'swap' ? 'Uniswap V3' : 'Circle CCTP'}
+            Circle Smart Routing
             <span className="material-symbols-outlined text-[14px]">route</span>
           </span>
+        </div>
+      )}
+      {intent.type === 'bridge' && (
+        <div className="flex flex-col gap-2 pt-3 border-t border-gray-200 dark:border-gray-800">
+          <div className="flex justify-between items-center">
+            <span className="font-body-sm text-[12px] text-gray-500 dark:text-gray-400 font-medium">Protocol</span>
+            <span className="font-body-sm text-[13px] text-primary font-medium flex items-center gap-1">
+              Circle CCTP
+              <span className="material-symbols-outlined text-[14px]">route</span>
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="font-body-sm text-[12px] text-gray-500 dark:text-gray-400 font-medium">Process</span>
+            <div className="flex items-center gap-1">
+              <span className="text-[11px] font-medium bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 px-1.5 py-0.5 rounded">Burn (Source)</span>
+              <span className="material-symbols-outlined text-[12px] text-gray-400">arrow_forward</span>
+              <span className="text-[11px] font-medium bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400 px-1.5 py-0.5 rounded">Mint (Dest)</span>
+            </div>
+          </div>
         </div>
       )}
     </div>
