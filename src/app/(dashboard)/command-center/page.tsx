@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { useAccount, useBalance } from 'wagmi';
-import { formatUnits } from 'viem';
-import { arcTestnet } from '@/config/chains';
+import { useAccount, useBalance, useReadContract } from 'wagmi';
+import { formatUnits, erc20Abi } from 'viem';
+import { arcTestnet, TOKEN_ADDRESSES } from '@/config/chains';
 import { CHAIN_DISPLAY_NAMES } from '@/config/chains';
 import type { ChatMessage, ParseIntentResponse, ParsedIntent, IntentExecState } from '@/types/intents';
 import IntentCard from '@/components/command-center/IntentCard';
@@ -24,6 +24,13 @@ export default function CommandCenterPage() {
     address,
     chainId: arcTestnet.id,
     query: { enabled: isConnected },
+  });
+  const { data: eurcBalanceRaw } = useReadContract({
+    address: TOKEN_ADDRESSES[arcTestnet.id].EURC,
+    abi: erc20Abi,
+    functionName: 'balanceOf',
+    args: address ? [address] : undefined,
+    query: { enabled: isConnected && !!address },
   });
   const { estimateIntent, executeIntent, isReady: adapterReady } = useIntentExecution();
   const { currency } = useSettings();
@@ -133,8 +140,9 @@ export default function CommandCenterPage() {
           const balanceStr = arcBalance
             ? parseFloat(formatUnits(arcBalance.value, arcBalance.decimals)).toFixed(2)
             : '0.00';
-          const eurcStr = '0.00'; // Removed mock fallback
-
+          const eurcStr = eurcBalanceRaw !== undefined
+            ? parseFloat(formatUnits(eurcBalanceRaw, 6)).toFixed(2)
+            : '0.00';
 
           const aiMsg: ChatMessage = {
             id: aiMsgId,

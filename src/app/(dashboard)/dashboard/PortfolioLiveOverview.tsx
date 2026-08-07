@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useAccount, useBalance } from 'wagmi';
-import { arcTestnet } from '@/config/chains';
-import { formatUnits } from 'viem';
+import { useAccount, useBalance, useReadContract } from 'wagmi';
+import { arcTestnet, TOKEN_ADDRESSES } from '@/config/chains';
+import { formatUnits, erc20Abi } from 'viem';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useSettings, getCurrencySymbol } from '@/providers/SettingsProvider';
 
@@ -15,7 +15,14 @@ export default function PortfolioLiveOverview() {
     chainId: arcTestnet.id,
     query: { enabled: isConnected },
   });
-  
+  const { data: eurcBalanceRaw } = useReadContract({
+    address: TOKEN_ADDRESSES[arcTestnet.id].EURC,
+    abi: erc20Abi,
+    functionName: 'balanceOf',
+    args: address ? [address] : undefined,
+    query: { enabled: isConnected && !!address },
+  });
+
   const { currency } = useSettings();
   const currencySymbol = getCurrencySymbol(currency);
 
@@ -24,8 +31,13 @@ export default function PortfolioLiveOverview() {
     : '0.00';
     
   const usdcBalance = parseFloat(formattedBalance) || 0;
+  
+  const formattedEurcBalance = eurcBalanceRaw !== undefined
+    ? parseFloat(formatUnits(eurcBalanceRaw, 6)).toFixed(2)
+    : '0.00';
+  const eurcBalance = parseFloat(formattedEurcBalance) || 0;
+  
   const eurcUsdPrice = 1.08; // Approx fixed rate for display
-  const eurcBalance = 0; // Removed mock fallback
   const totalValueUsd = usdcBalance + (eurcBalance * eurcUsdPrice);
   const totalValueFormatted = totalValueUsd.toFixed(2);
 

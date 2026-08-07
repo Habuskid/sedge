@@ -47,6 +47,13 @@ export type SupportedChainId = (typeof SUPPORTED_CHAIN_IDS)[number];
 export const SUPPORTED_TOKENS = ['USDC', 'EURC'] as const;
 export type SupportedToken = (typeof SUPPORTED_TOKENS)[number];
 
+export const TOKEN_ADDRESSES: Record<number, Record<SupportedToken, `0x${string}` | undefined>> = {
+  5042002: {
+    USDC: undefined, // Native token
+    EURC: '0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a',
+  },
+};
+
 /**
  * Chain name mapping for App Kit.
  * App Kit uses string identifiers like "Arc_Testnet" and "Ethereum_Sepolia".
