@@ -4,10 +4,25 @@ import { recurringSchedules } from '@/lib/db/schema';
 import crypto from 'crypto';
 import { eq } from 'drizzle-orm';
 import { validateIntent } from '@/lib/validation';
+import { getServerSession } from "next-auth/next";
+import { users } from '@/lib/db/schema';
 
 export async function GET() {
   try {
-    const schedules = await db.select().from(recurringSchedules);
+    const session = await getServerSession();
+    const address = (session as any)?.address;
+    if (!address) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    
+    const user = await db.select().from(users).where(eq(users.walletAddress, address)).limit(1);
+    const walletId = user[0]?.circleWalletId;
+
+    if (!walletId) {
+      return NextResponse.json([]); // No wallet, no schedules
+    }
+
+    const schedules = await db.select().from(recurringSchedules).where(eq(recurringSchedules.walletId, walletId));
     return NextResponse.json(schedules);
   } catch (error) {
     console.error('Failed to fetch schedules:', error);
@@ -52,13 +67,17 @@ export async function POST(request: Request) {
     // Determine next execution time (default to tomorrow if not specified)
     const nextExecutionTime = startDate ? new Date(startDate) : new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-    let walletId = process.env.CIRCLE_WALLET_ID;
-    
-    // Create an SCA Wallet dynamically if one isn't globally provided
-    if (!walletId || walletId === 'derive-at-runtime') {
-      const { CircleWalletService } = await import('@/services/circle-wallet-service');
-      const scaWallet = await CircleWalletService.createScaWallet();
-      walletId = scaWallet.id;
+    const session = await getServerSession();
+    const address = (session as any)?.address;
+    if (!address) {
+      return NextResponse.json({ error: 'Unauthorized. Please sign in with your wallet.' }, { status: 401 });
+    }
+
+    const user = await db.select().from(users).where(eq(users.walletAddress, address)).limit(1);
+    const walletId = user[0]?.circleWalletId;
+
+    if (!walletId) {
+      return NextResponse.json({ error: 'No Circle Wallet provisioned for this user.' }, { status: 400 });
     }
 
     const newSchedule = {

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ConnectWalletButton } from '@/components/wallet/ConnectWalletButton';
+import { LoginButton } from '@/components/auth/LoginButton';
 import { toast } from 'sonner';
 
 type Notification = {
@@ -179,7 +180,10 @@ export function Header() {
             </div>
           )}
         </div>
-          <ConnectWalletButton />
+          <div className="flex items-center gap-3">
+            <LoginButton />
+            <ConnectWalletButton />
+          </div>
         </div>
       </header>
 

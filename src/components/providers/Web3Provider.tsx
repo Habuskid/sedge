@@ -8,6 +8,8 @@ import { installCircleFetchProxy } from '@/lib/circle-fetch-proxy';
 
 installCircleFetchProxy();
 
+import { SessionProvider } from 'next-auth/react';
+
 export function Web3Provider({ children, cookie }: { children: ReactNode, cookie?: string | null }) {
   const [queryClient] = useState(() => new QueryClient());
   const initialState = cookieToInitialState(wagmiConfig, cookie);
@@ -15,7 +17,9 @@ export function Web3Provider({ children, cookie }: { children: ReactNode, cookie
   return (
     <WagmiProvider config={wagmiConfig} initialState={initialState}>
       <QueryClientProvider client={queryClient}>
-        {children}
+        <SessionProvider>
+          {children}
+        </SessionProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

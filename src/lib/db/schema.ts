@@ -43,3 +43,9 @@ export const transactions = pgTable('transactions', {
   walletId: text('wallet_id'), // Optional link to SCA
   timestamp: timestamp('timestamp').defaultNow().notNull(),
 });
+
+export const users = pgTable('users', {
+  walletAddress: text('wallet_address').primaryKey(), // EVM Address
+  circleWalletId: text('circle_wallet_id'), // Their dedicated Circle SCA Wallet ID
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
