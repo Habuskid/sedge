@@ -223,9 +223,6 @@ export function Header() {
                       <span className={`material-symbols-outlined ${isActive ? 'fill' : ''}`} data-icon={link.icon}>{link.icon}</span>
                       <span>{link.label}</span>
                     </div>
-                    {link.isSoon && (
-                      <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary-container text-on-primary-container">SOON</span>
-                    )}
                   </Link>
                 );
               })}
