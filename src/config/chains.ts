@@ -49,7 +49,7 @@ export type SupportedToken = (typeof SUPPORTED_TOKENS)[number];
 
 export const TOKEN_ADDRESSES: Record<number, Record<SupportedToken, `0x${string}` | undefined>> = {
   5042002: {
-    USDC: undefined, // Native token
+    USDC: '0x3600000000000000000000000000000000000000',
     EURC: '0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a',
   },
 };

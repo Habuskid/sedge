@@ -20,10 +20,12 @@ const PROMPT_CHIPS = [
 
 export default function CommandCenterPage() {
   const { address, isConnected } = useAccount();
-  const { data: arcBalance } = useBalance({
-    address,
-    chainId: arcTestnet.id,
-    query: { enabled: isConnected },
+  const { data: usdcBalanceRaw } = useReadContract({
+    address: TOKEN_ADDRESSES[arcTestnet.id].USDC,
+    abi: erc20Abi,
+    functionName: 'balanceOf',
+    args: address ? [address] : undefined,
+    query: { enabled: isConnected && !!address },
   });
   const { data: eurcBalanceRaw } = useReadContract({
     address: TOKEN_ADDRESSES[arcTestnet.id].EURC,
@@ -137,8 +139,8 @@ export default function CommandCenterPage() {
         const aiMsgId = crypto.randomUUID();
         
         if (data.intent?.type === 'balance_check') {
-          const balanceStr = arcBalance
-            ? parseFloat(formatUnits(arcBalance.value, arcBalance.decimals)).toFixed(2)
+          const balanceStr = usdcBalanceRaw !== undefined
+            ? parseFloat(formatUnits(usdcBalanceRaw, 6)).toFixed(2)
             : '0.00';
           const eurcStr = eurcBalanceRaw !== undefined
             ? parseFloat(formatUnits(eurcBalanceRaw, 6)).toFixed(2)
@@ -273,7 +275,7 @@ export default function CommandCenterPage() {
         }).catch(console.error);
       }
     },
-    [adapterReady, arcBalance, executeIntent],
+    [adapterReady, usdcBalanceRaw, executeIntent],
   );
 
   const handleDismiss = (msgId: string) => {

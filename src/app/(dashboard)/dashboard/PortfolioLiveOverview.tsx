@@ -10,10 +10,12 @@ import { getAllTransactions } from '@/lib/transaction-store';
 
 export default function PortfolioLiveOverview() {
   const { address, isConnected, isConnecting, isReconnecting } = useAccount();
-  const { data: arcBalance, isLoading: arcLoading } = useBalance({
-    address,
-    chainId: arcTestnet.id,
-    query: { enabled: isConnected },
+  const { data: usdcBalanceRaw, isLoading: arcLoading } = useReadContract({
+    address: TOKEN_ADDRESSES[arcTestnet.id].USDC,
+    abi: erc20Abi,
+    functionName: 'balanceOf',
+    args: address ? [address] : undefined,
+    query: { enabled: isConnected && !!address },
   });
   const { data: eurcBalanceRaw } = useReadContract({
     address: TOKEN_ADDRESSES[arcTestnet.id].EURC,
@@ -26,8 +28,8 @@ export default function PortfolioLiveOverview() {
   const { currency } = useSettings();
   const currencySymbol = getCurrencySymbol(currency);
 
-  const formattedBalance = arcBalance
-    ? parseFloat(formatUnits(arcBalance.value, arcBalance.decimals)).toFixed(2)
+  const formattedBalance = usdcBalanceRaw !== undefined
+    ? parseFloat(formatUnits(usdcBalanceRaw, 6)).toFixed(2)
     : '0.00';
     
   const usdcBalance = parseFloat(formattedBalance) || 0;
@@ -88,7 +90,7 @@ export default function PortfolioLiveOverview() {
 
   const isOnline = isConnected && !arcLoading;
 
-  const pieData = isConnected && arcBalance && arcBalance.value > 0n
+  const pieData = isConnected && (usdcBalance > 0 || eurcBalance > 0)
     ? [
         { name: 'USDC', value: usdcBalance, color: '#38BDF8' },
         { name: 'EURC', value: eurcBalance * eurcUsdPrice, color: '#818CF8' }
@@ -218,12 +220,12 @@ export default function PortfolioLiveOverview() {
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
               <span className="font-label-caps text-label-caps text-outline">Assets</span>
               <span className="font-headline-md text-headline-md text-on-surface">
-                {isConnected && arcBalance && arcBalance.value > 0n ? '2' : '0'}
+                {isConnected && (usdcBalance > 0 || eurcBalance > 0) ? (usdcBalance > 0 && eurcBalance > 0 ? '2' : '1') : '0'}
               </span>
             </div>
           </div>
 
-          {isConnected && arcBalance && arcBalance.value > 0n && (
+          {isConnected && (usdcBalance > 0 || eurcBalance > 0) && (
             <div className="w-full space-y-3 mt-2">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
