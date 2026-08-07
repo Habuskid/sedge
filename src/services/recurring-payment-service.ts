@@ -41,16 +41,16 @@ export async function processDuePayments() {
 
         // Calculate next execution time
         // Simplistic approach based on cron (e.g. daily, weekly, monthly)
-        let nextExecutionTime = new Date(schedule.nextExecutionTime.getTime() + 24 * 60 * 60 * 1000); // Daily fallback
+        const nextExecutionTime = new Date(schedule.nextExecutionTime.getTime());
         if (schedule.cronExpression.includes('0 0 1 * *')) {
           nextExecutionTime.setMonth(nextExecutionTime.getMonth() + 1); // Monthly
-          intervalMs = 30 * 24 * 60 * 60 * 1000; // Monthly approximation
         } else if (schedule.cronExpression.includes('0 0 * * 1')) {
-          intervalMs = 7 * 24 * 60 * 60 * 1000; // Weekly
+          nextExecutionTime.setDate(nextExecutionTime.getDate() + 7); // Weekly
+        } else {
+          nextExecutionTime.setDate(nextExecutionTime.getDate() + 1); // Daily fallback
         }
 
         // 3. Update database
-        const nextExecutionTime = new Date(Date.now() + intervalMs);
 
         await db.update(recurringSchedules).set({
           lastExecutedAt: new Date(),
