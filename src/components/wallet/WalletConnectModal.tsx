@@ -4,6 +4,7 @@ import { useConnect } from 'wagmi';
 import { useSiweAuth } from '@/hooks/useSiweAuth';
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 const WALLET_LIST = [
   { 
@@ -27,7 +28,7 @@ const WALLET_LIST = [
 ];
 
 export function WalletConnectModal({ onClose }: { onClose: () => void }) {
-  const { connect, connectors } = useConnect();
+  const { connectAsync, connectors } = useConnect();
   const { signInWithEthereum } = useSiweAuth();
   const router = useRouter();
   const [isConnecting, setIsConnecting] = useState(false);
@@ -114,19 +115,12 @@ export function WalletConnectModal({ onClose }: { onClose: () => void }) {
         } catch {}
       }
 
-      await new Promise<void>((resolve, reject) => {
-        connect(
-          { connector: targetConnector },
-          {
-            onSuccess: () => resolve(),
-            onError: (err) => reject(err),
-          }
-        );
-      });
+      const result = await connectAsync({ connector: targetConnector });
+      const address = result.accounts[0];
 
       await new Promise(r => setTimeout(r, 500));
 
-      const success = await signInWithEthereum();
+      const success = await signInWithEthereum(address);
       if (success) {
         onClose();
         router.push('/command-center');
@@ -134,8 +128,9 @@ export function WalletConnectModal({ onClose }: { onClose: () => void }) {
         setIsConnecting(false);
         setSelectedWalletId(null);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error('Connect failed:', e);
+      toast.error('Connection Failed', { description: e?.message || 'Failed to connect to wallet. Check console for details.' });
       setIsConnecting(false);
       setSelectedWalletId(null);
     }

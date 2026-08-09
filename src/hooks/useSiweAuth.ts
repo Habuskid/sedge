@@ -12,13 +12,14 @@ import { toast } from 'sonner';
  * Used by LaunchAppButton, ConnectWalletButton, and WalletGate.
  */
 export function useSiweAuth() {
-  const { address, isConnected } = useAccount();
-  const { data: session, status } = useSession();
+  const { address: hookAddress } = useAccount();
+  const { status, data: session } = useSession();
   const { signMessageAsync } = useSignMessage();
   const { disconnect } = useDisconnect();
   const [isSigningIn, setIsSigningIn] = useState(false);
 
-  const signInWithEthereum = useCallback(async (): Promise<boolean> => {
+  const signInWithEthereum = useCallback(async (explicitAddress?: string): Promise<boolean> => {
+    const address = explicitAddress || hookAddress;
     if (!address) return false;
 
     setIsSigningIn(true);
@@ -52,7 +53,7 @@ export function useSiweAuth() {
     } finally {
       setIsSigningIn(false);
     }
-  }, [address, signMessageAsync, disconnect]);
+  }, [hookAddress, signMessageAsync, disconnect]);
 
   const signOutAndDisconnect = useCallback(async () => {
     try {
