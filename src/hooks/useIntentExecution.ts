@@ -242,7 +242,8 @@ export function useIntentExecution() {
 
           if (result.state === 'error') {
             console.warn('AppKit Bridge Error (First attempt):', result.error);
-            result = await kit.retryBridge(result, {
+            // Arc docs: use kit.retry() for failed bridge transfers
+            result = await kit.retry(result, {
               from: adapter,
               to: adapter,
             });
