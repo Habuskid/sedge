@@ -188,7 +188,7 @@ export function WalletConnectModal({ onClose }: { onClose: () => void }) {
                       {wallet.name}
                     </span>
                     {wallet.isInstalled && (
-                      <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20">
+                      <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-primary/10 text-primary dark:text-primary-fixed border border-primary/20">
                         Installed
                       </span>
                     )}

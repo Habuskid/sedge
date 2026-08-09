@@ -1,6 +1,6 @@
 import { http, createConfig, cookieStorage, createStorage } from 'wagmi';
 import { sepolia, baseSepolia, arbitrumSepolia } from 'wagmi/chains';
-import { injected, coinbaseWallet, safe, walletConnect } from 'wagmi/connectors';
+import { injected, walletConnect } from 'wagmi/connectors';
 import { arcTestnet } from './chains';
 
 export const wagmiConfig = createConfig({
@@ -9,8 +9,6 @@ export const wagmiConfig = createConfig({
   chains: [arcTestnet, sepolia, baseSepolia, arbitrumSepolia],
   connectors: [
     injected(),
-    coinbaseWallet({ appName: 'Sedge' }),
-    safe(),
     walletConnect({
       projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || '3fcc6bba6f1de962d911bb5b5c3dba68',
       showQrModal: true,
