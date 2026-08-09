@@ -10,38 +10,20 @@ const WALLET_LIST = [
     id: 'metaMask',
     name: 'MetaMask', 
     matchIds: ['metaMask', 'metaMaskSDK', 'io.metamask'], 
-    icon: 'https://raw.githubusercontent.com/MetaMask/brand-resources/master/SVG/metamask-fox.svg' 
-  },
-  { 
-    id: 'coinbaseWallet',
-    name: 'Coinbase Wallet', 
-    matchIds: ['coinbaseWallet', 'coinbaseWalletSDK'], 
-    icon: 'https://avatars.githubusercontent.com/u/18060234?s=200&v=4' 
+    icon: '/icons/metamask.png' 
   },
   { 
     id: 'rabby',
     name: 'Rabby Wallet', 
     matchIds: ['rabby', 'io.rabby'], 
-    icon: 'https://avatars.githubusercontent.com/u/81816738?s=200&v=4' 
-  },
-  { 
-    id: 'phantom',
-    name: 'Phantom', 
-    matchIds: ['phantom', 'app.phantom'], 
-    icon: 'https://avatars.githubusercontent.com/u/78723222?s=200&v=4' 
+    icon: '/icons/rabby.png' 
   },
   { 
     id: 'okx',
     name: 'OKX Wallet', 
     matchIds: ['okx', 'com.okex.wallet'], 
-    icon: 'https://avatars.githubusercontent.com/u/105051871?s=200&v=4' 
-  },
-  { 
-    id: 'safe',
-    name: 'Safe', 
-    matchIds: ['safe'], 
-    icon: 'https://raw.githubusercontent.com/safe-global/safe-design-system/main/assets/safe-logo-green.svg' 
-  },
+    icon: '/icons/okx.png' 
+  }
 ];
 
 export function WalletConnectModal({ onClose }: { onClose: () => void }) {
@@ -64,7 +46,7 @@ export function WalletConnectModal({ onClose }: { onClose: () => void }) {
     const list = [];
     const usedConnectorUids = new Set();
 
-    // 1. Add all predefined popular wallets
+    // 1. Add MetaMask, Rabby, OKX
     for (const predefined of WALLET_LIST) {
       const wagmiConnector = connectors.find(c => 
         predefined.matchIds.includes(c.id) || predefined.name.toLowerCase() === c.name.toLowerCase()
@@ -81,30 +63,20 @@ export function WalletConnectModal({ onClose }: { onClose: () => void }) {
       });
     }
 
-    // 2. Add any EIP-6963 installed wallets not in the predefined list
-    for (const c of connectors) {
-      if (!usedConnectorUids.has(c.uid) && c.id !== 'injected' && c.id !== 'walletConnect') {
-        list.push({
-          id: c.id,
-          name: c.name,
-          icon: c.icon || 'https://avatars.githubusercontent.com/u/11883392?s=200&v=4',
-          wagmiConnector: c,
-          isInstalled: true,
-        });
-      }
+    // 2. Add "Browser Installed Extension" fallback
+    let extensionConnector = connectors.find(c => c.id === 'injected');
+    if (!extensionConnector) {
+       // If no generic 'injected', grab any EIP-6963 connector we haven't used
+       extensionConnector = connectors.find(c => !usedConnectorUids.has(c.uid) && c.id !== 'walletConnect');
     }
 
-    // 3. Always add WalletConnect at the end as a generic mobile fallback
-    const wcConnector = connectors.find(c => c.id === 'walletConnect');
-    if (wcConnector) {
-      list.push({
-        id: 'walletConnect',
-        name: 'WalletConnect',
-        icon: 'https://avatars.githubusercontent.com/u/37784886?s=200&v=4',
-        wagmiConnector: wcConnector,
-        isInstalled: false, // Not "installed" but acts as a bridge
-      });
-    }
+    list.push({
+      id: 'browserExtension',
+      name: 'Browser Installed Extension',
+      icon: 'extension',
+      wagmiConnector: extensionConnector || connectors.find(c => c.id === 'walletConnect'),
+      isInstalled: !!extensionConnector,
+    });
 
     return list;
   }, [connectors]);
@@ -195,7 +167,11 @@ export function WalletConnectModal({ onClose }: { onClose: () => void }) {
                 } disabled:opacity-50 disabled:cursor-not-allowed`}
               >
                 <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-xl shrink-0 overflow-hidden">
-                  <img src={wallet.icon} alt={wallet.name} className="w-7 h-7 object-contain rounded-md" />
+                  {wallet.icon.includes('/') ? (
+                    <img src={wallet.icon} alt={wallet.name} className="w-7 h-7 object-contain rounded-md" />
+                  ) : (
+                    <span className="material-symbols-outlined text-[24px] text-primary">{wallet.icon}</span>
+                  )}
                 </div>
                 <div className="flex flex-col items-start flex-1 text-left">
                   <div className="flex items-center gap-2">
