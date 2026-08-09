@@ -4,9 +4,6 @@ import { WagmiProvider, cookieToInitialState } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { wagmiConfig } from '@/config/wagmi';
 import { useState, type ReactNode } from 'react';
-import { installCircleFetchProxy } from '@/lib/circle-fetch-proxy';
-
-installCircleFetchProxy();
 
 import { SessionProvider } from 'next-auth/react';
 import { WalletModalProvider } from './WalletModalProvider';

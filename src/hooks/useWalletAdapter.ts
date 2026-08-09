@@ -55,7 +55,7 @@ export function useWalletAdapter() {
           provider: provider as Parameters<typeof createViemAdapterFromProvider>[0]['provider'],
           getPublicClient: ({ chain }: { chain: Chain }) => {
             const rpcUrl = getRpcUrl(chain);
-            console.log(`[WalletAdapter] getPublicClient called for chain: "${chain.name}" (id: ${chain.id}) -> RPC: ${rpcUrl || 'default'}`);
+            console.log(`[WalletAdapter] getPublicClient called for chain: "${chain.name}" (id: ${chain.id}) -> RPC: ${rpcUrl ? 'custom' : 'default'}`);
             
             return createPublicClient({
               chain,
