@@ -64,8 +64,12 @@ export function WalletConnectModal({ onClose }: { onClose: () => void }) {
     }
   };
 
-  const getConnectorIcon = (id: string) => {
-    switch (id) {
+  const getConnectorIcon = (connector: any) => {
+    if (connector.icon) {
+      return <img src={connector.icon} alt={connector.name} className="w-7 h-7 rounded-md object-contain" />;
+    }
+    
+    switch (connector.id) {
       case 'metaMask':
       case 'metaMaskSDK':
         return <img src="https://raw.githubusercontent.com/MetaMask/brand-resources/master/SVG/metamask-fox.svg" alt="MetaMask" className="w-7 h-7 object-contain" />;
@@ -74,6 +78,8 @@ export function WalletConnectModal({ onClose }: { onClose: () => void }) {
         return <img src="https://avatars.githubusercontent.com/u/18060234?s=200&v=4" alt="Coinbase Wallet" className="w-7 h-7 rounded-full object-contain" />;
       case 'safe':
         return <img src="https://raw.githubusercontent.com/safe-global/safe-design-system/main/assets/safe-logo-green.svg" alt="Safe" className="w-7 h-7 object-contain" onError={(e) => { e.currentTarget.src = "https://avatars.githubusercontent.com/u/81282111?s=200&v=4"; }} />;
+      case 'walletConnect':
+        return <span className="material-symbols-outlined text-[24px] text-blue-500">qr_code_scanner</span>;
       case 'injected':
         return <span className="material-symbols-outlined text-[24px] text-primary">extension</span>;
       default:
@@ -82,6 +88,7 @@ export function WalletConnectModal({ onClose }: { onClose: () => void }) {
   };
 
   const getConnectorName = (connector: any) => {
+    if (connector.id === 'walletConnect') return 'Mobile Wallets (WalletConnect)';
     if (connector.id === 'injected') return 'Browser Extension';
     return connector.name;
   };
@@ -107,11 +114,8 @@ export function WalletConnectModal({ onClose }: { onClose: () => void }) {
           </button>
         </div>
         
-        <div className="p-6 flex flex-col gap-3">
+        <div className="p-6 flex flex-col gap-3 max-h-[60vh] overflow-y-auto">
           {connectors.map((connector) => {
-            // Wagmi sometimes duplicates injected connectors, filter out to keep UI clean if needed. 
-            // We'll just display them all for now, but rename 'injected' appropriately.
-            
             const isSelected = selectedConnectorId === connector.id;
             
             return (
@@ -125,13 +129,20 @@ export function WalletConnectModal({ onClose }: { onClose: () => void }) {
                     : 'border-outline-variant/50 bg-surface-container-lowest hover:bg-surface-container hover:border-outline-variant dark:bg-[#2A2A2A] dark:hover:bg-[#333]'
                 } disabled:opacity-50 disabled:cursor-not-allowed`}
               >
-                <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-xl shrink-0">
-                  {getConnectorIcon(connector.id)}
+                <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-xl shrink-0 overflow-hidden">
+                  {getConnectorIcon(connector)}
                 </div>
                 <div className="flex flex-col items-start flex-1 text-left">
-                  <span className="font-body-md font-semibold text-on-surface dark:text-white">
-                    {getConnectorName(connector)}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-body-md font-semibold text-on-surface dark:text-white">
+                      {getConnectorName(connector)}
+                    </span>
+                    {connector.id !== 'walletConnect' && (
+                      <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20">
+                        Installed
+                      </span>
+                    )}
+                  </div>
                   {isSelected && (
                     <span className="text-[11px] text-primary mt-0.5 animate-pulse">
                       Confirming in wallet...
