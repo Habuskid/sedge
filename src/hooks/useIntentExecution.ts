@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useSwitchChain } from 'wagmi';
 import { useWalletAdapter } from './useWalletAdapter';
 import { getAppKit } from '@/lib/app-kit';
 import { CHAIN_ID_TO_APP_KIT_NAME, CHAIN_EXPLORER_URLS } from '@/config/chains';
@@ -47,7 +47,8 @@ function buildSendParams(intent: SendIntent, adapter: unknown) {
 
 export function useIntentExecution() {
   const { adapter, isReady, error: adapterError } = useWalletAdapter();
-  const { address } = useAccount();
+  const { address, chainId: currentChainId } = useAccount();
+  const { switchChainAsync } = useSwitchChain();
 
   const estimateIntent = useCallback(
     async (intent: ParsedIntent): Promise<EstimationData> => {
@@ -99,6 +100,20 @@ export function useIntentExecution() {
   const executeIntent = useCallback(
     async (intent: ParsedIntent): Promise<ExecutionData> => {
       if (!adapter) throw new Error('Wallet not connected');
+      
+      if (intent.type !== 'balance_check' && intent.type !== 'recurring_payment') {
+        const targetChainId = intent.type === 'bridge' ? intent.fromChainId : ((intent as any).chainId || 5042002);
+        if (targetChainId && currentChainId !== targetChainId) {
+          try {
+            await switchChainAsync({ chainId: targetChainId });
+            await new Promise((resolve) => setTimeout(resolve, 500));
+          } catch (err: any) {
+            console.error('Failed to switch chain manually:', err);
+            throw new Error(`Please switch to ${chainName(targetChainId)} in your wallet to continue.`);
+          }
+        }
+      }
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const kit = getAppKit() as any;
 
