@@ -18,6 +18,70 @@ function chainName(id?: number): string {
   return CHAIN_ID_TO_APP_KIT_NAME[id || 5042002] || 'Arc_Testnet';
 }
 
+/**
+ * Chain metadata for wallet_addEthereumChain.
+ * This ensures the wallet knows about destination chains before bridging.
+ */
+const CHAIN_PARAMS: Record<number, {
+  chainId: string;
+  chainName: string;
+  nativeCurrency: { name: string; symbol: string; decimals: number };
+  rpcUrls: string[];
+  blockExplorerUrls: string[];
+}> = {
+  84532: {
+    chainId: '0x14A34',
+    chainName: 'Base Sepolia',
+    nativeCurrency: { name: 'Sepolia Ether', symbol: 'ETH', decimals: 18 },
+    rpcUrls: [process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL || 'https://sepolia.base.org'],
+    blockExplorerUrls: ['https://sepolia.basescan.org'],
+  },
+  421614: {
+    chainId: '0x66EEE',
+    chainName: 'Arbitrum Sepolia',
+    nativeCurrency: { name: 'Sepolia Ether', symbol: 'ETH', decimals: 18 },
+    rpcUrls: [process.env.NEXT_PUBLIC_ARBITRUM_SEPOLIA_RPC_URL || 'https://sepolia-rollup.arbitrum.io/rpc'],
+    blockExplorerUrls: ['https://sepolia.arbiscan.io'],
+  },
+  11155111: {
+    chainId: '0xAA36A7',
+    chainName: 'Sepolia',
+    nativeCurrency: { name: 'Sepolia Ether', symbol: 'ETH', decimals: 18 },
+    rpcUrls: [process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL || 'https://rpc.sepolia.org'],
+    blockExplorerUrls: ['https://sepolia.etherscan.io'],
+  },
+  5042002: {
+    chainId: '0x4CEF52',
+    chainName: 'Arc Testnet',
+    nativeCurrency: { name: 'USDC', symbol: 'USDC', decimals: 18 },
+    rpcUrls: [process.env.NEXT_PUBLIC_ARC_RPC_URL || 'https://rpc.testnet.arc.network'],
+    blockExplorerUrls: ['https://testnet.arcscan.app'],
+  },
+};
+
+/**
+ * Ensures a chain is added to the user's wallet via wallet_addEthereumChain.
+ * If the chain already exists, the wallet silently ignores the request.
+ * This prevents the bridge mint step from failing when the destination
+ * chain is not yet known to the wallet.
+ */
+async function ensureChainInWallet(provider: any, chainId: number): Promise<void> {
+  const params = CHAIN_PARAMS[chainId];
+  if (!params) return;
+
+  try {
+    await provider.request({
+      method: 'wallet_addEthereumChain',
+      params: [params],
+    });
+  } catch (err: any) {
+    // Error code 4902 means chain not added — but we just tried to add it, so
+    // any other error (like user rejection) we should log but not block on.
+    // Some wallets throw if the chain is already added — that's fine.
+    console.warn(`ensureChainInWallet(${chainId}): ${err?.message || err}`);
+  }
+}
+
 function buildSwapParams(intent: SwapIntent, adapter: unknown) {
   return {
     from: { adapter, chain: chainName(intent.chainId) },
@@ -47,7 +111,7 @@ function buildSendParams(intent: SendIntent, adapter: unknown) {
 
 export function useIntentExecution() {
   const { adapter, isReady, error: adapterError } = useWalletAdapter();
-  const { address, chainId: currentChainId } = useAccount();
+  const { address, chainId: currentChainId, connector } = useAccount();
   const { switchChainAsync } = useSwitchChain();
 
   const estimateIntent = useCallback(
@@ -101,15 +165,46 @@ export function useIntentExecution() {
     async (intent: ParsedIntent): Promise<ExecutionData> => {
       if (!adapter) throw new Error('Wallet not connected');
       
+      // Get the wallet provider for direct RPC calls
+      let provider: any = null;
+      if (connector) {
+        try {
+          provider = await connector.getProvider();
+        } catch {
+          console.warn('Could not get provider for chain pre-registration');
+        }
+      }
+
       if (intent.type !== 'balance_check' && intent.type !== 'recurring_payment') {
         const targetChainId = intent.type === 'bridge' ? intent.fromChainId : ((intent as any).chainId || 5042002);
+
+        // For bridge intents, pre-register BOTH source and destination chains
+        // in the wallet so the mint step doesn't fail on unknown chain
+        if (intent.type === 'bridge' && provider) {
+          console.log('Pre-registering bridge chains in wallet...');
+          await ensureChainInWallet(provider, intent.fromChainId);
+          await ensureChainInWallet(provider, intent.toChainId);
+        }
+
         if (targetChainId && currentChainId !== targetChainId) {
           try {
             await switchChainAsync({ chainId: targetChainId });
             await new Promise((resolve) => setTimeout(resolve, 500));
           } catch (err: any) {
-            console.error('Failed to switch chain manually:', err);
-            throw new Error(`Please switch to ${chainName(targetChainId)} in your wallet to continue.`);
+            // If switchChain fails, try adding the chain first then switching
+            if (provider) {
+              try {
+                await ensureChainInWallet(provider, targetChainId);
+                await switchChainAsync({ chainId: targetChainId });
+                await new Promise((resolve) => setTimeout(resolve, 500));
+              } catch (retryErr: any) {
+                console.error('Failed to add and switch chain:', retryErr);
+                throw new Error(`Please switch to ${chainName(targetChainId)} in your wallet to continue.`);
+              }
+            } else {
+              console.error('Failed to switch chain manually:', err);
+              throw new Error(`Please switch to ${chainName(targetChainId)} in your wallet to continue.`);
+            }
           }
         }
       }
@@ -234,3 +329,4 @@ export function useIntentExecution() {
 
   return { estimateIntent, executeIntent, isReady, adapterError };
 }
+
