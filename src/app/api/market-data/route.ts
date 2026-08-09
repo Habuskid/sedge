@@ -31,7 +31,7 @@ export async function GET() {
     ]);
 
     // 3. Fetch Real News from CoinTelegraph RSS (Free & reliable)
-    let realNews = [];
+    const realNews = [];
     try {
       const rssResponse = await fetch('https://cointelegraph.com/rss', { next: { revalidate: 900 } });
       const rssText = await rssResponse.text();

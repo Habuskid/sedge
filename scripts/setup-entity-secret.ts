@@ -54,5 +54,6 @@ async function main() {
   } catch (error) {
     console.error('Failed to register Entity Secret:', error);
   }
+}
 
 main().catch(console.error);

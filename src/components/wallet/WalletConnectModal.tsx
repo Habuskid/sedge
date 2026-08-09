@@ -60,7 +60,7 @@ export function WalletConnectModal({ onClose }: { onClose: () => void }) {
     setSelectedWalletId(wallet.id);
 
     try {
-      let targetConnector = wallet.wagmiConnector;
+      const targetConnector = wallet.wagmiConnector;
 
       if (!targetConnector) {
         throw new Error(`${wallet.name} is not installed. Please install the extension.`);

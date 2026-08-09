@@ -146,6 +146,7 @@ export function useIntentExecution() {
           let result = await kit.bridge(params);
 
           if (result.state === 'error') {
+            console.warn('AppKit Bridge Error (First attempt):', result.error);
             result = await kit.retryBridge(result, {
               from: adapter,
               to: adapter,
@@ -153,7 +154,9 @@ export function useIntentExecution() {
           }
 
           if (result.state === 'error') {
-            return { error: 'Bridge failed after retry.' };
+            const errorMsg = result.error?.message || result.error || 'Bridge failed after retry.';
+            console.error('AppKit Bridge Error (Final):', result.error);
+            return { error: `Bridge failed: ${errorMsg}` };
           }
 
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
