@@ -156,6 +156,9 @@ export function useIntentExecution() {
           if (result.state === 'error') {
             const errorMsg = result.error?.message || result.error || 'Bridge failed after retry.';
             console.error('AppKit Bridge Error (Final):', result.error);
+            console.error('AppKit Bridge Full Result:', JSON.stringify(result, (key, value) => 
+              typeof value === 'bigint' ? value.toString() : value
+            , 2));
             return { error: `Bridge failed: ${errorMsg}` };
           }
 
