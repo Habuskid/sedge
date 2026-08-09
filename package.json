@@ -14,6 +14,7 @@
     "@circle-fin/developer-controlled-wallets": "^10.8.0",
     "@tanstack/react-query": "^5.101.4",
     "@vercel/postgres": "^0.10.0",
+    "@walletconnect/ethereum-provider": "^2.23.10",
     "@walletconnect/modal": "^2.7.0",
     "drizzle-orm": "^0.45.2",
     "lucide-react": "^1.25.0",
