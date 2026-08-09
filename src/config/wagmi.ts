@@ -13,7 +13,7 @@ export const wagmiConfig = createConfig({
   transports: {
     [arcTestnet.id]: http(process.env.NEXT_PUBLIC_ARC_RPC_URL),
     [sepolia.id]: http(process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL),
-    [baseSepolia.id]: http(),
-    [arbitrumSepolia.id]: http(),
+    [baseSepolia.id]: http(process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL),
+    [arbitrumSepolia.id]: http(process.env.NEXT_PUBLIC_ARBITRUM_SEPOLIA_RPC_URL),
   },
 });

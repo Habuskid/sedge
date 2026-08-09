@@ -33,6 +33,10 @@ export function useWalletAdapter() {
                 ? (process.env.NEXT_PUBLIC_ARC_RPC_URL as string)
                 : chain.id === 11155111
                 ? (process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL as string)
+                : chain.id === 84532
+                ? (process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL as string)
+                : chain.id === 421614
+                ? (process.env.NEXT_PUBLIC_ARBITRUM_SEPOLIA_RPC_URL as string)
                 : undefined;
             
             return createPublicClient({
