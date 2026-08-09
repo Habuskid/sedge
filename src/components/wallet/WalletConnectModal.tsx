@@ -62,20 +62,30 @@ export function WalletConnectModal({ onClose }: { onClose: () => void }) {
       });
     }
 
-    // 2. Add "Browser Installed Extension" fallback
-    let extensionConnector = connectors.find(c => c.id === 'injected');
-    if (!extensionConnector) {
-       // If no generic 'injected', grab any EIP-6963 connector we haven't used
-       extensionConnector = connectors.find(c => !usedConnectorUids.has(c.uid) && c.id !== 'walletConnect');
+    // 2. Add ANY OTHER dynamically discovered installed extensions!
+    for (const c of connectors) {
+      if (!usedConnectorUids.has(c.uid) && c.id !== 'injected' && c.id !== 'walletConnect') {
+        list.push({
+          id: c.id,
+          name: c.name,
+          icon: c.icon || 'extension',
+          wagmiConnector: c,
+          isInstalled: true,
+        });
+      }
     }
 
-    list.push({
-      id: 'browserExtension',
-      name: 'Browser Installed Extension',
-      icon: 'extension',
-      wagmiConnector: extensionConnector || connectors.find(c => c.id === 'walletConnect'),
-      isInstalled: !!extensionConnector,
-    });
+    // 3. Fallback WalletConnect for Mobile/QR code
+    const wcConnector = connectors.find(c => c.id === 'walletConnect');
+    if (wcConnector) {
+      list.push({
+        id: 'walletConnect',
+        name: 'Mobile Wallets (WalletConnect)',
+        icon: 'qr_code_scanner',
+        wagmiConnector: wcConnector,
+        isInstalled: false, // It's a bridge
+      });
+    }
 
     return list;
   }, [connectors]);
@@ -165,8 +175,8 @@ export function WalletConnectModal({ onClose }: { onClose: () => void }) {
                     : 'border-outline-variant/50 bg-surface-container-lowest hover:bg-surface-container hover:border-outline-variant dark:bg-[#2A2A2A] dark:hover:bg-[#333]'
                 } disabled:opacity-50 disabled:cursor-not-allowed`}
               >
-                <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-xl shrink-0 overflow-hidden">
-                  {wallet.icon.includes('/') ? (
+                <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-xl shrink-0 overflow-hidden bg-white/5 dark:bg-white/10">
+                  {wallet.icon.includes('/') || wallet.icon.startsWith('http') || wallet.icon.startsWith('data:') ? (
                     <img src={wallet.icon} alt={wallet.name} className="w-7 h-7 object-contain rounded-md" />
                   ) : (
                     <span className="material-symbols-outlined text-[24px] text-primary">{wallet.icon}</span>
