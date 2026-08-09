@@ -48,9 +48,8 @@ export function WalletConnectModal({ onClose }: { onClose: () => void }) {
 
     // 1. Add MetaMask, Rabby, OKX
     for (const predefined of WALLET_LIST) {
-      const wagmiConnector = connectors.find(c => 
-        predefined.matchIds.includes(c.id) || predefined.name.toLowerCase() === c.name.toLowerCase()
-      );
+      // Strictly match EIP-6963 IDs to prevent 'injected' hijacking (e.g., Rabby pretending to be MetaMask)
+      const wagmiConnector = connectors.find(c => predefined.matchIds.includes(c.id));
 
       if (wagmiConnector) {
         usedConnectorUids.add(wagmiConnector.uid);
