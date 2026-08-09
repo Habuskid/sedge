@@ -9,10 +9,6 @@ export const wagmiConfig = createConfig({
   chains: [arcTestnet, sepolia, baseSepolia, arbitrumSepolia],
   connectors: [
     injected(),
-    walletConnect({
-      projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || '3fcc6bba6f1de962d911bb5b5c3dba68',
-      showQrModal: true,
-    }),
   ],
   transports: {
     [arcTestnet.id]: http(process.env.NEXT_PUBLIC_ARC_RPC_URL),

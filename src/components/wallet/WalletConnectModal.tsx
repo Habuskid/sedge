@@ -44,51 +44,15 @@ export function WalletConnectModal({ onClose }: { onClose: () => void }) {
   }, [onClose]);
 
   const unifiedWallets = useMemo(() => {
-    const list = [];
-    const usedConnectorUids = new Set();
-
-    // 1. Add MetaMask, Rabby, OKX
-    for (const predefined of WALLET_LIST) {
+    return WALLET_LIST.map((predefined) => {
       // Strictly match EIP-6963 IDs to prevent 'injected' hijacking (e.g., Rabby pretending to be MetaMask)
       const wagmiConnector = connectors.find(c => predefined.matchIds.includes(c.id));
-
-      if (wagmiConnector) {
-        usedConnectorUids.add(wagmiConnector.uid);
-      }
-
-      list.push({
+      return {
         ...predefined,
         wagmiConnector,
         isInstalled: !!wagmiConnector,
-      });
-    }
-
-    // 2. Add ANY OTHER dynamically discovered installed extensions!
-    for (const c of connectors) {
-      if (!usedConnectorUids.has(c.uid) && c.id !== 'injected' && c.id !== 'walletConnect') {
-        list.push({
-          id: c.id,
-          name: c.name,
-          icon: c.icon || 'extension',
-          wagmiConnector: c,
-          isInstalled: true,
-        });
-      }
-    }
-
-    // 3. Fallback WalletConnect for Mobile/QR code
-    const wcConnector = connectors.find(c => c.id === 'walletConnect');
-    if (wcConnector) {
-      list.push({
-        id: 'walletConnect',
-        name: 'Mobile Wallets (WalletConnect)',
-        icon: 'qr_code_scanner',
-        wagmiConnector: wcConnector,
-        isInstalled: false, // It's a bridge
-      });
-    }
-
-    return list;
+      };
+    });
   }, [connectors]);
 
   const handleWalletClick = async (wallet: any) => {
@@ -98,12 +62,8 @@ export function WalletConnectModal({ onClose }: { onClose: () => void }) {
     try {
       let targetConnector = wallet.wagmiConnector;
 
-      // If clicking an uninstalled wallet, fallback to WalletConnect to handle mobile deep linking
       if (!targetConnector) {
-        targetConnector = connectors.find(c => c.id === 'walletConnect');
-        if (!targetConnector) {
-          throw new Error('WalletConnect not configured as a fallback.');
-        }
+        throw new Error(`${wallet.name} is not installed. Please install the extension.`);
       }
 
       if (typeof window !== 'undefined' && (window as any).ethereum && targetConnector.id === 'injected') {
