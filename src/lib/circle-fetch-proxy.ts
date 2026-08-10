@@ -4,6 +4,13 @@ const PROXY_HOSTS = [
   'api.circle.com',
 ];
 
+const IRIS_ATTESTATION_HOSTS = new Set([
+  'iris-api.circle.com',
+  'iris-api-sandbox.circle.com',
+]);
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 let installed = false;
 
 export function installCircleFetchProxy() {
@@ -29,6 +36,25 @@ export function installCircleFetchProxy() {
     // Never proxy first-party API calls; they must preserve app auth/session cookies.
     if (parsed.origin === appOrigin && parsed.pathname.startsWith('/api/')) {
       return originalFetch(input, init);
+    }
+
+    // App Kit attestation polling can return transient 404 until Circle indexes
+    // the burn message. Retry a few times with backoff before bubbling failure.
+    const method = (init?.method || (typeof input === 'object' && input && 'method' in input ? (input as Request).method : 'GET')).toUpperCase();
+    const isAttestationLookup =
+      method === 'GET' &&
+      IRIS_ATTESTATION_HOSTS.has(parsed.hostname) &&
+      parsed.pathname.startsWith('/v2/messages/');
+
+    if (isAttestationLookup) {
+      const maxAttempts = 6;
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        const response = await originalFetch(input, init);
+        if (response.status !== 404 || attempt === maxAttempts) {
+          return response;
+        }
+        await sleep(Math.min(1000 * attempt, 5000));
+      }
     }
 
     if (!PROXY_HOSTS.includes(parsed.hostname)) {
