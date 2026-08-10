@@ -3,19 +3,26 @@ import { db } from '@/lib/db';
 import { transactions } from '@/lib/db/schema';
 import { desc } from 'drizzle-orm';
 
-import { getServerSession } from "next-auth/next";
 import { users } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
+import { buildRequestId, errorResponse } from '@/lib/api-error';
+import { logException, logWarn, maskWalletAddress } from '@/lib/logger';
+import { reportException } from '@/lib/observability';
 
-export async function GET() {
+export async function GET(request: Request) {
+  const address = request.headers.get('x-wallet-address') || request.headers.get('X-Wallet-Address');
+
   try {
-    const session = await getServerSession();
-    const address = (session as any)?.address;
-    if (!address) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!address || !address.trim()) {
+      logWarn('api.transactions.unauthorized', { route: '/api/transactions', method: 'GET' });
+      return errorResponse({
+        code: 'UNAUTHORIZED_WALLET',
+        message: 'Please connect your wallet to continue.',
+        status: 401,
+      });
     }
 
-    const user = await db.select().from(users).where(eq(users.walletAddress, address)).limit(1);
+    const user = await db.select().from(users).where(eq(users.walletAddress, address.trim())).limit(1);
     const walletId = user[0]?.circleWalletId;
 
     if (!walletId) {
@@ -25,7 +32,26 @@ export async function GET() {
     const allTxs = await db.select().from(transactions).where(eq(transactions.walletId, walletId)).orderBy(desc(transactions.timestamp));
     return NextResponse.json(allTxs);
   } catch (error) {
-    console.error('Failed to fetch transactions:', error);
-    return NextResponse.json({ error: 'Failed to fetch transactions' }, { status: 500 });
+    const requestId = buildRequestId();
+    logException('api.transactions.fetch_failed', error, {
+      requestId,
+      route: '/api/transactions',
+      method: 'GET',
+      wallet: maskWalletAddress(address),
+    });
+    void reportException(error, {
+      requestId,
+      code: 'TRANSACTIONS_FETCH_FAILED',
+      route: '/api/transactions',
+      method: 'GET',
+      wallet: maskWalletAddress(address),
+    });
+    return errorResponse({
+      code: 'TRANSACTIONS_FETCH_FAILED',
+      message: 'We could not load your activity right now.',
+      status: 500,
+      retryable: true,
+      requestId,
+    });
   }
 }

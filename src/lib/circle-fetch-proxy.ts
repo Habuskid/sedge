@@ -11,6 +11,7 @@ export function installCircleFetchProxy() {
   installed = true;
 
   const originalFetch = globalThis.fetch;
+  const appOrigin = window.location.origin;
 
   globalThis.fetch = async function patchedFetch(
     input: RequestInfo | URL,
@@ -20,8 +21,13 @@ export function installCircleFetchProxy() {
 
     let parsed: URL | null = null;
     try {
-      parsed = new URL(url);
+      parsed = new URL(url, appOrigin);
     } catch {
+      return originalFetch(input, init);
+    }
+
+    // Never proxy first-party API calls; they must preserve app auth/session cookies.
+    if (parsed.origin === appOrigin && parsed.pathname.startsWith('/api/')) {
       return originalFetch(input, init);
     }
 

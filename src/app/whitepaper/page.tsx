@@ -52,12 +52,12 @@ export default function WhitepaperPage() {
 
           <h3 className="text-xl font-bold mt-8 mb-4">3.2 Edge-Proxied Circle API Integration</h3>
           <p className="leading-relaxed mb-6">
-            To securely interact with Circle's infrastructure (Programmable Wallets and CCTP endpoints) without exposing API keys to the client, Sedge implements a unified edge proxy route (`/api/circle-proxy`). This architecture strictly whitelists requests to `api.circle.com` and `iris-api.circle.com`, ensuring secure, CORS-compliant backend communication while keeping the frontend highly performant.
+            To securely interact with Circle's infrastructure (Programmable Wallets and CCTP endpoints) without exposing API keys to the client, Sedge implements a unified edge proxy route (`/api/circle-proxy`). This architecture strictly whitelists requests to `api.circle.com`, `iris-api.circle.com`, and `iris-api-sandbox.circle.com`, ensuring secure, CORS-compliant backend communication while keeping the frontend highly performant.
           </p>
 
           <h3 className="text-xl font-bold mt-8 mb-4">3.3 The NLP Intent Engine</h3>
           <p className="leading-relaxed mb-6">
-            The core of Sedge is a heavily bounded Natural Language Processing engine powered by Claude 3.5 Sonnet. The AI is strictly instructed to operate <em>only</em> as a JSON parser. It maps user inputs to a standardized `transaction object` schema (`to`, `data`, `value`). It is explicitly immune to prompt-injection attacks and cannot be used for casual chat. Most critically, the AI <strong>does not possess private keys</strong>. It merely constructs unsigned payloads that are passed to the user's injected Web3 provider (e.g., MetaMask) for cryptographic signature.
+            The core of Sedge is a heavily bounded Natural Language Processing engine powered by Claude Sonnet 5. The AI is strictly instructed to operate <em>only</em> as a JSON parser. It maps user inputs to a standardized `transaction object` schema (`to`, `data`, `value`). It is explicitly immune to prompt-injection attacks and cannot be used for casual chat. Most critically, the AI <strong>does not possess private keys</strong>. It merely constructs unsigned payloads that are passed to the user's injected Web3 provider (e.g., MetaMask) for cryptographic signature.
           </p>
         </section>
 
@@ -67,30 +67,24 @@ export default function WhitepaperPage() {
             Sedge's architecture natively supports several critical DeFi primitives directly through natural language:
           </p>
           <ul className="list-disc pl-6 space-y-3 mb-6">
-            <li><strong>Cross-Chain Global Payroll:</strong> "Bridge 5,000 USDC to my developer on Sepolia, pulling from my Arc Testnet balance." Sedge automatically constructs the `depositForBurn` CCTP payload.</li>
+            <li><strong>Cross-Chain Global Payroll:</strong> "Bridge 5,000 USDC to my developer on Sepolia, Base Sepolia, or Arbitrum Sepolia, pulling from my Arc Testnet balance." Sedge automatically constructs the `depositForBurn` CCTP payload.</li>
             <li><strong>Automated Subscriptions:</strong> Users can command Sedge to set up recurring ERC-20 transfers, entirely abstracting the complexity of token approvals and time-locks.</li>
             <li><strong>One-Click Swapping:</strong> Same-chain stablecoin swaps (e.g., USDC to EURC) are executed directly on the Arc Testnet.</li>
           </ul>
         </section>
 
         <section id="roadmap" className="scroll-mt-24 mb-16">
-          <h2 className="font-display-sm text-3xl font-bold mb-6">5. Realistic Protocol Roadmap</h2>
+          <h2 className="font-display-sm text-3xl font-bold mb-6">5. Current Status & Roadmap</h2>
           <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant/50 mt-6">
-            <h3 className="text-lg font-bold text-on-surface mb-2">Phase 1: Testnet Architecture Validation (Current)</h3>
+            <h3 className="text-lg font-bold text-on-surface mb-2">Current Status (Completed on Testnet)</h3>
             <ul className="list-disc pl-5 space-y-2 text-sm text-on-surface-variant mb-4">
-              <li>Deployment of Sedge Copilot on Arc Testnet.</li>
-              <li>Verification of CCTP integration with Ethereum Sepolia.</li>
-              <li>Secure deployment of the Circle Edge Proxy.</li>
+              <li>Natural-language swap, bridge, send, and balance flows are live.</li>
+              <li>Arc Testnet to Ethereum Sepolia, Base Sepolia, and Arbitrum Sepolia USDC bridge routes are operational via CCTP.</li>
+              <li>Recurring payment scheduling and Circle smart wallet provisioning are integrated.</li>
+              <li>User-safe error handling with structured request references is active.</li>
             </ul>
 
-            <h3 className="text-lg font-bold text-on-surface mb-2">Phase 2: Account Abstraction & Paymaster</h3>
-            <ul className="list-disc pl-5 space-y-2 text-sm text-on-surface-variant mb-4">
-              <li><strong>ERC-4337 Migration:</strong> Transition from standard EOA wallets to Circle Programmable Wallets (Smart Contract Accounts).</li>
-              <li><strong>Circle Paymaster:</strong> Enabling gasless, automated recurring payments.</li>
-              <li>Push notifications for due payments.</li>
-            </ul>
-
-            <h3 className="text-lg font-bold text-on-surface mb-2">Phase 3: Mainnet</h3>
+            <h3 className="text-lg font-bold text-on-surface mb-2">Pending Milestone</h3>
             <ul className="list-disc pl-5 space-y-2 text-sm text-on-surface-variant">
               <li>Mainnet deployment.</li>
             </ul>

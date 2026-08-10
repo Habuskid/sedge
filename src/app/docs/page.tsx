@@ -78,7 +78,7 @@ export default function DocsPage() {
       <section id="ai-engine" className="mb-16 scroll-mt-24">
         <h2 className="font-display-sm text-2xl text-on-surface font-bold mb-4">AI Intent Engine</h2>
         <p className="mb-6">
-          Sedge uses a strictly bounded AI model (Claude 3.5 Sonnet) focused exclusively on financial intent parsing. It cannot be used for casual chat, and it is explicitly immune to prompt injection attacks.
+          Sedge uses a strictly bounded AI model (Claude Sonnet 5) focused exclusively on financial intent parsing. It cannot be used for casual chat, and it is explicitly immune to prompt injection attacks.
         </p>
         
         <h3 className="font-title-md font-bold mb-3 text-on-surface">Supported Onchain Commands</h3>
@@ -97,7 +97,7 @@ export default function DocsPage() {
               </tr>
               <tr className="border-b border-outline-variant/50">
                 <td className="py-3 px-4 font-mono-data text-on-surface">bridge</td>
-                <td className="py-3 px-4">Cross-chain transfer utilizing Circle's CCTP.</td>
+                <td className="py-3 px-4">Cross-chain transfer via Circle's CCTP (Arc Testnet → Ethereum Sepolia, Base Sepolia, or Arbitrum Sepolia; USDC).</td>
               </tr>
               <tr className="border-b border-outline-variant/50">
                 <td className="py-3 px-4 font-mono-data text-on-surface">send</td>
@@ -129,7 +129,7 @@ export default function DocsPage() {
               <ul className="space-y-2 text-sm">
                 <li><strong>Chain ID:</strong> <code className="font-mono-data">5042002</code></li>
                 <li><strong>Tokens:</strong> USDC, EURC</li>
-                <li><strong>Role:</strong> Primary execution layer and central Gateway for CCTP to bridge Circle USDC.</li>
+                <li><strong>Role:</strong> Primary execution layer and central gateway for CCTP outbound bridging to supported destination testnets.</li>
               </ul>
             </div>
           </div>
@@ -141,8 +141,8 @@ export default function DocsPage() {
             <div className="p-4">
               <ul className="space-y-2 text-sm">
                 <li><strong>Chain ID:</strong> <code className="font-mono-data">11155111</code></li>
-                <li><strong>Tokens:</strong> USDC, EURC</li>
-                <li><strong>Role:</strong> Connected interoperability network for CCTP cross-chain liquidity.</li>
+                <li><strong>Tokens:</strong> USDC</li>
+                <li><strong>Role:</strong> One of the supported CCTP destination testnets for Arc-origin transfers (alongside Base Sepolia and Arbitrum Sepolia).</li>
               </ul>
             </div>
           </div>

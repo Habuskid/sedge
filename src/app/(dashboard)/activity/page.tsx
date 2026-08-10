@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useAccount } from 'wagmi';
 import { getAllTransactions, type TransactionRecord } from '@/lib/transaction-store';
 import { CHAIN_DISPLAY_NAMES } from '@/config/chains';
 import { ModernReceiptModal } from '@/components/activity/ModernReceiptModal';
@@ -32,15 +33,16 @@ function truncateHash(hash: string): string {
 }
 
 export default function ActivityPage() {
+  const { address } = useAccount();
   const [transactions, setTransactions] = useState<TransactionRecord[]>([]);
   const [filter, setFilter] = useState<'all' | 'swap' | 'bridge' | 'send'>('all');
   const [selectedTx, setSelectedTx] = useState<TransactionRecord | null>(null);
 
   useEffect(() => {
-    getAllTransactions().then((txs) => {
+    getAllTransactions(address).then((txs) => {
       setTransactions(txs);
     });
-  }, []);
+  }, [address]);
 
   const filtered = filter === 'all'
     ? transactions

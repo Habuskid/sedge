@@ -3,8 +3,11 @@
 import { useState, useEffect } from 'react';
 import { Plus, Clock, ArrowRight, Wallet, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAccount } from 'wagmi';
+import { parseApiErrorPayload, withReference } from '@/lib/user-facing-errors';
 
 export default function RecurringPaymentsPage() {
+  const { address, isConnected } = useAccount();
   const [schedules, setSchedules] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,11 +22,25 @@ export default function RecurringPaymentsPage() {
   });
 
   const fetchSchedules = async () => {
+    if (!address) {
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const res = await fetch('/api/schedules');
+      const res = await fetch('/api/schedules', {
+        credentials: 'same-origin',
+        headers: {
+          'x-wallet-address': address,
+        },
+      });
       if (res.ok) {
         const data = await res.json();
         setSchedules(data);
+      } else {
+        const payload = await res.json().catch(() => null);
+        const parsed = parseApiErrorPayload(payload);
+        toast.error(withReference(parsed.message, parsed.requestId));
       }
     } catch (error) {
       console.error('Failed to fetch schedules', error);
@@ -34,15 +51,25 @@ export default function RecurringPaymentsPage() {
 
   useEffect(() => {
     fetchSchedules();
-  }, []);
+  }, [address]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!isConnected || !address) {
+      toast.error('Please connect your wallet before creating a schedule.');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const res = await fetch('/api/schedules', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-wallet-address': address,
+        },
         body: JSON.stringify(formData),
       });
 
@@ -52,11 +79,12 @@ export default function RecurringPaymentsPage() {
         setFormData({ amount: '', token: 'USDC', recipientAddress: '', frequency: 'monthly', endsAt: '' });
         fetchSchedules();
       } else {
-        const err = await res.json();
-        toast.error(err.error || 'Failed to create schedule');
+        const payload = await res.json().catch(() => null);
+        const parsed = parseApiErrorPayload(payload);
+        toast.error(withReference(parsed.message, parsed.requestId));
       }
-    } catch (error) {
-      toast.error('An unexpected error occurred');
+    } catch {
+      toast.error('We could not create your recurring payment right now. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

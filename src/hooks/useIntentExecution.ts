@@ -5,6 +5,9 @@ import { useAccount, useSwitchChain } from 'wagmi';
 import { useWalletAdapter } from './useWalletAdapter';
 import { getAppKit } from '@/lib/app-kit';
 import { CHAIN_ID_TO_APP_KIT_NAME, CHAIN_EXPLORER_URLS } from '@/config/chains';
+import { parseApiErrorPayload } from '@/lib/user-facing-errors';
+import { logException, logWarn } from '@/lib/logger';
+import { reportException } from '@/lib/observability';
 import type {
   ParsedIntent,
   SwapIntent,
@@ -29,20 +32,6 @@ const CHAIN_PARAMS: Record<number, {
   rpcUrls: string[];
   blockExplorerUrls: string[];
 }> = {
-  84532: {
-    chainId: '0x14A34',
-    chainName: 'Base Sepolia',
-    nativeCurrency: { name: 'Sepolia Ether', symbol: 'ETH', decimals: 18 },
-    rpcUrls: [process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL || 'https://sepolia.base.org'],
-    blockExplorerUrls: ['https://sepolia.basescan.org'],
-  },
-  421614: {
-    chainId: '0x66EEE',
-    chainName: 'Arbitrum Sepolia',
-    nativeCurrency: { name: 'Sepolia Ether', symbol: 'ETH', decimals: 18 },
-    rpcUrls: [process.env.NEXT_PUBLIC_ARBITRUM_SEPOLIA_RPC_URL || 'https://sepolia-rollup.arbitrum.io/rpc'],
-    blockExplorerUrls: ['https://sepolia.arbiscan.io'],
-  },
   11155111: {
     chainId: '0xAA36A7',
     chainName: 'Sepolia',
@@ -170,8 +159,15 @@ export function useIntentExecution() {
       if (connector) {
         try {
           provider = await connector.getProvider();
-        } catch {
-          console.warn('Could not get provider for chain pre-registration');
+        } catch (error) {
+          logWarn('intent.provider_unavailable', {
+            scope: 'useIntentExecution',
+            message: 'Could not get provider for chain pre-registration',
+          });
+          void reportException(error, {
+            scope: 'useIntentExecution',
+            code: 'UNKNOWN_ERROR',
+          });
         }
       }
 
@@ -198,11 +194,27 @@ export function useIntentExecution() {
                 await switchChainAsync({ chainId: targetChainId });
                 await new Promise((resolve) => setTimeout(resolve, 500));
               } catch (retryErr: any) {
-                console.error('Failed to add and switch chain:', retryErr);
+                logException('intent.chain_switch_failed', retryErr, {
+                  targetChainId,
+                  scope: 'useIntentExecution',
+                });
+                void reportException(retryErr, {
+                  targetChainId,
+                  scope: 'useIntentExecution',
+                  code: 'UNKNOWN_ERROR',
+                });
                 throw new Error(`Please switch to ${chainName(targetChainId)} in your wallet to continue.`);
               }
             } else {
-              console.error('Failed to switch chain manually:', err);
+              logException('intent.chain_switch_manual_failed', err, {
+                targetChainId,
+                scope: 'useIntentExecution',
+              });
+              void reportException(err, {
+                targetChainId,
+                scope: 'useIntentExecution',
+                code: 'UNKNOWN_ERROR',
+              });
               throw new Error(`Please switch to ${chainName(targetChainId)} in your wallet to continue.`);
             }
           }
@@ -241,7 +253,10 @@ export function useIntentExecution() {
           let result = await kit.bridge(params);
 
           if (result.state === 'error') {
-            console.warn('AppKit Bridge Error (First attempt):', result.error);
+            logWarn('intent.bridge_retrying', {
+              scope: 'useIntentExecution',
+              stage: 'first_attempt_failed',
+            });
             // Arc docs: use kit.retry() for failed bridge transfers
             result = await kit.retry(result, {
               from: adapter,
@@ -250,12 +265,30 @@ export function useIntentExecution() {
           }
 
           if (result.state === 'error') {
-            const errorMsg = result.error?.message || result.error || 'Bridge failed after retry.';
-            console.error('AppKit Bridge Error (Final):', result.error);
-            console.error('AppKit Bridge Full Result:', JSON.stringify(result, (key, value) => 
-              typeof value === 'bigint' ? value.toString() : value
-            , 2));
-            return { error: `Bridge failed: ${errorMsg}` };
+            const requestId = crypto.randomUUID();
+            logException('intent.bridge_failed', result.error, {
+              requestId,
+              scope: 'useIntentExecution',
+              intentType: 'bridge',
+            });
+            logWarn('intent.bridge_failed_detail', {
+              requestId,
+              scope: 'useIntentExecution',
+              detail: JSON.stringify(result, (key, value) =>
+                typeof value === 'bigint' ? value.toString() : value,
+              2),
+            });
+            void reportException(result.error, {
+              requestId,
+              scope: 'useIntentExecution',
+              code: 'BRIDGE_TEMP_UNAVAILABLE',
+              intentType: 'bridge',
+            });
+            return {
+              error: 'Bridge route is temporarily unavailable. Please try again.',
+              errorCode: 'BRIDGE_TEMP_UNAVAILABLE',
+              requestId,
+            };
           }
 
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -297,15 +330,28 @@ export function useIntentExecution() {
           };
         }
         case 'recurring_payment': {
+          if (!address) {
+            throw new Error('Please connect your wallet before creating a recurring payment.');
+          }
+
           const res = await fetch('/api/schedules', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-wallet-address': address,
+            },
             body: JSON.stringify(intent),
           });
           
           if (!res.ok) {
-            const errorData = await res.json().catch(() => ({}));
-            throw new Error(errorData.error || 'Failed to create recurring schedule');
+            const payload = await res.json().catch(() => null);
+            const parsed = parseApiErrorPayload(payload);
+            return {
+              error: parsed.message,
+              errorCode: parsed.code,
+              requestId: parsed.requestId,
+            };
           }
           
           const data = await res.json();

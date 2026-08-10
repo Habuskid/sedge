@@ -1,16 +1,13 @@
 'use client';
 
 import { useAccount } from 'wagmi';
-import { ReactNode, useEffect, useState, useRef } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSiweAuth } from '@/hooks/useSiweAuth';
 
 export function WalletGate({ children }: { children: ReactNode }) {
   const { isConnected, isConnecting, isReconnecting } = useAccount();
-  const { isAuthenticated, isSessionLoading, signInWithEthereum, isSigningIn } = useSiweAuth();
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
-  const hasAutoSigned = useRef(false);
 
   useEffect(() => {
     setMounted(true);
@@ -23,31 +20,7 @@ export function WalletGate({ children }: { children: ReactNode }) {
     }
   }, [mounted, isConnecting, isReconnecting, isConnected, router]);
 
-  // Auto-trigger SIWE if wallet is connected but session is missing (e.g. page refresh)
-  useEffect(() => {
-    if (
-      mounted &&
-      isConnected &&
-      !isConnecting &&
-      !isReconnecting &&
-      !isAuthenticated &&
-      !isSessionLoading &&
-      !isSigningIn &&
-      !hasAutoSigned.current
-    ) {
-      hasAutoSigned.current = true;
-      signInWithEthereum();
-    }
-  }, [mounted, isConnected, isConnecting, isReconnecting, isAuthenticated, isSessionLoading, isSigningIn, signInWithEthereum]);
-
-  // Reset auto-sign flag if wallet disconnects
-  useEffect(() => {
-    if (!isConnected) {
-      hasAutoSigned.current = false;
-    }
-  }, [isConnected]);
-
-  // Show skeleton while resolving state
+  // Show skeleton while resolving connection state
   if (!mounted || isConnecting || isReconnecting || !isConnected) {
     return (
       <div className="w-full h-full space-y-6 max-w-5xl mx-auto animate-in fade-in duration-500">

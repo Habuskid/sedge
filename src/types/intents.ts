@@ -82,6 +82,8 @@ export interface ExecutionData {
   txHash?: string;
   explorerUrl?: string;
   error?: string;
+  errorCode?: string;
+  requestId?: string;
 }
 
 export type IntentPhase =

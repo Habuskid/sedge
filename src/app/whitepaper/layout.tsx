@@ -38,7 +38,7 @@ export default function WhitepaperLayout({ children }: { children: React.ReactNo
 
           <div className="font-label-caps text-on-surface-variant mt-8 mb-4 uppercase font-bold tracking-wider">Future</div>
           <ul className="space-y-3 font-body-sm text-on-surface-variant">
-            <li><a href="#roadmap" className="hover:text-primary transition-colors block">5. Realistic Protocol Roadmap</a></li>
+            <li><a href="#roadmap" className="hover:text-primary transition-colors block">5. Current Status & Roadmap</a></li>
             <li><a href="#conclusion" className="hover:text-primary transition-colors block">6. Conclusion</a></li>
           </ul>
         </aside>

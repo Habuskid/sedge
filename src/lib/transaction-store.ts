@@ -35,10 +35,14 @@ export function getTransactions(): TransactionRecord[] {
   }
 }
 
-export async function getAllTransactions(): Promise<TransactionRecord[]> {
+export async function getAllTransactions(walletAddress?: string): Promise<TransactionRecord[]> {
   const local = getTransactions();
   try {
-    const res = await fetch('/api/transactions');
+    const res = await fetch('/api/transactions', {
+      headers: {
+        'x-wallet-address': walletAddress || '',
+      },
+    });
     if (res.ok) {
       const dbTxs: TransactionRecord[] = await res.json();
       // Merge and sort descending by timestamp

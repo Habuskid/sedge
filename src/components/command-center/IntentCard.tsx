@@ -79,7 +79,7 @@ function FeeGrid({ estimation, intent, isEstimating }: { estimation?: Estimation
       {intent.type === 'bridge' && (
         <div className="flex flex-col gap-2 pt-3 border-t border-gray-200 dark:border-gray-800">
           <div className="flex justify-between items-center">
-            <span className="font-body-sm text-[12px] text-gray-500 dark:text-gray-400 font-medium">Protocol</span>
+            <span className="font-body-sm text-[12px] text-gray-500 dark:text-gray-400 font-medium">Route</span>
             <span className="font-body-sm text-[13px] text-primary font-medium flex items-center gap-1">
               Circle CCTP
               <span className="material-symbols-outlined text-[14px]">route</span>
@@ -230,7 +230,7 @@ function BridgeCard({
 
           <div className="flex flex-col gap-2 pt-2 border-t border-gray-200 dark:border-gray-800">
             <div className="flex justify-between items-center">
-              <span className="font-body-sm text-[12px] text-gray-500 dark:text-gray-400 font-medium">Protocol</span>
+              <span className="font-body-sm text-[12px] text-gray-500 dark:text-gray-400 font-medium">Route</span>
               <span className="font-body-sm text-[13px] text-primary font-medium flex items-center gap-1">
                 Circle CCTP
                 <span className="material-symbols-outlined text-[14px]">route</span>
@@ -507,6 +507,7 @@ function SuccessScreen({ execState, intent, onDone }: { execState: IntentExecSta
 
 function ErrorBanner({ execState }: { execState: IntentExecState }) {
   const errorMsg = execState.execution?.error || 'Transaction failed';
+  const requestId = execState.execution?.requestId;
   return (
     <div className="mx-5 mb-5 p-4 bg-red-50 dark:bg-red-900/10 rounded-[20px] border border-red-100 dark:border-red-800/30 flex items-center gap-3">
       <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-800/30 flex items-center justify-center shrink-0">
@@ -517,6 +518,9 @@ function ErrorBanner({ execState }: { execState: IntentExecState }) {
         <p className="font-body-sm text-[12px] text-red-600/80 dark:text-red-400/80 truncate" title={errorMsg}>
           {errorMsg}
         </p>
+        {requestId ? (
+          <p className="font-mono-data text-[10px] text-red-500/70 dark:text-red-400/70 mt-1">Ref: {requestId}</p>
+        ) : null}
       </div>
     </div>
   );
