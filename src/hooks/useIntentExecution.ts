@@ -335,8 +335,13 @@ export function useIntentExecution() {
           let result = await kit.bridge(params);
 
           if (result.state === 'error') {
-            // Some App Kit builds may not expose retry(). Guard it to avoid runtime crashes.
-            const retryFn = (kit as any)?.retry;
+            // App Kit bridge retry method is retryBridge() in current docs.
+            // Keep retry() as fallback for older builds.
+            const retryBridgeFn = (kit as any)?.retryBridge;
+            const retryFn = typeof retryBridgeFn === 'function'
+              ? retryBridgeFn
+              : (kit as any)?.retry;
+
             if (typeof retryFn === 'function') {
               const maxRetries = 6;
 
