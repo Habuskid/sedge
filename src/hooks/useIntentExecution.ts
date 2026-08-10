@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import { useAccount, useSwitchChain } from 'wagmi';
 import { useWalletAdapter } from './useWalletAdapter';
 import { getAppKit } from '@/lib/app-kit';
-import { CHAIN_ID_TO_APP_KIT_NAME, CHAIN_EXPLORER_URLS } from '@/config/chains';
+import { CHAIN_ID_TO_APP_KIT_NAME, CHAIN_DISPLAY_NAMES, CHAIN_EXPLORER_URLS } from '@/config/chains';
 import { parseApiErrorPayload } from '@/lib/user-facing-errors';
 import { logException, logWarn } from '@/lib/logger';
 import { reportException } from '@/lib/observability';
@@ -21,48 +21,57 @@ function chainName(id?: number): string {
   return CHAIN_ID_TO_APP_KIT_NAME[id || 5042002] || 'Arc_Testnet';
 }
 
-function requiredRpcUrl(envKey: 'NEXT_PUBLIC_ARC_RPC_URL' | 'NEXT_PUBLIC_SEPOLIA_RPC_URL' | 'NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL'): string {
-  const value = process.env[envKey];
-  if (!value) {
-    throw new Error(`Missing required RPC env var: ${envKey}`);
-  }
-  return value;
-}
-
-/**
- * Chain metadata for wallet_addEthereumChain.
- * This ensures the wallet knows about destination chains before bridging.
- */
-const CHAIN_PARAMS: Record<number, {
+type ChainParam = {
   chainId: string;
   chainName: string;
   nativeCurrency: { name: string; symbol: string; decimals: number };
   rpcUrls: string[];
   blockExplorerUrls: string[];
-}> = {
-  11155111: {
-    chainId: '0xAA36A7',
-    chainName: 'Sepolia',
-    nativeCurrency: { name: 'Sepolia Ether', symbol: 'ETH', decimals: 18 },
-    rpcUrls: [requiredRpcUrl('NEXT_PUBLIC_SEPOLIA_RPC_URL')],
-    blockExplorerUrls: ['https://sepolia.etherscan.io'],
-  },
-  84532: {
-    chainId: '0x14A34',
-    chainName: 'Base Sepolia',
-    nativeCurrency: { name: 'Sepolia Ether', symbol: 'ETH', decimals: 18 },
-    rpcUrls: [requiredRpcUrl('NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL')],
-    blockExplorerUrls: ['https://sepolia.basescan.org'],
-  },
-
-  5042002: {
-    chainId: '0x4CEF52',
-    chainName: 'Arc Testnet',
-    nativeCurrency: { name: 'USDC', symbol: 'USDC', decimals: 18 },
-    rpcUrls: [requiredRpcUrl('NEXT_PUBLIC_ARC_RPC_URL')],
-    blockExplorerUrls: ['https://testnet.arcscan.app'],
-  },
 };
+
+/**
+ * Chain metadata for wallet_addEthereumChain.
+ * Returns null when RPC env is missing so UI doesn't crash at module load time.
+ */
+function getChainParam(chainId: number): ChainParam | null {
+  if (chainId === 11155111) {
+    const rpc = process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL;
+    if (!rpc) return null;
+    return {
+      chainId: '0xAA36A7',
+      chainName: 'Sepolia',
+      nativeCurrency: { name: 'Sepolia Ether', symbol: 'ETH', decimals: 18 },
+      rpcUrls: [rpc],
+      blockExplorerUrls: ['https://sepolia.etherscan.io'],
+    };
+  }
+
+  if (chainId === 84532) {
+    const rpc = process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL;
+    if (!rpc) return null;
+    return {
+      chainId: '0x14A34',
+      chainName: 'Base Sepolia',
+      nativeCurrency: { name: 'Sepolia Ether', symbol: 'ETH', decimals: 18 },
+      rpcUrls: [rpc],
+      blockExplorerUrls: ['https://sepolia.basescan.org'],
+    };
+  }
+
+  if (chainId === 5042002) {
+    const rpc = process.env.NEXT_PUBLIC_ARC_RPC_URL;
+    if (!rpc) return null;
+    return {
+      chainId: '0x4CEF52',
+      chainName: 'Arc Testnet',
+      nativeCurrency: { name: 'USDC', symbol: 'USDC', decimals: 18 },
+      rpcUrls: [rpc],
+      blockExplorerUrls: ['https://testnet.arcscan.app'],
+    };
+  }
+
+  return null;
+}
 
 /**
  * Ensures a chain is added to the user's wallet via wallet_addEthereumChain.
@@ -71,8 +80,15 @@ const CHAIN_PARAMS: Record<number, {
  * chain is not yet known to the wallet.
  */
 async function ensureChainInWallet(provider: any, chainId: number): Promise<void> {
-  const params = CHAIN_PARAMS[chainId];
-  if (!params) return;
+  const params = getChainParam(chainId);
+  if (!params) {
+    logWarn('intent.chain_param_missing', {
+      scope: 'useIntentExecution',
+      chainId,
+      message: 'Missing RPC env for chain pre-registration',
+    });
+    return;
+  }
 
   try {
     await provider.request({
@@ -135,6 +151,33 @@ function getBridgeFailureDetail(result: any): { step?: string; message?: string 
     step: failedStep?.name,
     message,
   };
+}
+
+function isLikelyGasError(message?: string): boolean {
+  if (!message) return false;
+  const normalized = message.toLowerCase();
+  return (
+    normalized.includes('insufficient funds') ||
+    normalized.includes('intrinsic gas too low') ||
+    normalized.includes('out of gas') ||
+    normalized.includes('gas required exceeds allowance') ||
+    normalized.includes('fee')
+  );
+}
+
+function isLikelyUserRejected(message?: string): boolean {
+  if (!message) return false;
+  const normalized = message.toLowerCase();
+  return (
+    normalized.includes('user rejected') ||
+    normalized.includes('rejected request') ||
+    normalized.includes('denied') ||
+    normalized.includes('cancelled')
+  );
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export function useIntentExecution() {
@@ -292,18 +335,43 @@ export function useIntentExecution() {
           let result = await kit.bridge(params);
 
           if (result.state === 'error') {
-            logWarn('intent.bridge_retrying', {
-              scope: 'useIntentExecution',
-              stage: 'first_attempt_failed',
-            });
-
             // Some App Kit builds may not expose retry(). Guard it to avoid runtime crashes.
             const retryFn = (kit as any)?.retry;
             if (typeof retryFn === 'function') {
-              result = await retryFn(result, {
-                from: adapter,
-                to: adapter,
-              });
+              const maxRetries = 6;
+
+              for (let attempt = 1; attempt <= maxRetries && result.state === 'error'; attempt++) {
+                const failure = getBridgeFailureDetail(result);
+                const isFatalGasError = failure.step === 'mint' && isLikelyGasError(failure.message);
+                const isFatalUserRejection = isLikelyUserRejected(failure.message);
+
+                if (isFatalGasError || isFatalUserRejection) {
+                  logWarn('intent.bridge_retry_stopped_fatal', {
+                    scope: 'useIntentExecution',
+                    attempt,
+                    failedStep: failure.step,
+                    failedMessage: failure.message,
+                    reason: isFatalGasError ? 'gas_error' : 'user_rejected',
+                  });
+                  break;
+                }
+
+                const delayMs = Math.min(2_000 * attempt, 10_000);
+                logWarn('intent.bridge_retrying', {
+                  scope: 'useIntentExecution',
+                  attempt,
+                  delayMs,
+                  failedStep: failure.step,
+                  failedMessage: failure.message,
+                });
+
+                await sleep(delayMs);
+
+                result = await retryFn(result, {
+                  from: adapter,
+                  to: adapter,
+                });
+              }
             } else {
               const requestId = crypto.randomUUID();
               logWarn('intent.bridge_retry_unavailable', {
@@ -349,9 +417,13 @@ export function useIntentExecution() {
               intentType: 'bridge',
             });
 
-            const isBaseMintFailure = intent.toChainId === 84532 && failure.step === 'mint';
-            const friendlyError = isBaseMintFailure
-              ? 'Mint failed on Base Sepolia. Please ensure this wallet has Base Sepolia ETH for gas, then retry and approve all wallet prompts.'
+            const isMintFailure = failure.step === 'mint';
+            const destinationChain = CHAIN_DISPLAY_NAMES[intent.toChainId] || `Chain ${intent.toChainId}`;
+            const likelyGasError = isLikelyGasError(failure.message);
+            const friendlyError = isMintFailure && likelyGasError
+              ? `Mint failed on ${destinationChain}. Please ensure this wallet has gas token on the destination chain, then retry and approve all wallet prompts.`
+              : isMintFailure
+              ? `Mint failed on ${destinationChain}. Please retry and approve all wallet prompts.`
               : 'Bridge route is temporarily unavailable. Please try again.';
 
             return {
