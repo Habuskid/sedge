@@ -423,9 +423,12 @@ export function useIntentExecution() {
             });
 
             const isMintFailure = failure.step === 'mint';
+            const isAttestationFailure = failure.step === 'fetchAttestation';
             const destinationChain = CHAIN_DISPLAY_NAMES[intent.toChainId] || `Chain ${intent.toChainId}`;
             const likelyGasError = isLikelyGasError(failure.message);
-            const friendlyError = isMintFailure && likelyGasError
+            const friendlyError = isAttestationFailure
+              ? 'Attestation is still indexing on Circle. Please wait about 1-2 minutes and retry the bridge.'
+              : isMintFailure && likelyGasError
               ? `Mint failed on ${destinationChain}. Please ensure this wallet has gas token on the destination chain, then retry and approve all wallet prompts.`
               : isMintFailure
               ? `Mint failed on ${destinationChain}. Please retry and approve all wallet prompts.`

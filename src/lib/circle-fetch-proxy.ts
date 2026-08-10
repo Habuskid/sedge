@@ -47,13 +47,18 @@ export function installCircleFetchProxy() {
       parsed.pathname.startsWith('/v2/messages/');
 
     if (isAttestationLookup) {
-      const maxAttempts = 6;
+      // CCTP attestation lookups can remain 404 for a while after burn.
+      // Poll longer before giving up.
+      const maxAttempts = 20;
       for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         const response = await originalFetch(input, init);
         if (response.status !== 404 || attempt === maxAttempts) {
           return response;
         }
-        await sleep(Math.min(1000 * attempt, 5000));
+
+        const delayMs = Math.min(2000 + attempt * 500, 8000);
+        console.warn(`[CCTP] Attestation not ready yet (404). Attempt ${attempt}/${maxAttempts}. Retrying in ${delayMs}ms.`);
+        await sleep(delayMs);
       }
     }
 
