@@ -1,7 +1,7 @@
-const CIRCLE_HOSTS = [
+const PROXY_HOSTS = [
+  // Keep proxying only authenticated Circle API requests.
+  // Do NOT proxy Iris attestation hosts used by App Kit bridge flow.
   'api.circle.com',
-  'iris-api.circle.com',
-  'iris-api-sandbox.circle.com',
 ];
 
 let installed = false;
@@ -31,7 +31,7 @@ export function installCircleFetchProxy() {
       return originalFetch(input, init);
     }
 
-    if (!CIRCLE_HOSTS.includes(parsed.hostname)) {
+    if (!PROXY_HOSTS.includes(parsed.hostname)) {
       return originalFetch(input, init);
     }
 
