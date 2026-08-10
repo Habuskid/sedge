@@ -257,11 +257,26 @@ export function useIntentExecution() {
               scope: 'useIntentExecution',
               stage: 'first_attempt_failed',
             });
-            // Arc docs: use kit.retry() for failed bridge transfers
-            result = await kit.retry(result, {
-              from: adapter,
-              to: adapter,
-            });
+
+            // Some App Kit builds may not expose retry(). Guard it to avoid runtime crashes.
+            const retryFn = (kit as any)?.retry;
+            if (typeof retryFn === 'function') {
+              result = await retryFn(result, {
+                from: adapter,
+                to: adapter,
+              });
+            } else {
+              const requestId = crypto.randomUUID();
+              logWarn('intent.bridge_retry_unavailable', {
+                scope: 'useIntentExecution',
+                requestId,
+              });
+              return {
+                error: 'Bridge route is temporarily unavailable. Please try again.',
+                errorCode: 'BRIDGE_TEMP_UNAVAILABLE',
+                requestId,
+              };
+            }
           }
 
           if (result.state === 'error') {
