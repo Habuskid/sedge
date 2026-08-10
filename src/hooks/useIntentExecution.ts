@@ -21,6 +21,14 @@ function chainName(id?: number): string {
   return CHAIN_ID_TO_APP_KIT_NAME[id || 5042002] || 'Arc_Testnet';
 }
 
+function requiredRpcUrl(envKey: 'NEXT_PUBLIC_ARC_RPC_URL' | 'NEXT_PUBLIC_SEPOLIA_RPC_URL' | 'NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL'): string {
+  const value = process.env[envKey];
+  if (!value) {
+    throw new Error(`Missing required RPC env var: ${envKey}`);
+  }
+  return value;
+}
+
 /**
  * Chain metadata for wallet_addEthereumChain.
  * This ensures the wallet knows about destination chains before bridging.
@@ -36,14 +44,22 @@ const CHAIN_PARAMS: Record<number, {
     chainId: '0xAA36A7',
     chainName: 'Sepolia',
     nativeCurrency: { name: 'Sepolia Ether', symbol: 'ETH', decimals: 18 },
-    rpcUrls: [process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL || 'https://rpc.sepolia.org'],
+    rpcUrls: [requiredRpcUrl('NEXT_PUBLIC_SEPOLIA_RPC_URL')],
     blockExplorerUrls: ['https://sepolia.etherscan.io'],
   },
+  84532: {
+    chainId: '0x14A34',
+    chainName: 'Base Sepolia',
+    nativeCurrency: { name: 'Sepolia Ether', symbol: 'ETH', decimals: 18 },
+    rpcUrls: [requiredRpcUrl('NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL')],
+    blockExplorerUrls: ['https://sepolia.basescan.org'],
+  },
+
   5042002: {
     chainId: '0x4CEF52',
     chainName: 'Arc Testnet',
     nativeCurrency: { name: 'USDC', symbol: 'USDC', decimals: 18 },
-    rpcUrls: [process.env.NEXT_PUBLIC_ARC_RPC_URL || 'https://rpc.testnet.arc.network'],
+    rpcUrls: [requiredRpcUrl('NEXT_PUBLIC_ARC_RPC_URL')],
     blockExplorerUrls: ['https://testnet.arcscan.app'],
   },
 };
@@ -95,6 +111,29 @@ function buildSendParams(intent: SendIntent, adapter: unknown) {
     to: intent.recipientAddress,
     amount: intent.amount,
     token: intent.token,
+  };
+}
+
+function getBridgeFailureDetail(result: any): { step?: string; message?: string } {
+  const steps: any[] = Array.isArray(result?.steps) ? result.steps : [];
+  const failedStep = steps.find((s) => s?.state === 'error');
+
+  const rawError =
+    failedStep?.error?.message ||
+    failedStep?.error ||
+    result?.error?.message ||
+    result?.error;
+
+  const message =
+    typeof rawError === 'string'
+      ? rawError
+      : rawError
+      ? JSON.stringify(rawError)
+      : undefined;
+
+  return {
+    step: failedStep?.name,
+    message,
   };
 }
 
@@ -281,14 +320,24 @@ export function useIntentExecution() {
 
           if (result.state === 'error') {
             const requestId = crypto.randomUUID();
+            const failure = getBridgeFailureDetail(result);
+
             logException('intent.bridge_failed', result.error, {
               requestId,
               scope: 'useIntentExecution',
               intentType: 'bridge',
+              fromChainId: intent.fromChainId,
+              toChainId: intent.toChainId,
+              failedStep: failure.step,
+              failedMessage: failure.message,
             });
             logWarn('intent.bridge_failed_detail', {
               requestId,
               scope: 'useIntentExecution',
+              fromChainId: intent.fromChainId,
+              toChainId: intent.toChainId,
+              failedStep: failure.step,
+              failedMessage: failure.message,
               detail: JSON.stringify(result, (key, value) =>
                 typeof value === 'bigint' ? value.toString() : value,
               2),
@@ -299,8 +348,14 @@ export function useIntentExecution() {
               code: 'BRIDGE_TEMP_UNAVAILABLE',
               intentType: 'bridge',
             });
+
+            const isBaseMintFailure = intent.toChainId === 84532 && failure.step === 'mint';
+            const friendlyError = isBaseMintFailure
+              ? 'Mint failed on Base Sepolia. Please ensure this wallet has Base Sepolia ETH for gas, then retry and approve all wallet prompts.'
+              : 'Bridge route is temporarily unavailable. Please try again.';
+
             return {
-              error: 'Bridge route is temporarily unavailable. Please try again.',
+              error: friendlyError,
               errorCode: 'BRIDGE_TEMP_UNAVAILABLE',
               requestId,
             };
