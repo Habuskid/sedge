@@ -252,7 +252,7 @@ npm start
 | `NEXT_PUBLIC_SEPOLIA_RPC_URL` | No | Ethereum Sepolia RPC (default: public endpoint) |
 | `NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL` | No | Base Sepolia RPC override |
 | `NEXT_PUBLIC_ARBITRUM_SEPOLIA_RPC_URL` | No | Arbitrum Sepolia RPC override |
-| `NEXT_PUBLIC_CIRCLE_KIT_KEY` | No | Circle App Kit key (improves rate limits) |
+| `NEXT_PUBLIC_CIRCLE_KIT_KEY` | Yes | Circle App Kit key (improves rate limits) |
 | `RATE_LIMIT_MAX_REQUESTS` | No | AI requests per minute per IP (default: 10) |
 
 ---
@@ -288,7 +288,8 @@ npm start
 
 ## Roadmap
 
-- [ ] Mainnet deployment
+- [ ]  Internal security audit
+- [ ]  Mainnet deployment
 
 ---
 
