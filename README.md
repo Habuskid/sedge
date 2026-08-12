@@ -62,9 +62,9 @@ An AI-powered financial copilot that enables natural language control of stablec
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
 │  ┌──────────────┐   ┌──────────────────┐   ┌──────────────────┐   │
-│  │   Next.js    │   │    wagmi +       │   │   Circle App     │   │
-│  │   App Router │   │    viem          │   │   Kit            │   │
-│  │   (Pages)    │   │   (Wallet Conn)  │   │   (Swap/Bridge)  │   │
+│  │   Next.js    │   │    wagmi +       │   │  Circle App Kit  │   │
+│  │   App Router │   │    viem          │   │  (Swap/Bridge/   │   │
+│  │   (Pages)    │   │   (Wallet Conn)  │   │ Send/Recurring)  │   │
 │  └──────┬───────┘   └────────┬─────────┘   └────────┬─────────┘   │
 │         │                    │                       │             │
 │         │         ┌──────────┴───────────────────────┘             │
@@ -131,7 +131,7 @@ User Input (Natural Language)
          ▼
 ┌─────────────────┐
 │  App Kit        │  Circle's Web3 execution layer
-│  Execute        │  Swap / Bridge / Send
+│  Execute        │  Swap / Bridge / Send / Recurring
 └────────┬────────┘
          │ Transaction hash
          ▼
