@@ -96,11 +96,16 @@ An AI-powered financial copilot that enables natural language control of stablec
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
 │  ┌────────────────────┐          ┌────────────────────────┐        │
-│  │   Arc Testnet      │◄──CCTP──►│   Sepolia Family       │        │
-│  │   (Chain 5042002)  │          │   (11155111/84532/     │        │
-│  │                    │          │    421614)             │        │
-│  │   - USDC (native)  │          │   - USDC               │        │
-│  │   - EURC           │          │                        │        │
+│  │   Arc Testnet      │◄──CCTP──►│   Ethereum Sepolia     │        │
+│  │   (Chain 5042002)  │          │   (Chain 11155111)     │        │
+│  │                    │          └────────────────────────┘        │
+│  │   - USDC (native)  │          ┌────────────────────────┐        │
+│  │   - EURC           │◄──CCTP──►│   Base Sepolia         │        │
+│  │                    │          │   (Chain 84532)        │        │
+│  │                    │          └────────────────────────┘        │
+│  │                    │          ┌────────────────────────┐        │
+│  │                    │◄──CCTP──►│   Arbitrum Sepolia     │        │
+│  │                    │          │   (Chain 421614)       │        │
 │  └────────────────────┘          └────────────────────────┘        │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
@@ -248,11 +253,11 @@ npm start
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `ANTHROPIC_API_KEY` | Yes | Claude API key for AI intent parsing |
-| `NEXT_PUBLIC_ARC_RPC_URL` | No | Arc Testnet RPC (default: public endpoint) |
-| `NEXT_PUBLIC_SEPOLIA_RPC_URL` | No | Ethereum Sepolia RPC (default: public endpoint) |
-| `NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL` | No | Base Sepolia RPC override |
-| `NEXT_PUBLIC_ARBITRUM_SEPOLIA_RPC_URL` | No | Arbitrum Sepolia RPC override |
-| `NEXT_PUBLIC_CIRCLE_KIT_KEY` | Yes | Circle App Kit key (improves rate limits) |
+| `NEXT_PUBLIC_ARC_RPC_URL` | No | Arc Testnet Alchemy RPC |
+| `NEXT_PUBLIC_SEPOLIA_RPC_URL` | No | Ethereum Sepolia Alchemy RPC |
+| `NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL` | No | Base Sepolia Alchemy RPC |
+| `NEXT_PUBLIC_ARBITRUM_SEPOLIA_RPC_URL` | No | Arbitrum Sepolia Alchemy RPC |
+| `NEXT_PUBLIC_CIRCLE_KIT_KEY` | Yes | Circle App Kit key (required) |
 | `RATE_LIMIT_MAX_REQUESTS` | No | AI requests per minute per IP (default: 10) |
 
 ---
